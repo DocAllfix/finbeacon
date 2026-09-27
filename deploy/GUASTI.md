@@ -1835,3 +1835,40 @@ altrimenti si rivela che quell'indirizzo è speciale.
 il suo contesto. Una protezione va riletta **quando cambia chi può raggiungerla**, non
 quando cambia lei. Nessun `git diff` mostra questo genere di regressione, perché il diff è
 vuoto.
+
+## G-47 — Entri, e ti ritrovi sul login: il cookie c'è, ma è di un altro host
+
+**Sintomo.** Una rotta che autentica e reindirizza — l'ingresso della demo — imposta
+correttamente il cookie di sessione, risponde 303, e il browser finisce su
+`/login?da=%2Fapp`. La sessione **esiste** nel database, il `Set-Cookie` **c'è** nella
+risposta, e l'utente non è autenticato.
+
+**Perché inganna.** Il sintomo accusa l'autenticazione: si va a guardare il segreto, il flag
+`Secure`, `sameSite`, la guardia nel middleware. Nessuno dei quali c'entra.
+
+La causa era il reindirizzamento costruito **assoluto** dall'URL della richiesta:
+
+```ts
+const origine = new URL(richiesta.url).origin; // "http://localhost:3100"
+return NextResponse.redirect(new URL(percorso, origine), 303);
+```
+
+Il visitatore era arrivato su `http://127.0.0.1:3100`; il server, dall'interno, si vede come
+`localhost:3100`. Sono lo **stesso computer e due origini diverse**: il cookie appena
+impostato appartiene a una e non viene mandato all'altra. Lo stesso accade dietro un reverse
+proxy, dove il server si vede col nome interno del container mentre il visitatore ha digitato
+il dominio pubblico.
+
+Il dato che mette sulla strada giusta è l'URL finale: `localhost` dove tutto il resto del
+giro diceva `127.0.0.1`. Va letto, non scorso.
+
+**Rimedio.** `Location` **relativo**, che resta sull'origine da cui il visitatore è arrivato
+qualunque essa sia:
+
+```ts
+return new NextResponse(null, { status: 303, headers: { location: percorso } });
+```
+
+> **Un'origine dedotta dalla richiesta è un'ipotesi, non un fatto.** Se una risposta imposta
+> un cookie e reindirizza, il reindirizzamento deve restare sull'origine del visitatore:
+> costruirlo assoluto significa scommettere che il server si veda come lo vedono gli altri.

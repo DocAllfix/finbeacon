@@ -148,6 +148,18 @@ test("il recupero password non consegna l'account dimostrativo a chi lo chiede",
   const base = baseURL!;
   await preparaStudioDimostrativo(request, base);
 
+  /*
+   * Si svuota la coda PRIMA di chiedere il recupero, e senza questo il test
+   * misurava la cosa sbagliata: la registrazione accoda gia' un messaggio di
+   * verifica dell'indirizzo (`sendOnSignUp: true`), e `inCoda()` conta
+   * QUALUNQUE messaggio non ancora spedito per quel destinatario. Il primo
+   * tentativo in CI ha infatti trovato 1 — che era la verifica, non il
+   * recupero. Il codice era giusto, il metro no.
+   */
+  await conDatabase(async (c) => {
+    await c.query(`delete from mail_outbox where destinatario = $1`, [EMAIL]);
+  });
+
   const r = await request.post("/api/auth/request-password-reset", {
     headers: intestazioni(base),
     data: { email: EMAIL, redirectTo: "/reimposta-password" },
@@ -173,6 +185,10 @@ test("il recupero password non consegna l'account dimostrativo a chi lo chiede",
     data: { name: "Controprova", email: altro, password: "Controprova-2026-Lunga" },
   });
   expect(reg.ok()).toBeTruthy();
+  // Stessa pulizia, per la stessa ragione: qui si conta il recupero, non la verifica.
+  await conDatabase(async (c) => {
+    await c.query(`delete from mail_outbox where destinatario = $1`, [altro]);
+  });
   await request.post("/api/auth/request-password-reset", {
     headers: intestazioni(base),
     data: { email: altro, redirectTo: "/reimposta-password" },

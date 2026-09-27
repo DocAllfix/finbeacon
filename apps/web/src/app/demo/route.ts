@@ -65,10 +65,20 @@ function troppeVolte(chiave: string): boolean {
   return v.quante > MAX_PER_FINESTRA;
 }
 
-/** Il cliente su cui far atterrare: quello con il punteggio piu' basso. */
+/**
+ * Il cliente su cui far atterrare: quello con il punteggio piu' basso, perche'
+ * e' quello che ha qualcosa da dire su soglie, giudizi e consigli.
+ *
+ * In due tempi, e il secondo non e' una cortesia: il punteggio vive nella
+ * tabella `analisi`, che esiste solo dove un'analisi e' stata calcolata e
+ * salvata. Uno studio con clienti ma senza analisi salvate — un dato di prova,
+ * un import appena fatto — darebbe zero righe, e con un solo `innerJoin`
+ * finiremmo sul cruscotto senza capire perche'. Quindi: se il punteggio c'e' lo
+ * si usa, altrimenti si prende il primo cliente e si entra comunque.
+ */
 async function destinazione(organizationId: string): Promise<string> {
-  const righe = await db
-    .select({ clienteId: schema.analisi.clienteId, score: schema.analisi.score })
+  const conPunteggio = await db
+    .select({ clienteId: schema.analisi.clienteId })
     .from(schema.analisi)
     .innerJoin(schema.clienti, eq(schema.clienti.id, schema.analisi.clienteId))
     .where(
@@ -76,8 +86,17 @@ async function destinazione(organizationId: string): Promise<string> {
     )
     .orderBy(asc(schema.analisi.score))
     .limit(1);
-  const cliente = righe[0]?.clienteId;
-  return cliente ? `/app/clienti/${cliente}/analisi` : "/app";
+  if (conPunteggio[0]) return `/app/clienti/${conPunteggio[0].clienteId}/analisi`;
+
+  const primo = await db
+    .select({ id: schema.clienti.id })
+    .from(schema.clienti)
+    .where(
+      and(eq(schema.clienti.organizationId, organizationId), isNull(schema.clienti.archiviatoAt)),
+    )
+    .orderBy(asc(schema.clienti.createdAt))
+    .limit(1);
+  return primo[0] ? `/app/clienti/${primo[0].id}/analisi` : "/app";
 }
 
 export async function GET(richiesta: Request) {
@@ -109,7 +128,6 @@ export async function GET(richiesta: Request) {
     return new NextResponse("Demo non disponibile.", { status: 503 });
   }
 
-  const origine = new URL(richiesta.url).origin;
   let percorso = "/app";
   try {
     const utenti = await db
@@ -131,7 +149,19 @@ export async function GET(richiesta: Request) {
     // cruscotto che una porta chiusa.
   }
 
-  const risposta = NextResponse.redirect(new URL(percorso, origine), 303);
+  /*
+   * Reindirizzamento RELATIVO, e non e' un dettaglio di stile.
+   *
+   * Costruirlo assoluto a partire da `richiesta.url` sembra piu' esplicito ed e'
+   * una trappola: dietro un proxy o in collaudo il server si vede con un nome
+   * diverso da quello che ha digitato il visitatore — `localhost` invece di
+   * `127.0.0.1`, o il nome interno del container invece del dominio. Il browser
+   * seguirebbe il reindirizzamento su QUELL'origine, e il cookie appena
+   * impostato non le appartiene: la sessione esiste e non viene mandata, quindi
+   * si finisce sul login dopo essere entrati. Un `Location` relativo resta
+   * sull'origine da cui il visitatore e' arrivato, qualunque sia.
+   */
+  const risposta = new NextResponse(null, { status: 303, headers: { location: percorso } });
   for (const cookie of accesso.headers.getSetCookie()) {
     risposta.headers.append("set-cookie", cookie);
   }
