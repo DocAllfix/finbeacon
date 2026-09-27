@@ -1780,3 +1780,95 @@ futuri.
    risparmiare tempo a chi verrà dopo: una voce senza questa sezione vale poco.
 4. **Diagnosi**: un comando che si può incollare.
 5. **Rimedio**: la correzione, e il file dove vive.
+
+## G-46 — Un blocco che vive nel browser non è un blocco, e il contrassegno demo non copriva tutto
+
+**Sintomo.** Lo studio dimostrativo è in sola lettura: `vietatoInDemo()` sta in testa a
+**tutte** le azioni di dominio (clienti, esercizi, scadenze) e il pannello impostazioni
+mostra i campi disabilitati con un avviso. Sembra chiuso.
+
+Non lo è. Una POST diretta a `/api/auth/organization/invite-member` o
+`/api/auth/organization/update`, con una sessione dimostrativa, **riusciva**: un visitatore
+poteva invitarsi come membro dello studio o rinominarlo.
+
+**Perché inganna.** Il blocco c'era davvero, ed era in due posti: nelle nostre azioni e nel
+pannello. Ma il pannello è un componente client, e il suo blocco è
+`if (demo) return toast.error(...)` più `disabled` sui campi — cioè **istruzioni al
+browser**, non al server. Chi non usa il browser non le riceve.
+
+Il pezzo mancante è più preciso di «manca un controllo»: **`vietatoInDemo()` protegge ciò
+che passa dalle nostre azioni, e le mutazioni dello studio non ci passano.** Vivono sotto
+`/api/auth/*`, che è Better Auth. Due sistemi di scrittura, un solo cancello.
+
+Per due mesi non è stato un problema, e il motivo conta: le credenziali dimostrative si
+consegnavano **a mano** a un commercialista. In quel mondo il pannello disabilitato bastava,
+perché serviva a prevenire un errore involontario, non un attacco. Il difetto è comparso nel
+momento in cui la demo è diventata **raggiungibile senza credenziali**: la stessa riga di
+codice, invariata, è passata da sufficiente a insufficiente perché è cambiato chi la trova.
+
+Nello stesso giro è emersa la variante peggiore: **il recupero password non guardava il
+contrassegno**. L'indirizzo dell'account dimostrativo è noto a chiunque abbia visto la demo,
+quindi bastava chiederne il ripristino per prenderne il controllo e cambiare gli esempi.
+
+**Diagnosi.** Per ogni superficie che una demo pubblica espone, chiedersi **quale codice
+esegue la scrittura**, non quale bottone la avvia:
+
+```bash
+grep -rn "vietatoInDemo" apps/web/src            # cosa copre il nostro cancello
+grep -rn "authClient\.organization\." apps/web/src  # cosa NON ci passa
+```
+
+Se il secondo elenco contiene qualcosa che il primo non contiene, quel qualcosa è protetto
+solo dal browser.
+
+**Rimedio.** Un `hooks.before` in `apps/web/src/lib/auth.ts` che rifiuta le mutazioni dello
+studio (`MUTAZIONI_STUDIO`) quando lo studio attivo porta il contrassegno, letto **dalla
+sessione** e mai dal corpo della richiesta — la stessa regola di `requireStudio()`. E una
+riga in `sendResetPassword` che non accoda il messaggio per l'indirizzo dimostrativo,
+lasciando **invariata la risposta dell'endpoint**: bloccare il messaggio e non la risposta,
+altrimenti si rivela che quell'indirizzo è speciale.
+
+> **Un blocco nel browser è un suggerimento.** E un cancello che copre un sistema di
+> scrittura non copre quello accanto: vanno contati i sistemi, non i bottoni.
+
+**Il corollario, che è la parte trasferibile.** Questo codice non è peggiorato: è cambiato
+il suo contesto. Una protezione va riletta **quando cambia chi può raggiungerla**, non
+quando cambia lei. Nessun `git diff` mostra questo genere di regressione, perché il diff è
+vuoto.
+
+## G-47 — Entri, e ti ritrovi sul login: il cookie c'è, ma è di un altro host
+
+**Sintomo.** Una rotta che autentica e reindirizza — l'ingresso della demo — imposta
+correttamente il cookie di sessione, risponde 303, e il browser finisce su
+`/login?da=%2Fapp`. La sessione **esiste** nel database, il `Set-Cookie` **c'è** nella
+risposta, e l'utente non è autenticato.
+
+**Perché inganna.** Il sintomo accusa l'autenticazione: si va a guardare il segreto, il flag
+`Secure`, `sameSite`, la guardia nel middleware. Nessuno dei quali c'entra.
+
+La causa era il reindirizzamento costruito **assoluto** dall'URL della richiesta:
+
+```ts
+const origine = new URL(richiesta.url).origin; // "http://localhost:3100"
+return NextResponse.redirect(new URL(percorso, origine), 303);
+```
+
+Il visitatore era arrivato su `http://127.0.0.1:3100`; il server, dall'interno, si vede come
+`localhost:3100`. Sono lo **stesso computer e due origini diverse**: il cookie appena
+impostato appartiene a una e non viene mandato all'altra. Lo stesso accade dietro un reverse
+proxy, dove il server si vede col nome interno del container mentre il visitatore ha digitato
+il dominio pubblico.
+
+Il dato che mette sulla strada giusta è l'URL finale: `localhost` dove tutto il resto del
+giro diceva `127.0.0.1`. Va letto, non scorso.
+
+**Rimedio.** `Location` **relativo**, che resta sull'origine da cui il visitatore è arrivato
+qualunque essa sia:
+
+```ts
+return new NextResponse(null, { status: 303, headers: { location: percorso } });
+```
+
+> **Un'origine dedotta dalla richiesta è un'ipotesi, non un fatto.** Se una risposta imposta
+> un cookie e reindirizza, il reindirizzamento deve restare sull'origine del visitatore:
+> costruirlo assoluto significa scommettere che il server si veda come lo vedono gli altri.

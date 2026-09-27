@@ -13,6 +13,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       utente={{ nome: studio.nomeUtente, email: studio.email }}
       clienti={clienti}
       demo={studio.demo}
+      urlLanding={process.env.URL_LANDING}
     >
       {children}
     </AppShell>
