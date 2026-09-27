@@ -64,6 +64,12 @@ export default defineConfig({
         SMTP_PORT: "1025",
         SMTP_FROM: "no-reply@finbeacon.test",
         GIT_SHA: "e2e",
+        // Demo pubblica: l'ingresso senza credenziali (`/demo`) autentica
+        // QUESTO account, e `demo-pubblica.spec.ts` lo crea con queste stesse
+        // credenziali. Sono di prova e vivono solo qui.
+        DEMO_EMAIL: "demo-e2e@finbeacon.test",
+        DEMO_PASSWORD: "DemoPubblicaE2E-2026",
+        URL_LANDING: "https://finbeacon.eu",
       },
     },
     {

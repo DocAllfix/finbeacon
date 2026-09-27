@@ -240,10 +240,17 @@ export function PannelloStudio({ demo }: { demo: boolean }) {
                   <li key={i.id} className="flex items-center justify-between gap-3 text-sm">
                     <span className="truncate">{i.email}</span>
                     <div className="flex gap-2">
+                      {/* Anche in demo non ci sarebbero inviti da copiare, perche'
+                          invitare e' vietato. Ma se uno ci fosse — seminato, o
+                          rimasto da prima che lo studio diventasse dimostrativo —
+                          questo pulsante consegnerebbe a un visitatore anonimo un
+                          collegamento valido per entrare nello studio. Il blocco
+                          costa una parola. */}
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
+                        disabled={demo}
                         onClick={() => {
                           navigator.clipboard.writeText(`${window.location.origin}/invito/${i.id}`);
                           toast.success("Link di invito copiato.");
