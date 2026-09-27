@@ -1872,3 +1872,47 @@ return new NextResponse(null, { status: 303, headers: { location: percorso } });
 > **Un'origine dedotta dalla richiesta è un'ipotesi, non un fatto.** Se una risposta imposta
 > un cookie e reindirizza, il reindirizzamento deve restare sull'origine del visitatore:
 > costruirlo assoluto significa scommettere che il server si veda come lo vedono gli altri.
+
+## G-48 — Un cancello che vieta troppo non protegge: impedisce, e viene aggirato
+
+**Sintomo.** Per due giorni ogni deploy di produzione della landing è fallito, e su
+`finbeacon.eu` è rimasta la **pagina di parcheggio di Hostinger**. Nessuno se n'era accorto,
+perché il fallimento era voluto: `apps/landing/scripts/verifica-lancio.mjs` fermava il build
+finché non esistevano il contatto del titolare del trattamento e il relay di posta.
+
+**Perché inganna.** Il cancello aveva ragione sul principio: un'informativa privacy senza il
+contatto del titolare, accanto a un modulo che raccoglie nome e indirizzo, è un obbligo
+dell'art. 13 GDPR disatteso. Ed era scritto bene, con la motivazione in testa al file.
+
+Sbagliava il **confine**. L'obbligo scatta quando si raccolgono dati personali, non quando si
+pubblica una pagina. Pretendendo tutti e cinque i valori in produzione, il cancello legava
+l'esistenza del sito all'esistenza del modulo: **senza il modulo funzionante non esisteva
+nemmeno la vetrina**, e una decisione legale ancora aperta teneva offline anche le parti che
+non c'entravano — quello che il prodotto fa, i tre passi, il giro guidato.
+
+La forma del guasto è questa: un cancello che vieta più del necessario non viene reso più
+permissivo con attenzione, **viene aggirato di corsa** il giorno che serve pubblicare. E chi
+lo aggira di corsa spegne l'intero controllo, non la parte di troppo. Il divieto largo
+produce il buco che il divieto stretto avrebbe evitato.
+
+**Rimedio.** Vietare la **combinazione** pericolosa, non uno dei suoi ingredienti:
+
+```
+modulo ATTIVO  -> servono contatto del titolare, relay, destinatario. Non si transige.
+modulo SPENTO  -> il sito si pubblica. Il modulo resta visibile, non spedisce e lo
+                  DICHIARA, l'azione esce prima di inviare e non conserva niente.
+                  Le pagine legali mostrano segnaposto: sono incompiute e si vedono
+                  tali, che è diverso dal dichiarare un contatto che non esiste.
+```
+
+Provato nei tre stati, non solo in quello comodo: spento passa, attivo-senza-titolare
+ferma con uscita 1, attivo-completo passa.
+
+> **Un controllo va tarato sulla condizione che rende pericolosa la cosa, non sulla cosa.**
+> Altrimenti il primo che ha fretta lo spegne tutto, e il giorno dopo nessuno ricorda cosa
+> proteggeva.
+
+**Il corollario, che vale oltre questo caso.** «Segnaposto visibile» e «valore inventato» non
+sono la stessa cosa, e la differenza è tutta qui: il primo dice che manca, il secondo dice
+una cosa falsa. Quando qualcuno chiede di mettere un segnaposto per andare online, la domanda
+da fare è _quale dei due_.
