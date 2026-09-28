@@ -72,6 +72,11 @@ export function Piede() {
                 </Link>
               </li>
               <li>
+                <Link href="/cookie" className="text-testo-attenuato hover:text-testo">
+                  Cookie
+                </Link>
+              </li>
+              <li>
                 <Link href="/note-legali" className="text-testo-attenuato hover:text-testo">
                   Note legali
                 </Link>

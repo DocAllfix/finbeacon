@@ -104,6 +104,34 @@ export function ModuloDemo({ emailRipiego }: { emailRipiego: string | null }) {
           In questa versione di prova l&apos;invio è disattivato: nessuna richiesta è stata spedita.
         </div>
       )}
+      {/* Il limite per indirizzo si DICE, non si traveste da successo: chi
+          reinvia dopo essersi accorto di un errore è una persona, e merita di
+          sapere che questa volta non è partito niente. */}
+      {esito?.stato === "troppi-invii" && (
+        <div
+          ref={riepilogo}
+          tabIndex={-1}
+          role="alert"
+          className="mb-6 rounded-[0.5rem] border border-attenzione/40 bg-attenzione-fondo px-4 py-3 text-[0.9375rem] text-attenzione-testo outline-none"
+        >
+          Hai già inviato qualche richiesta da poco: questa non è stata spedita. Riprova fra una
+          decina di minuti
+          {emailRipiego ? (
+            <>
+              , oppure scrivici a{" "}
+              <a
+                href={`mailto:${emailRipiego}`}
+                className="font-semibold underline underline-offset-2"
+              >
+                {emailRipiego}
+              </a>
+              .
+            </>
+          ) : (
+            "."
+          )}
+        </div>
+      )}
 
       {/* Trappola per i programmi: invisibile e fuori dal percorso della tastiera. */}
       <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden>

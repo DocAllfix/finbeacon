@@ -53,6 +53,11 @@ const richieste = {
   // Ragione sociale e P.IVA non richieste (decisione dell'utente, 24/09).
   // Il contatto del titolare sì: l'art. 13 GDPR lo vuole nell'informativa.
   LEGALE_EMAIL_PRIVACY: "indirizzo per le richieste privacy",
+  // Anche il NOME, dal 28/09. Senza, l'informativa dice «Il titolare di
+  // FinBeacon» — cioè non identifica nessuno, e un'informativa che non dice
+  // CHI tratta i dati è incompleta quanto una che non dice come contattarlo.
+  // Resta facoltativa fuori produzione e con il modulo spento.
+  LEGALE_NOME: "nome del titolare del trattamento",
   SMTP_HOST: "relay SMTP",
   SMTP_FROM: "mittente delle richieste",
   DEMO_DESTINATARIO: "casella che riceve le richieste",

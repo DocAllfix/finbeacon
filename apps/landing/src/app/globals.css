@@ -212,6 +212,23 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+/* Elenchi e nomi tecnici nelle pagine legali: la cookie policy elenca le chiavi
+   una per una, e un elenco senza segni non si distingue dal testo. Elenco e non
+   tabella di proposito: una tabella a quattro colonne su 375px farebbe scorrere
+   la pagina in orizzontale. */
+.testo-legale ul {
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+.testo-legale li + li {
+  margin-top: 0.5rem;
+}
+.testo-legale code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.9375em;
+  overflow-wrap: anywhere;
+}
+
 /* Un segnaposto si vede come tale: non può sembrare testo definitivo. */
 .testo-legale .da-completare {
   border: 1px dashed var(--attenzione);
