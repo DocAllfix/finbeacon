@@ -32,8 +32,18 @@ test("l'invito non compare a chi non ha provato niente, e compare dopo il simula
   const cliente = await studioDimostrativo(context.request, baseURL!);
   const spia = osservaConsole(page);
 
-  await page.goto("/demo");
-  await expect(page).toHaveURL(/\/app\/clienti\/[0-9a-f-]+\/analisi/);
+  /*
+   * NON si passa da `/demo`, e il motivo e' costato una corsa rossa: quella
+   * rotta autentica l'account indicato da DEMO_EMAIL, che e' lo studio
+   * dimostrativo creato da un ALTRO spec. Entrandoci, la sessione diventa
+   * quella di un altro studio, e il cliente creato qui sopra appartiene a noi:
+   * il tenant scoping risponde 404, la pagina non ha il pulsante «Simula» e il
+   * test aspetta per un minuto un elemento che non puo' esistere.
+   *
+   * `creaStudio` ha gia' autenticato QUESTO contesto: si va dritti alla pagina.
+   */
+  await page.goto(`/app/clienti/${cliente}/analisi`);
+  await expect(page.locator("body")).toContainText(/ROS|DSCR/);
 
   const invito = page.getByRole("button", { name: /Ti interessa\? Scrivici/i });
 
@@ -47,7 +57,6 @@ test("l'invito non compare a chi non ha provato niente, e compare dopo il simula
   // La fascia c'e' comunque, coi collegamenti legali.
   await expect(page.getByRole("link", { name: "Cookie" })).toBeVisible();
 
-  await page.goto(`/app/clienti/${cliente}/analisi`);
   await page.locator('[data-tour="simula"]').click();
   await page.locator('[data-tour="ripristina"]').waitFor({ timeout: 20_000 });
 
@@ -65,8 +74,9 @@ test("la rotta del contatto non e' un ponte per spedire, e si difende", async ({
 }) => {
   const request = context.request;
   const base = baseURL!;
+  // Lo studio dimostrativo e' quello creato qui, non quello di `/demo`: entrare
+  // di la' cambierebbe sessione e si misurerebbe un altro studio.
   await studioDimostrativo(request, base);
-  await request.get("/demo");
 
   /*
    * Destinatario iniettato nella richiesta: deve essere IGNORATO.
