@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PaginaTesto } from "@/components/pagina-testo";
-import { CONSERVAZIONE_RICHIESTE, TITOLARE } from "@/lib/configurazione";
+import { CONSERVAZIONE_RICHIESTE, IDENTIFICAZIONE, TITOLARE } from "@/lib/configurazione";
 import { dataEstesa, REVISIONI } from "@/lib/revisioni";
 
 export const metadata: Metadata = {
@@ -31,9 +31,25 @@ export default function Privacy() {
           <p>
             {titolare.nome
               ? `${titolare.nome}, titolare di FinBeacon.`
-              : "Il titolare di FinBeacon."}{" "}
-            Per qualunque richiesta sui tuoi dati puoi scrivere a{" "}
-            <a href={`mailto:${titolare.emailPrivacy}`}>{titolare.emailPrivacy}</a>.
+              : "Il titolare di FinBeacon."}
+            {/* Sede, partita IVA e telefono identificano il titolare anche qui:
+                l'art. 13 chiede «identità e dati di contatto», e un nome da solo
+                identifica meno di un nome con una sede. Le voci assenti non
+                compaiono, invece di lasciare etichette vuote. */}
+            {IDENTIFICAZIONE.indirizzo && <> {IDENTIFICAZIONE.indirizzo}.</>}
+            {IDENTIFICAZIONE.partitaIva && <> Partita IVA {IDENTIFICAZIONE.partitaIva}.</>} Per
+            qualunque richiesta sui tuoi dati puoi scrivere a{" "}
+            <a href={`mailto:${titolare.emailPrivacy}`}>{titolare.emailPrivacy}</a>
+            {IDENTIFICAZIONE.telefono && (
+              <>
+                {" "}
+                o telefonare al{" "}
+                <a href={`tel:${IDENTIFICAZIONE.telefono.replace(/\s+/g, "")}`}>
+                  {IDENTIFICAZIONE.telefono}
+                </a>
+              </>
+            )}
+            .
           </p>
           {/*
            * L'indirizzo c'è ma il NOME no: uno stato intermedio che va detto.

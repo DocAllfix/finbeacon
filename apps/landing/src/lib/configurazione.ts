@@ -26,10 +26,68 @@ export const CONSERVAZIONE_RICHIESTE: string =
   "Per il tempo necessario a dare seguito alla richiesta. Se non ne nasce un rapporto, i dati vengono cancellati.";
 
 /**
- * Il titolare dell'informativa. Ragione sociale e partita IVA non sono
- * richieste (decisione dell'utente, 24/09); l'art. 13 GDPR vuole però un
- * CONTATTO del titolare, quindi l'indirizzo privacy è obbligatorio per la
- * produzione (`scripts/verifica-lancio.mjs`). Il nome è facoltativo.
+ * L'identificazione di chi pubblica il sito.
+ *
+ * SOSTITUISCE la decisione del 24/09 («ragione sociale e partita IVA non
+ * richieste»), che era sbagliata. Per una ditta individuale che esercita
+ * attività d'impresa la legge vuole che sul sito siano reperibili nome e
+ * cognome, domicilio o sede, indirizzo di posta elettronica, un recapito
+ * telefonico e la partita IVA — art. 2199 e 2250 del codice civile, art. 7 del
+ * D.Lgs. 70/2003 sul commercio elettronico, DPR 633/1972. Il numero REA solo
+ * se l'impresa è iscritta. La PEC non è obbligatoria.
+ *
+ * Il codice fiscale è FACOLTATIVO: nessuna di quelle norme lo pretende
+ * espressamente, e per una persona fisica è un dato in più esposto al pubblico
+ * senza che serva. Si mette solo se il titolare lo vuole.
+ *
+ * Tutto da variabili d'ambiente: sono dati personali del titolare e non vanno
+ * nel repository, dove resterebbero nella storia anche dopo averli tolti.
+ */
+export type Identificazione = {
+  nome: string | null;
+  indirizzo: string | null;
+  email: string | null;
+  telefono: string | null;
+  partitaIva: string | null;
+  codiceFiscale: string | null;
+  rea: string | null;
+};
+
+export const IDENTIFICAZIONE: Identificazione = {
+  nome: process.env.LEGALE_NOME || null,
+  indirizzo: process.env.LEGALE_INDIRIZZO || null,
+  // L'indirizzo d'impresa è quello generale, non quello delle richieste privacy.
+  email: process.env.NEXT_PUBLIC_EMAIL_CONTATTO || process.env.LEGALE_EMAIL_PRIVACY || null,
+  telefono: process.env.LEGALE_TELEFONO || null,
+  partitaIva: process.env.LEGALE_PIVA || null,
+  codiceFiscale: process.env.LEGALE_CF || null,
+  rea: process.env.LEGALE_REA || null,
+};
+
+/**
+ * Le voci obbligatorie che mancano, con il nome leggibile.
+ *
+ * Serve in due posti che devono restare d'accordo: la pagina, che mostra un
+ * segnaposto visibile invece di fingere completezza, e `verifica-lancio.mjs`,
+ * che decide se il build può passare. Una sola definizione, così non divergono.
+ */
+export const VOCI_OBBLIGATORIE: { chiave: keyof Identificazione; nome: string }[] = [
+  { chiave: "nome", nome: "nome e cognome" },
+  { chiave: "indirizzo", nome: "domicilio o sede" },
+  { chiave: "email", nome: "indirizzo di posta elettronica" },
+  { chiave: "telefono", nome: "recapito telefonico" },
+  { chiave: "partitaIva", nome: "partita IVA" },
+];
+
+export function identificazioneMancante(dati: Identificazione = IDENTIFICAZIONE): string[] {
+  return VOCI_OBBLIGATORIE.filter((v) => !dati[v.chiave]).map((v) => v.nome);
+}
+
+/**
+ * Il titolare dell'informativa. L'art. 13 GDPR vuole un CONTATTO del titolare,
+ * quindi l'indirizzo privacy è obbligatorio per la produzione
+ * (`scripts/verifica-lancio.mjs`). Il nome è facoltativo qui, ma obbligatorio
+ * quando il modulo raccoglie dati.
  */
 export const TITOLARE: { nome: string | null; emailPrivacy: string } | null = process.env
   .LEGALE_EMAIL_PRIVACY

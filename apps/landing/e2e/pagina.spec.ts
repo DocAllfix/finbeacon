@@ -181,8 +181,23 @@ test.describe("modulo di richiesta", () => {
       await page.waitForTimeout(3_200);
       await page.getByRole("button", { name: "Invia la richiesta" }).click();
       tentativi++;
+
+      /*
+       * Si ASPETTA che compaia uno dei due esiti, invece di chiedere subito se
+       * il rifiuto e' visibile: `isVisible()` non attende, risponde con quello
+       * che c'e' in quell'istante. Chiamata appena dopo il clic guarda la
+       * pagina prima che il server abbia risposto, trova «niente», e il test
+       * prosegue pretendendo il successo — che non arrivera' mai perche'
+       * l'invio era stato rifiutato. Un test cosi' non misura il limite: corre
+       * contro la rete, e vince a caso.
+       */
+      const ricevuta = page.getByText("Richiesta ricevuta.");
+      await Promise.race([
+        fermato.waitFor({ timeout: 15_000 }).catch(() => {}),
+        ricevuta.waitFor({ timeout: 15_000 }).catch(() => {}),
+      ]);
       if (await fermato.isVisible().catch(() => false)) break;
-      await expect(page.getByText("Richiesta ricevuta.")).toBeVisible();
+      await expect(ricevuta).toBeVisible();
     }
 
     await expect(fermato, "il limite per indirizzo non ha mai fermato niente").toBeVisible();
@@ -339,6 +354,26 @@ test("privacy e note legali si aprono dai loro collegamenti, complete e pulite",
       "Marchi",
     ]) {
       await expect(page.getByRole("heading", { level: 2, name: sezione })).toBeVisible();
+    }
+
+    /*
+     * L'identificazione dell'impresa — nome, sede, email, telefono, partita IVA
+     * — che per una ditta individuale la legge vuole reperibile sul sito.
+     *
+     * L'asserto regge i due stati legittimi: o i dati ci sono, o la pagina
+     * DICHIARA quali mancano. Quello vietato e' il terzo: una pagina che tace,
+     * cioe' non li mostra e non avverte, e sembra a posto. In `e2e` le
+     * variabili non sono impostate, quindi qui passa il ramo del segnaposto —
+     * ed e' proprio quel ramo che deve funzionare, perche' e' lo stato in cui
+     * il sito si trova finche' i dati non arrivano.
+     */
+    const conPartitaIva = await page.getByText(/Partita IVA/i).count();
+    const avvisoMancanti = page.locator("main .da-completare");
+    if (conPartitaIva === 0) {
+      await expect(
+        avvisoMancanti,
+        "senza i dati dell'impresa la pagina deve dire quali mancano",
+      ).toContainText(/partita IVA/i);
     }
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth),
