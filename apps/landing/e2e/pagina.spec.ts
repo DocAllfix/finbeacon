@@ -281,9 +281,35 @@ test("privacy e note legali si aprono dai loro collegamenti, complete e pulite",
     ]) {
       await expect(page.getByRole("heading", { level: 2, name: sezione })).toBeVisible();
     }
-    // Il contatto del titolare c'è, oppure la pagina dice che manca: mai tutti e due, mai nessuno.
-    const contatti = await page.locator('main a[href^="mailto:"], main .da-completare').count();
-    expect(contatti, "contatto del titolare nell'informativa").toBe(1);
+    /*
+     * Il titolare ha TRE stati legittimi, non due, e l'asserto deve reggerli
+     * tutti restando vero:
+     *
+     *   niente          -> solo il segnaposto «da completare prima della
+     *                      pubblicazione»
+     *   solo indirizzo  -> il contatto, PIU' un segnaposto che dice che manca
+     *                      il nome (l'indirizzo resta perche' la demo e'
+     *                      pubblica e chi vuole esercitare un diritto deve
+     *                      avere dove scrivere)
+     *   completo        -> nome e contatto, nessun segnaposto
+     *
+     * Quello che non deve accadere mai e' il quarto stato: nessuno dei due,
+     * cioe' un'informativa che non dice ne' chi tratta i dati ne' che il dato
+     * manca. Prima l'asserto pretendeva «esattamente uno», e lo stato
+     * intermedio lo avrebbe fatto fallire su una pagina corretta.
+     */
+    const contatto = await page.locator('main a[href^="mailto:"]').count();
+    const segnaposti = await page.locator("main .da-completare").count();
+    expect(
+      contatto + segnaposti,
+      "l'informativa non dice né chi tratta i dati né che il dato manca",
+    ).toBeGreaterThanOrEqual(1);
+    if (contatto === 0) {
+      await expect(
+        page.locator("main .da-completare"),
+        "senza contatto il segnaposto deve dire che va completato prima di pubblicare",
+      ).toContainText(/da completare prima della pubblicazione/i);
+    }
 
     /*
      * I responsabili vanno NOMINATI. «Fornitori terzi» non permette a nessuno di

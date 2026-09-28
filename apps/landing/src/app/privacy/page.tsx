@@ -27,11 +27,29 @@ export default function Privacy() {
 
       <h2>Titolare del trattamento</h2>
       {titolare ? (
-        <p>
-          {titolare.nome ? `${titolare.nome}, titolare di FinBeacon.` : "Il titolare di FinBeacon."}{" "}
-          Per qualunque richiesta sui tuoi dati puoi scrivere a{" "}
-          <a href={`mailto:${titolare.emailPrivacy}`}>{titolare.emailPrivacy}</a>.
-        </p>
+        <>
+          <p>
+            {titolare.nome
+              ? `${titolare.nome}, titolare di FinBeacon.`
+              : "Il titolare di FinBeacon."}{" "}
+            Per qualunque richiesta sui tuoi dati puoi scrivere a{" "}
+            <a href={`mailto:${titolare.emailPrivacy}`}>{titolare.emailPrivacy}</a>.
+          </p>
+          {/*
+           * L'indirizzo c'è ma il NOME no: uno stato intermedio che va detto.
+           * Senza questo riquadro la pagina sembrerebbe completa mentre non
+           * identifica nessuno — e «segnaposto visibile» e «valore inventato»
+           * si somigliano solo se il segnaposto smette di vedersi (G-48).
+           * L'indirizzo lo lasciamo comunque: la demo è pubblica e tratta dati,
+           * quindi chi vuole esercitare un diritto deve avere dove scrivere.
+           */}
+          {!titolare.nome && (
+            <p className="da-completare">
+              Il nome del titolare è in corso di completamento. L&apos;indirizzo qui sopra è già
+              attivo e presidiato.
+            </p>
+          )}
+        </>
       ) : (
         <p className="da-completare">
           Contatto del titolare da completare prima della pubblicazione.
