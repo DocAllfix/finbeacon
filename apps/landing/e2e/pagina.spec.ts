@@ -141,6 +141,54 @@ test.describe("modulo di richiesta", () => {
     await page.goto("/?motivo=acquisto#richiesta");
     await expect(page.getByLabel("Cosa ti interessa", { exact: true })).toHaveValue("acquisto");
   });
+
+  /*
+   * Il limite per indirizzo, provato facendolo SCATTARE.
+   *
+   * Il campo trappola e i tre secondi fermano i programmi banali; chi tiene
+   * premuto invio, prima di questo limite, riempiva la casella senza incontrare
+   * niente. Un limite che non si e' mai visto rifiutare non si sa se rifiuti.
+   *
+   * Il test invia finche' non viene fermato, invece di contare fino a un numero
+   * fisso: il contatore e' per processo e vive quanto il server, quindi gli
+   * invii riusciti degli altri test hanno gia' consumato parte del credito.
+   * Legare l'asserto al numero esatto lo renderebbe fragile all'ordine dei
+   * test — che e' il tipo di rossore che poi si archivia come «capita».
+   */
+  test("troppi invii dallo stesso indirizzo vengono fermati, e lo dicono", async ({ page }) => {
+    /*
+     * Tempo più lungo del solito, e non è pigrizia: ogni giro deve aspettare i
+     * tre secondi del tempo minimo, altrimenti verrebbe scartato da QUELLA
+     * difesa e non misureremmo il limite per indirizzo.
+     */
+    test.setTimeout(90_000);
+
+    const fermato = page.getByText("questa non è stata spedita", { exact: false });
+    let tentativi = 0;
+
+    for (let i = 0; i < 4; i++) {
+      /*
+       * URL diverso a ogni giro, e serve: navigare allo STESSO indirizzo
+       * cambiando solo l'ancora non ricarica il documento. Dal secondo giro il
+       * modulo sarebbe ancora sostituito dal messaggio «Richiesta ricevuta.» e
+       * i campi non esisterebbero — il test aspettava un campo che non poteva
+       * comparire, e falliva per timeout invece che per il limite.
+       */
+      await page.goto(`/?giro=${i}#richiesta`);
+      await page.getByLabel("Nome e cognome", { exact: true }).fill(`Prova Limite ${i}`);
+      await page.getByLabel("Studio", { exact: true }).fill("Studio del limite");
+      await page.getByLabel("Email", { exact: true }).fill(`limite${i}@esempio.test`);
+      await page.waitForTimeout(3_200);
+      await page.getByRole("button", { name: "Invia la richiesta" }).click();
+      tentativi++;
+      if (await fermato.isVisible().catch(() => false)) break;
+      await expect(page.getByText("Richiesta ricevuta.")).toBeVisible();
+    }
+
+    await expect(fermato, "il limite per indirizzo non ha mai fermato niente").toBeVisible();
+    // Non e' un muro invalicabile, ma non deve nemmeno lasciar passare tutto.
+    expect(tentativi, "il limite ha fermato al tentativo").toBeLessThanOrEqual(4);
+  });
 });
 
 test("SEO: robots, sitemap, llms.txt, manifest e immagine di anteprima rispondono", async ({
@@ -222,17 +270,61 @@ test("privacy e note legali si aprono dai loro collegamenti, complete e pulite",
     for (const sezione of [
       "Titolare del trattamento",
       "Quali dati trattiamo",
+      "Indirizzi IP e registri tecnici",
       "Perché, e su quale base",
       "Chi li tratta",
+      "Se i dati escono dall'Unione europea",
+      "La demo",
       "Per quanto tempo",
       "I tuoi diritti",
       "Se non ci dai i dati",
     ]) {
       await expect(page.getByRole("heading", { level: 2, name: sezione })).toBeVisible();
     }
-    // Il contatto del titolare c'è, oppure la pagina dice che manca: mai tutti e due, mai nessuno.
-    const contatti = await page.locator('main a[href^="mailto:"], main .da-completare').count();
-    expect(contatti, "contatto del titolare nell'informativa").toBe(1);
+    /*
+     * Il titolare ha TRE stati legittimi, non due, e l'asserto deve reggerli
+     * tutti restando vero:
+     *
+     *   niente          -> solo il segnaposto «da completare prima della
+     *                      pubblicazione»
+     *   solo indirizzo  -> il contatto, PIU' un segnaposto che dice che manca
+     *                      il nome (l'indirizzo resta perche' la demo e'
+     *                      pubblica e chi vuole esercitare un diritto deve
+     *                      avere dove scrivere)
+     *   completo        -> nome e contatto, nessun segnaposto
+     *
+     * Quello che non deve accadere mai e' il quarto stato: nessuno dei due,
+     * cioe' un'informativa che non dice ne' chi tratta i dati ne' che il dato
+     * manca. Prima l'asserto pretendeva «esattamente uno», e lo stato
+     * intermedio lo avrebbe fatto fallire su una pagina corretta.
+     */
+    const contatto = await page.locator('main a[href^="mailto:"]').count();
+    const segnaposti = await page.locator("main .da-completare").count();
+    expect(
+      contatto + segnaposti,
+      "l'informativa non dice né chi tratta i dati né che il dato manca",
+    ).toBeGreaterThanOrEqual(1);
+    if (contatto === 0) {
+      await expect(
+        page.locator("main .da-completare"),
+        "senza contatto il segnaposto deve dire che va completato prima di pubblicare",
+      ).toContainText(/da completare prima della pubblicazione/i);
+    }
+
+    /*
+     * I responsabili vanno NOMINATI. «Fornitori terzi» non permette a nessuno di
+     * sapere dove finiscono i suoi dati, e un refactoring che riscrive la pagina
+     * in astratto non deve passare inosservato.
+     */
+    for (const fornitore of ["Vercel", "Hostinger", "Supabase"]) {
+      await expect(page.getByRole("main"), `l'informativa non nomina ${fornitore}`).toContainText(
+        fornitore,
+      );
+    }
+    await expect(
+      page.getByRole("main"),
+      "manca la base del trasferimento fuori dall'Unione",
+    ).toContainText(/clausole contrattuali standard/i);
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth),
       `scorrimento orizzontale su /privacy a ${larghezza}px`,
@@ -251,6 +343,49 @@ test("privacy e note legali si aprono dai loro collegamenti, complete e pulite",
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth),
       `scorrimento orizzontale su /note-legali a ${larghezza}px`,
+    ).toBe(false);
+
+    await page.getByRole("contentinfo").getByRole("link", { name: "Cookie" }).click();
+    await expect(page).toHaveURL(/\/cookie$/);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Cookie e memoria del browser",
+    );
+    for (const sezione of [
+      "Perché non vedi un banner",
+      "La demo, che è un'altra cosa",
+      "Come li togli",
+      "Se un giorno cambia",
+    ]) {
+      await expect(page.getByRole("heading", { level: 2, name: sezione })).toBeVisible();
+    }
+
+    /*
+     * Le cinque chiavi vanno elencate una per una. Una cookie policy che dice
+     * «usiamo cookie tecnici» senza nominarli non permette a nessuno di
+     * verificare, ed e' proprio il genere di testo che volevamo evitare.
+     *
+     * Questi nomi sono gli stessi che l'applicazione scrive davvero
+     * (`apps/web/src/lib/preferenza-sidebar.ts`, `lib/tour/config.ts`, i cookie
+     * di Better Auth): se cambiano la', questo test diventa il promemoria che
+     * qui va cambiato anche il testo.
+     */
+    for (const chiave of [
+      "__Secure-better-auth.session_token",
+      "__Secure-better-auth.session_data",
+      "theme",
+      "sidebar-ridotta",
+      "finbeacon:tour:",
+    ]) {
+      await expect(
+        page.getByRole("main"),
+        `la pagina sui cookie non nomina ${chiave}`,
+      ).toContainText(chiave);
+    }
+
+    // Una tabella qui farebbe scorrere la pagina a 375px: e' il motivo dell'elenco.
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth),
+      `scorrimento orizzontale su /cookie a ${larghezza}px`,
     ).toBe(false);
   }
   spia.verifica("pagine legali");

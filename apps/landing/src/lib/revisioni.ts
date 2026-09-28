@@ -3,8 +3,9 @@
  * testo cambia. La sitemap dichiara `lastModified` solo dove la data è vera.
  */
 export const REVISIONI = {
-  privacy: "2026-09-24",
+  privacy: "2026-09-28",
   noteLegali: "2026-09-24",
+  cookie: "2026-09-28",
 } as const;
 
 export function dataEstesa(iso: string): string {

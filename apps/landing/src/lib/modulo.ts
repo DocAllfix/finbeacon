@@ -25,7 +25,13 @@ export type EsitoRichiesta =
   | { stato: "inattivo" }
   | { stato: "inviata" }
   | { stato: "non-valida"; errori: Partial<Record<CampoModulo, string>>; valori: ValoriModulo }
-  | { stato: "errore"; valori: ValoriModulo };
+  | { stato: "errore"; valori: ValoriModulo }
+  /**
+   * Troppi invii dallo stesso indirizzo. Stato a parte e non un finto successo
+   * come per il campo trappola: chi si accorge di un errore e reinvia e' una
+   * persona, e dirle «inviata» quando non e' partito niente sarebbe una bugia.
+   */
+  | { stato: "troppi-invii"; valori: ValoriModulo };
 
 /**
  * I valori inseriti, rimandati indietro quando l'invio non va a buon fine:

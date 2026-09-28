@@ -23,5 +23,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.2,
     },
+    {
+      url: indirizzo("/cookie"),
+      lastModified: REVISIONI.cookie,
+      changeFrequency: "yearly",
+      priority: 0.2,
+    },
   ];
 }
