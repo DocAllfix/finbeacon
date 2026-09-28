@@ -69,6 +69,10 @@ export default defineConfig({
         // credenziali. Sono di prova e vivono solo qui.
         DEMO_EMAIL: "demo-e2e@finbeacon.test",
         DEMO_PASSWORD: "DemoPubblicaE2E-2026",
+        // Dove arriva l'invito a contattarci dalla demo. Il destinatario lo
+        // decide il SERVER: `invito-demo.spec.ts` prova che una richiesta che
+        // tenta di indicarne un altro finisce comunque qui.
+        DEMO_DESTINATARIO: "contatti-e2e@finbeacon.test",
         URL_LANDING: "https://finbeacon.eu",
       },
     },

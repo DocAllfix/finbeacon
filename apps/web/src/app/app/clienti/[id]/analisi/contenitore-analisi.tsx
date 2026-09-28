@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { segnaProvato } from "@/lib/invito";
 import { tourCompletato } from "@/lib/tour/config";
 
 import type { PuntoSerie } from "./trend-esercizi";
@@ -67,6 +68,13 @@ export function ContenitoreAnalisi({
 
   function avvia() {
     setInSimulazione(true);
+    /*
+     * Aprire il simulatore e' il segnale che il visitatore ha capito a cosa
+     * serve il prodotto: da qui in poi, nella demo, compare l'invito a
+     * scriverci. Fuori dalla demo non cambia niente — la fascia che lo mostra
+     * esiste solo la'.
+     */
+    segnaProvato();
     // Il tour dei cursori ha senso solo mentre sono a schermo: parte alla
     // prima apertura, una volta sola. Il ritardo lascia disegnare il pannello.
     if (!tourCompletato("simulatore")) {

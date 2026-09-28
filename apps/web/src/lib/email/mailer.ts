@@ -50,11 +50,21 @@ export async function inviaSubito(messaggio: {
   oggetto: string;
   testo: string;
   html?: string | null;
+  /**
+   * Dove risponde chi riceve. Serve ai messaggi inoltrati per conto di
+   * qualcun altro — la richiesta di contatto dalla demo — dove il mittente
+   * autenticato siamo noi ma l'interlocutore e' il visitatore: senza, per
+   * rispondergli bisognerebbe copiare l'indirizzo a mano dal corpo.
+   *
+   * Facoltativo: le mail del worker (recupero password, inviti) non lo usano.
+   */
+  rispondiA?: string;
 }): Promise<void> {
   const mittente = process.env.SMTP_FROM ?? "no-reply@localhost";
   await ottieniTrasporto().sendMail({
     from: mittente,
     to: messaggio.a,
+    replyTo: messaggio.rispondiA,
     subject: messaggio.oggetto,
     text: messaggio.testo,
     html: messaggio.html ?? undefined,
