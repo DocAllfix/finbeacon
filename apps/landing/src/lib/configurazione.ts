@@ -75,9 +75,23 @@ export const VOCI_OBBLIGATORIE: { chiave: keyof Identificazione; nome: string }[
   { chiave: "nome", nome: "nome e cognome" },
   { chiave: "indirizzo", nome: "domicilio o sede" },
   { chiave: "email", nome: "indirizzo di posta elettronica" },
-  { chiave: "telefono", nome: "recapito telefonico" },
   { chiave: "partitaIva", nome: "partita IVA" },
 ];
+
+/*
+ * Il TELEFONO non e' fra le obbligatorie, ed e' una scelta motivata.
+ *
+ * L'art. 7 del D.Lgs. 70/2003 chiede «gli estremi che permettono di contattare
+ * rapidamente il prestatore e di comunicare direttamente ed efficacemente con
+ * esso, IVI COMPRESO l'indirizzo di posta elettronica»: la posta elettronica e'
+ * nominata espressamente come mezzo idoneo, il telefono no. Con un indirizzo
+ * presidiato l'obbligo e' soddisfatto.
+ *
+ * Resta supportato: se un giorno si vuole pubblicare un numero, basta
+ * valorizzare LEGALE_TELEFONO e compare ovunque. Ma non si tiene un segnaposto
+ * perenne per una voce che la legge non pretende — un avviso che non si puo'
+ * mai spegnere smette di essere letto.
+ */
 
 export function identificazioneMancante(dati: Identificazione = IDENTIFICAZIONE): string[] {
   return VOCI_OBBLIGATORIE.filter((v) => !dati[v.chiave]).map((v) => v.nome);

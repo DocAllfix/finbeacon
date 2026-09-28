@@ -49,10 +49,15 @@ if (!produzione) {
  * Con il modulo ATTIVO la cosa cambia: lì si sollecita un contatto commerciale,
  * e allora l'identificazione diventa condizione, insieme a quella del titolare.
  */
+/*
+ * Il telefono non c'e', di proposito: l'art. 7 nomina espressamente la posta
+ * elettronica fra gli estremi idonei a un contatto rapido ed efficace, e con un
+ * indirizzo presidiato l'obbligo e' soddisfatto. Resta supportato
+ * (LEGALE_TELEFONO), ma non si pretende.
+ */
 const VOCI_IMPRESA = {
   LEGALE_NOME: "nome e cognome",
   LEGALE_INDIRIZZO: "domicilio o sede",
-  LEGALE_TELEFONO: "recapito telefonico",
   LEGALE_PIVA: "partita IVA",
 };
 
@@ -93,7 +98,6 @@ const richieste = {
   // Con il modulo attivo il sito sollecita un contatto commerciale: qui
   // l'identificazione dell'impresa non è più un avviso, è una condizione.
   LEGALE_INDIRIZZO: "domicilio o sede dell'impresa",
-  LEGALE_TELEFONO: "recapito telefonico",
   LEGALE_PIVA: "partita IVA",
   SMTP_HOST: "relay SMTP",
   SMTP_FROM: "mittente delle richieste",
