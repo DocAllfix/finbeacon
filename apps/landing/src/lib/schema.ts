@@ -1,3 +1,4 @@
+import { IDENTIFICAZIONE } from "./configurazione";
 import { DOMANDE, FUNZIONI, HERO } from "./contenuti";
 import { indirizzo, NOME, SITO } from "./indirizzo";
 
@@ -13,12 +14,33 @@ import { indirizzo, NOME, SITO } from "./indirizzo";
  *   motori e ai modelli linguistici, non a uno snippet.
  */
 export function schemaHome(): Record<string, unknown> {
+  /*
+   * L'identificazione dell'impresa finisce anche qui, non solo nel piede e
+   * nelle note legali: e' la stessa informazione detta ai motori nella forma
+   * che capiscono. Le voci assenti NON si scrivono — un campo vuoto in un dato
+   * strutturato e' peggio di un campo mancante, perche' dichiara di sapere e
+   * non dice niente.
+   */
   const organizzazione = {
     "@type": "Organization",
     "@id": `${SITO}/#organizzazione`,
     name: NOME,
     url: SITO,
     logo: indirizzo("/icon-512.png"),
+    ...(IDENTIFICAZIONE.nome ? { founder: IDENTIFICAZIONE.nome } : {}),
+    ...(IDENTIFICAZIONE.partitaIva ? { vatID: IDENTIFICAZIONE.partitaIva } : {}),
+    ...(IDENTIFICAZIONE.codiceFiscale ? { taxID: IDENTIFICAZIONE.codiceFiscale } : {}),
+    ...(IDENTIFICAZIONE.telefono ? { telephone: IDENTIFICAZIONE.telefono } : {}),
+    ...(IDENTIFICAZIONE.email ? { email: IDENTIFICAZIONE.email } : {}),
+    ...(IDENTIFICAZIONE.indirizzo
+      ? {
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: IDENTIFICAZIONE.indirizzo,
+            addressCountry: "IT",
+          },
+        }
+      : {}),
   };
   return {
     "@context": "https://schema.org",

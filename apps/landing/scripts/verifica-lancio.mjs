@@ -35,7 +35,44 @@ if (!produzione) {
   process.exit(0);
 }
 
+/**
+ * L'identificazione di chi pubblica il sito: nome, domicilio o sede, posta
+ * elettronica, recapito telefonico, partita IVA (artt. 2199 e 2250 c.c., art. 7
+ * D.Lgs. 70/2003, DPR 633/1972).
+ *
+ * NON blocca il build, e la scelta è deliberata: quell'obbligo riguarda il sito
+ * in quanto attività d'impresa, quindi vale già oggi che il sito è pubblicato.
+ * Fermare il build lo toglierebbe di mezzo senza renderlo conforme — si
+ * perderebbe anche la parte in regola. La pagina mostra invece un segnaposto
+ * visibile che elenca cosa manca, e qui si avvisa a voce alta.
+ *
+ * Con il modulo ATTIVO la cosa cambia: lì si sollecita un contatto commerciale,
+ * e allora l'identificazione diventa condizione, insieme a quella del titolare.
+ */
+/*
+ * Il telefono non c'e', di proposito: l'art. 7 nomina espressamente la posta
+ * elettronica fra gli estremi idonei a un contatto rapido ed efficace, e con un
+ * indirizzo presidiato l'obbligo e' soddisfatto. Resta supportato
+ * (LEGALE_TELEFONO), ma non si pretende.
+ */
+const VOCI_IMPRESA = {
+  LEGALE_NOME: "nome e cognome",
+  LEGALE_INDIRIZZO: "domicilio o sede",
+  LEGALE_PIVA: "partita IVA",
+};
+
+const impresaMancante = Object.entries(VOCI_IMPRESA).filter(([nome]) => !process.env[nome]);
+
 const moduloAttivo = process.env.DEMO_ATTIVO === "true";
+
+if (!moduloAttivo && impresaMancante.length > 0) {
+  console.warn(
+    "[verifica-lancio] ATTENZIONE: mancano dati che la legge vuole reperibili sul sito\n" +
+      "di una ditta individuale. Le note legali lo dichiarano con un segnaposto visibile.\n" +
+      "Mancano:",
+  );
+  for (const [nome, cosa] of impresaMancante) console.warn(`  - ${nome}: ${cosa}`);
+}
 
 if (!moduloAttivo) {
   console.log(
@@ -58,6 +95,10 @@ const richieste = {
   // CHI tratta i dati è incompleta quanto una che non dice come contattarlo.
   // Resta facoltativa fuori produzione e con il modulo spento.
   LEGALE_NOME: "nome del titolare del trattamento",
+  // Con il modulo attivo il sito sollecita un contatto commerciale: qui
+  // l'identificazione dell'impresa non è più un avviso, è una condizione.
+  LEGALE_INDIRIZZO: "domicilio o sede dell'impresa",
+  LEGALE_PIVA: "partita IVA",
   SMTP_HOST: "relay SMTP",
   SMTP_FROM: "mittente delle richieste",
   DEMO_DESTINATARIO: "casella che riceve le richieste",

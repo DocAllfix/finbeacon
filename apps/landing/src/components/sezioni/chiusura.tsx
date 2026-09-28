@@ -3,7 +3,12 @@ import Link from "next/link";
 import { Contenitore, Occhiello, Paragrafo, PulsanteSecondario, Titolo2 } from "@/components/base";
 import { Logotipo } from "@/components/marchio";
 import { ModuloDemo } from "@/components/modulo-demo";
-import { EMAIL_CONTATTO, URL_DEMO_PUBBLICA, URL_PRENOTAZIONE } from "@/lib/configurazione";
+import {
+  EMAIL_CONTATTO,
+  IDENTIFICAZIONE,
+  URL_DEMO_PUBBLICA,
+  URL_PRENOTAZIONE,
+} from "@/lib/configurazione";
 import { CHIUSURA, VOCI_MENU } from "@/lib/contenuti";
 
 export function Chiusura() {
@@ -85,7 +90,16 @@ export function Piede() {
           </nav>
         </div>
         <div className="mt-12 flex flex-col gap-2 border-t border-bordo pt-6 text-xs text-testo-attenuato sm:flex-row sm:justify-between">
-          <p>© {new Date().getFullYear()} FinBeacon</p>
+          {/*
+           * Nome e partita IVA nel piede di OGNI pagina, non solo dentro le
+           * note legali: la legge li vuole «reperibili», e una voce di menu che
+           * bisogna cercare lo è meno di una riga che si vede sempre. Le altre
+           * voci restano nelle note legali, che il piede collega.
+           */}
+          <p>
+            © {new Date().getFullYear()} {IDENTIFICAZIONE.nome ?? "FinBeacon"}
+            {IDENTIFICAZIONE.partitaIva && <> · P. IVA {IDENTIFICAZIONE.partitaIva}</>}
+          </p>
         </div>
       </Contenitore>
     </footer>
