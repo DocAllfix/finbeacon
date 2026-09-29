@@ -60,6 +60,30 @@ test("la home si idrata pulita, alle tre larghezze, senza scorrimento orizzontal
   spia.verifica("home");
 });
 
+/*
+ * Il velo che «scrive» il grafico del DSCR usciva dalla scheda e dipingeva una
+ * banda scura verso destra a ogni caricamento (29/09): l'SVG ha overflow
+ * visibile, e il velo veniva TRASLATO del 101%. Si misura durante tutta
+ * l'animazione, non alla fine, quando il velo è già trasparente.
+ */
+test("il velo del grafico non esce mai dalla scheda mentre si anima", async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 900 });
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  let peggiore = 0;
+  for (let t = 0; t < 18; t++) {
+    const fuori = await page.evaluate(() => {
+      const cornice = document.querySelector("figure.deck-hero")!.getBoundingClientRect();
+      const veli = [...document.querySelectorAll(".soglia-velo")]
+        .map((v) => v.getBoundingClientRect())
+        .filter((r) => r.width > 0);
+      return Math.max(0, ...veli.map((r) => r.right - cornice.right));
+    });
+    peggiore = Math.max(peggiore, fuori);
+    await page.waitForTimeout(100);
+  }
+  expect(peggiore, "pixel del velo oltre il bordo destro della scheda").toBe(0);
+});
+
 test("nessuna immagine raster sopra la piega: l'elemento più grande è testo", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/");

@@ -274,6 +274,63 @@
 }
 
 /*
+ * I due gesti della pagina: il tasto primario e il collegamento a filo
+ * (componenti in `components/base.tsx`).
+ */
+.tasto-primario {
+  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.16);
+}
+.tasto-primario:active {
+  translate: 0 1px;
+}
+.tasto-freccia-entra {
+  translate: -2.5rem 0;
+}
+.a-filo > span::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--testo);
+  scale: 0 1;
+  transform-origin: left;
+}
+.a-filo > span::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--bordo);
+}
+.a-filo:hover > span::after,
+.a-filo:focus-visible > span::after {
+  scale: 1 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tasto-freccia,
+  .tasto-freccia-entra {
+    transition: translate 320ms var(--ease-uscita);
+  }
+  .tasto-primario:hover .tasto-freccia {
+    translate: 2.5rem 0;
+  }
+  .tasto-primario:hover .tasto-freccia-entra {
+    translate: 0 0;
+  }
+  .a-filo > span::after {
+    transition: scale 320ms var(--ease-uscita);
+  }
+}
+/* Senza movimento la freccia non si scambia: resta ferma, e quella di riserva non si vede. */
+@media (prefers-reduced-motion: reduce) {
+  .tasto-freccia-entra {
+    display: none;
+  }
+}
+
+/*
  * Il deck dell'hero, a riposo e al passaggio del mouse.
  *
  * A riposo la copertina è appena inclinata: a -3,5° il suo testo correva
@@ -385,18 +442,30 @@
   }
 }
 
-/* Il velo è opaco SOLO dentro l'animazione: finita, o senza movimento, sparisce. */
+/*
+ * Il velo è opaco SOLO dentro l'animazione: finita, o senza movimento, sparisce.
+ *
+ * Si RESTRINGE verso destra (scaleX con origine a destra), non scivola via.
+ * La prima versione lo traslava del 101%: ma l'SVG ha `overflow: visible` (al
+ * punto sul bordo serve), quindi il velo usciva dalla scheda e dipingeva una
+ * banda scura sopra la pagina, verso destra, a ogni caricamento (29/09). Il
+ * bordo sinistro avanza alla stessa velocità costante di prima, quindi il punto
+ * si accende nello stesso istante; il velo però non esce mai dal suo riquadro.
+ */
+.soglia-animata .soglia-velo {
+  transform-origin: right;
+}
 @keyframes soglia-scopri {
   from {
     opacity: 1;
-    transform: translateX(0);
+    transform: scaleX(1);
   }
   99.9% {
     opacity: 1;
   }
   to {
     opacity: 0;
-    transform: translateX(101%);
+    transform: scaleX(0);
   }
 }
 @keyframes soglia-accendi {

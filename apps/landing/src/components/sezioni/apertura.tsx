@@ -5,7 +5,7 @@ import { FASCE_SALUTE, formatNumero, SOGLIE_GIUDIZIO } from "@finbeacon/engine";
 import { ArrowDownToLine, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-import { Contenitore, PulsantePrimario, PulsanteSecondario } from "@/components/base";
+import { CollegamentoAFilo, Contenitore, PulsantePrimario } from "@/components/base";
 import { Deck } from "@/components/deck";
 import { Logotipo } from "@/components/marchio";
 import { URL_DEMO_PUBBLICA } from "@/lib/configurazione";
@@ -34,12 +34,31 @@ export function Intestazione() {
             ))}
           </ul>
         </nav>
-        {/* Secondario: nella prima schermata il primario è quello dell'hero (uno per schermata). */}
-        {URL_DEMO_PUBBLICA ? (
-          <PulsanteSecondario href={URL_DEMO_PUBBLICA}>Prova la demo</PulsanteSecondario>
-        ) : (
-          <PulsanteSecondario href="#richiesta">Parla con noi</PulsanteSecondario>
-        )}
+        {/*
+         * Le stesse due azioni dell'hero, nello stesso ordine, e restano con
+         * chi scorre (29/09, richiesta del committente). «Parla con noi» si
+         * ritira sotto i 640px: logo e due azioni non ci stanno in 375px, e
+         * l'azione che resta è quella che si fa subito.
+         */}
+        <div className="flex items-center gap-5">
+          {URL_DEMO_PUBBLICA ? (
+            <>
+              {/* Contenitore a parte: `hidden` sul collegamento perderebbe contro il suo `inline-flex`. */}
+              <span className="hidden sm:contents">
+                <CollegamentoAFilo href="#richiesta" compatto>
+                  Parla con noi
+                </CollegamentoAFilo>
+              </span>
+              <PulsantePrimario href={URL_DEMO_PUBBLICA} compatto>
+                Prova la demo
+              </PulsantePrimario>
+            </>
+          ) : (
+            <PulsantePrimario href="#richiesta" compatto>
+              Parla con noi
+            </PulsantePrimario>
+          )}
+        </div>
       </Contenitore>
     </header>
   );
@@ -74,14 +93,11 @@ export function Hero() {
            * demo provabile stava in fondo alla pagina come «Entra nella demo»:
            * due cose opposte con lo stesso nome.
            */}
-          <div className="mt-9 flex flex-wrap items-center gap-3">
+          <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3">
             {URL_DEMO_PUBBLICA ? (
               <>
-                <PulsantePrimario href={URL_DEMO_PUBBLICA}>
-                  Prova la demo
-                  <ArrowRight className="size-4" aria-hidden />
-                </PulsantePrimario>
-                <PulsanteSecondario href="#richiesta">Parla con noi</PulsanteSecondario>
+                <PulsantePrimario href={URL_DEMO_PUBBLICA}>Prova la demo</PulsantePrimario>
+                <CollegamentoAFilo href="#richiesta">Parla con noi</CollegamentoAFilo>
               </>
             ) : (
               <PulsantePrimario href="#richiesta">Parla con noi</PulsantePrimario>
