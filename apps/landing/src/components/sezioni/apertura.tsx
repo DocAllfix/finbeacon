@@ -2,13 +2,13 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { FASCE_SALUTE, formatNumero, SOGLIE_GIUDIZIO } from "@finbeacon/engine";
-import { ArrowDownToLine } from "lucide-react";
+import { ArrowDownToLine, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { Contenitore, PulsantePrimario, PulsanteSecondario } from "@/components/base";
 import { Deck } from "@/components/deck";
 import { Logotipo } from "@/components/marchio";
-import { URL_PRENOTAZIONE } from "@/lib/configurazione";
+import { URL_DEMO_PUBBLICA } from "@/lib/configurazione";
 import { HERO, VOCI_MENU } from "@/lib/contenuti";
 import { ORDINE } from "@/lib/indicatori";
 
@@ -35,7 +35,11 @@ export function Intestazione() {
           </ul>
         </nav>
         {/* Secondario: nella prima schermata il primario è quello dell'hero (uno per schermata). */}
-        <PulsanteSecondario href="#richiesta">Richiedi una demo</PulsanteSecondario>
+        {URL_DEMO_PUBBLICA ? (
+          <PulsanteSecondario href={URL_DEMO_PUBBLICA}>Prova la demo</PulsanteSecondario>
+        ) : (
+          <PulsanteSecondario href="#richiesta">Parla con noi</PulsanteSecondario>
+        )}
       </Contenitore>
     </header>
   );
@@ -63,14 +67,31 @@ export function Hero() {
           </p>
           <p className="mt-5 text-[1.0625rem] leading-[1.65] text-testo-attenuato">{HERO.testo}</p>
 
+          {/*
+           * Due verbi, mai confusi (29/09): «demo» è SOLO quella che si apre
+           * subito. Il contatto umano si chiama «Parla con noi». Prima il
+           * primario era «Richiedi una demo» e portava a un modulo, mentre la
+           * demo provabile stava in fondo alla pagina come «Entra nella demo»:
+           * due cose opposte con lo stesso nome.
+           */}
           <div className="mt-9 flex flex-wrap items-center gap-3">
-            <PulsantePrimario href="#richiesta">Richiedi una demo</PulsantePrimario>
-            {URL_PRENOTAZIONE && (
-              <PulsanteSecondario href={URL_PRENOTAZIONE} esterno>
-                Prenota una chiamata
-              </PulsanteSecondario>
+            {URL_DEMO_PUBBLICA ? (
+              <>
+                <PulsantePrimario href={URL_DEMO_PUBBLICA}>
+                  Prova la demo
+                  <ArrowRight className="size-4" aria-hidden />
+                </PulsantePrimario>
+                <PulsanteSecondario href="#richiesta">Parla con noi</PulsanteSecondario>
+              </>
+            ) : (
+              <PulsantePrimario href="#richiesta">Parla con noi</PulsantePrimario>
             )}
           </div>
+          {URL_DEMO_PUBBLICA && (
+            <p className="mt-3 text-sm text-testo-attenuato">
+              Si apre subito, senza registrazione: un portafoglio di esempio con dati inventati.
+            </p>
+          )}
 
           <div className="mt-6 flex flex-col gap-2 text-sm text-testo-attenuato">
             {reportEsempioPresente && (
@@ -87,10 +108,27 @@ export function Hero() {
         </div>
 
         {/* Il primo dei due momenti notte: parla il prodotto. */}
-        <figure className="notte m-0 rounded-[1.1rem] px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-5">
+        {/*
+         * Tutta la cornice porta alla demo: il cliente disegnato qui È quello
+         * che si apre là. Il link è uno solo, nella didascalia, e si allarga a
+         * coprire la cornice con un ::after, così la cornice non diventa un
+         * enorme link senza nome e la tastiera trova una fermata sola.
+         */}
+        <figure
+          className={`deck-hero notte relative m-0 rounded-[1.1rem] px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-5 ${URL_DEMO_PUBBLICA ? "has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-accento" : ""}`}
+        >
           <Deck />
-          <figcaption className="mt-4 text-right text-xs text-testo-attenuato">
-            Esempio con dati inventati, calcolato dal motore di FinBeacon.
+          <figcaption className="mt-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-xs text-testo-attenuato">
+            <span>Esempio con dati inventati, calcolato dal motore di FinBeacon.</span>
+            {URL_DEMO_PUBBLICA && (
+              <a
+                href={URL_DEMO_PUBBLICA}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-accento outline-none after:absolute after:inset-0 after:z-30 after:rounded-[1.1rem]"
+              >
+                Apri questo cliente nella demo
+                <ArrowRight className="deck-freccia size-3.5" aria-hidden />
+              </a>
+            )}
           </figcaption>
         </figure>
       </Contenitore>

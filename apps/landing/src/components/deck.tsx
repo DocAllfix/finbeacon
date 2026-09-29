@@ -70,7 +70,7 @@ export function Deck() {
       >
         {/* 1. La copertina del report, su carta. Il testo resta nella parte che la scheda non copre. */}
         <div
-          className={`carta absolute top-[0.8em] left-[0.2em] z-0 flex h-[29em] w-[20em] -rotate-[3.5deg] flex-col rounded-[0.6em] border border-bordo bg-superficie px-[1.8em] pt-[1.8em] pb-[1.7em] ${OMBRA}`}
+          className={`deck-report carta absolute top-[0.8em] left-[0.2em] z-0 flex h-[29em] w-[20em] flex-col rounded-[0.6em] border border-bordo bg-superficie px-[1.8em] pt-[1.8em] pb-[1.7em] ${OMBRA}`}
         >
           <div className="flex items-center gap-[0.6em]">
             <span className="grid size-[2em] shrink-0 place-items-center rounded-[0.35em] bg-testo text-[1em] font-semibold text-superficie">
@@ -107,7 +107,7 @@ export function Deck() {
         </div>
 
         {/* 2. La scheda del DSCR prospettico: il motivo della soglia. */}
-        <div className="absolute top-[3.2em] left-[17.8em] z-10 w-[30.2em]">
+        <div className="deck-scheda absolute top-[3.2em] left-[17.8em] z-10 w-[30.2em]">
           <SchedaDscr ombra />
         </div>
 
@@ -172,7 +172,7 @@ function RigaCruscotto() {
   const dscr6mSotto = dscr6m < SOGLIA_DSCR6M;
   return (
     <div
-      className={`absolute top-[33.6em] left-[2em] z-20 grid w-[44em] grid-cols-[3em_minmax(0,1fr)_4.5em_auto] items-center gap-[1.2em] rounded-[0.7em] border border-bordo bg-tonale px-[1.5em] py-[1.1em] ${OMBRA}`}
+      className={`deck-riga absolute top-[33.6em] left-[2em] z-20 grid w-[44em] grid-cols-[3em_minmax(0,1fr)_4.5em_auto] items-center gap-[1.2em] rounded-[0.7em] border border-bordo bg-tonale px-[1.5em] py-[1.1em] ${OMBRA}`}
     >
       <p className={`cifre text-right text-[1.6em] font-semibold ${TESTO_TONO[sintetico.tone]}`}>
         {a.score}

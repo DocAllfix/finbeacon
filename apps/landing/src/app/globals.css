@@ -273,6 +273,62 @@
   mask-image: radial-gradient(ellipse 55% 75% at 78% 45%, black 0%, transparent 72%);
 }
 
+/*
+ * Il deck dell'hero, a riposo e al passaggio del mouse.
+ *
+ * A riposo la copertina è appena inclinata: a -3,5° il suo testo correva
+ * storto accanto a una scheda dritta e la composizione sembrava caduta lì.
+ * Al passaggio i tre artefatti si scostano di poco, ciascuno nella sua
+ * direzione, e ognuno si legge intero: la copertina scivola indietro, la scheda
+ * sale, la riga del cruscotto scende. Solo `rotate` e `translate`, mai
+ * proprietà di layout; e solo dove esiste un puntatore che passa sopra
+ * (`hover: hover`), perché su un telefono il «passaggio» è un tocco e aprirebbe
+ * la demo a metà animazione.
+ */
+.deck-hero .deck-report {
+  rotate: -2deg;
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .deck-hero :is(.deck-report, .deck-scheda, .deck-riga, .deck-freccia) {
+    transition:
+      rotate 380ms var(--ease-uscita),
+      translate 380ms var(--ease-uscita);
+  }
+  .deck-hero:hover .deck-report {
+    rotate: -4.5deg;
+    translate: -1.1em 0.4em;
+  }
+  .deck-hero:hover .deck-scheda {
+    translate: 0.5em -0.8em;
+  }
+  .deck-hero:hover .deck-riga {
+    translate: 0 0.9em;
+  }
+  .deck-hero:hover .deck-freccia {
+    translate: 3px 0;
+  }
+}
+
+/*
+ * Un valore dell'anteprima appena cambiato: un lampo di fondo che si spegne.
+ * Il componente rimonta lo span a ogni nuovo valore (`key`), quindi
+ * l'animazione riparte da sola. Senza movimento resta l'«era …» accanto, che
+ * dice la stessa cosa a parole.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .lampo {
+    animation: lampo 700ms var(--ease-uscita) both;
+  }
+}
+@keyframes lampo {
+  from {
+    background-color: color-mix(in oklch, var(--accento) 26%, transparent);
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
 /* Le leve dell'anteprima: il cursore nativo, accessibile da tastiera, nell'accento. */
 .leva {
   accent-color: var(--accento);

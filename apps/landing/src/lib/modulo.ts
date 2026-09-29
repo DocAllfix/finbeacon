@@ -5,7 +5,9 @@
  */
 
 export const MOTIVI = {
-  demo: "Vedere una demo",
+  // La chiave resta «demo» per non rompere i link con ?motivo=demo; il testo
+  // no, perché «demo» in pagina è solo quella che si apre da sola.
+  demo: "Una presentazione guidata",
   appuntamento: "Fissare un appuntamento",
   acquisto: "Attivare FinBeacon per lo studio",
 } as const;
