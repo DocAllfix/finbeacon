@@ -33,6 +33,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: indirizzo("/"), changeFrequency: "monthly", priority: 1 },
     {
+      url: indirizzo("/strumenti/calcolo-dscr-prospettico"),
+      lastModified: REVISIONI.calcoloDscr,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: indirizzo("/privacy"),
       lastModified: REVISIONI.privacy,
       changeFrequency: "yearly",

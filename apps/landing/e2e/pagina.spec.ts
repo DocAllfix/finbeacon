@@ -604,3 +604,103 @@ test.describe("guide", () => {
     expect((await request.get("/guide/non-esiste")).status()).toBe(404);
   });
 });
+
+/*
+ * Lo strumento gratuito. Il risultato e il giudizio devono essere quelli del
+ * motore, e i numeri non devono lasciare il browser: è una promessa scritta in
+ * pagina, quindi si misura.
+ */
+test.describe("calcolo del DSCR prospettico", () => {
+  const PAGINA = "/strumenti/calcolo-dscr-prospettico";
+  const campo = (page: Page, nome: string) => page.getByRole("textbox", { name: nome });
+  const risultato = (page: Page) => page.getByRole("region", { name: "Risultato", exact: true });
+
+  async function scrivi(page: Page, nome: string, valore: string) {
+    await campo(page, nome).fill(valore);
+    await campo(page, nome).blur();
+  }
+
+  test("parte dal cliente di esempio con il valore del motore, già nell'HTML", async ({
+    page,
+    request,
+  }) => {
+    const atteso = formatNumero(
+      analizza(BILANCIO_ESEMPIO, PREVISIONALE_ESEMPIO).indicatori.dscrProspettico!,
+      2,
+    );
+    expect(await (await request.get(PAGINA)).text()).toContain(atteso);
+    const spia = osservaConsole(page);
+    await page.goto(PAGINA);
+    await expect(risultato(page)).toContainText(atteso);
+    spia.verifica("calcolatore");
+  });
+
+  test("ricalcola dal motore, e i numeri non escono dal browser", async ({ page }) => {
+    await page.goto(PAGINA);
+    // Le GET di Next (prefetch dei link interni, pezzi di codice) sono
+    // normali: la promessa è che gli IMPORTI non partano. Quindi: nessuna
+    // richiesta che non sia GET, e nessuna che porti le cifre scritte.
+    const richieste: string[] = [];
+    page.on("request", (r) => {
+      const dove = `${r.url()} ${r.postData() ?? ""}`;
+      if (r.method() !== "GET" || /100000|1000000|800000|200000/.test(dove))
+        richieste.push(`${r.method()} ${r.url()}`);
+    });
+
+    await scrivi(page, "Liquidità iniziale", "100.000");
+    await scrivi(page, "Entrate dei prossimi 6 mesi", "1.000.000");
+    await scrivi(page, "Uscite dei prossimi 6 mesi", "800.000");
+    await scrivi(page, "Debito da servire nei 6 mesi", "200.000");
+    const atteso = analizza(BILANCIO_ESEMPIO, {
+      liquiditaIniziale: 100_000,
+      entrate6m: 1_000_000,
+      uscite6m: 800_000,
+      debito6m: 200_000,
+    });
+    await expect(risultato(page)).toContainText(
+      formatNumero(atteso.indicatori.dscrProspettico!, 2),
+    );
+    await expect(risultato(page)).toContainText(atteso.giudizi.dscrPro.label);
+    // Il campo si riformatta all'italiana quando lo si lascia.
+    await expect(campo(page, "Entrate dei prossimi 6 mesi")).toHaveValue("1.000.000");
+    expect(richieste, `richieste durante il calcolo: ${richieste.join(", ")}`).toHaveLength(0);
+  });
+
+  test("casi limite: debito zero, liquidità negativa, campo vuoto o negativo", async ({ page }) => {
+    await page.goto(PAGINA);
+    await scrivi(page, "Debito da servire nei 6 mesi", "0");
+    await expect(risultato(page)).toContainText("∞");
+
+    await page.getByRole("button", { name: "Torna ai numeri di esempio" }).click();
+    await scrivi(page, "Liquidità iniziale", "-500.000");
+    await expect(campo(page, "Liquidità iniziale")).toHaveAttribute("aria-invalid", "false");
+    await expect(risultato(page)).toContainText("Critico");
+
+    await scrivi(page, "Entrate dei prossimi 6 mesi", "");
+    await expect(campo(page, "Entrate dei prossimi 6 mesi")).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
+    await expect(risultato(page)).toContainText("n.d.");
+
+    await scrivi(page, "Entrate dei prossimi 6 mesi", "-10");
+    await expect(page.getByText("Non può essere negativo")).toBeVisible();
+  });
+
+  test("nessuno scorrimento orizzontale, dati strutturati e sitemap", async ({ page, request }) => {
+    for (const larghezza of [1440, 768, 375]) {
+      await page.setViewportSize({ width: larghezza, height: 900 });
+      await page.goto(PAGINA);
+      const largo = await page.evaluate(
+        () => document.documentElement.scrollWidth > window.innerWidth,
+      );
+      expect(largo, `scorrimento orizzontale a ${larghezza}px`).toBe(false);
+    }
+    const ld = JSON.parse(
+      (await page.locator('script[type="application/ld+json"]').first().textContent()) ?? "{}",
+    ) as { "@graph": Record<string, unknown>[] };
+    const app = ld["@graph"].find((n) => n["@type"] === "WebApplication")!;
+    expect(app.isAccessibleForFree).toBe(true);
+    expect(await (await request.get("/sitemap.xml")).text()).toContain(PAGINA);
+  });
+});

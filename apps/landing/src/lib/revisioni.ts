@@ -6,6 +6,9 @@ export const REVISIONI = {
   privacy: "2026-09-29",
   noteLegali: "2026-09-24",
   cookie: "2026-09-28",
+  // Non è una pagina legale, ma la regola è la stessa: la data cambia a mano
+  // quando cambia la pagina, così la sitemap non mente.
+  calcoloDscr: "2026-09-29",
 } as const;
 
 export function dataEstesa(iso: string): string {
