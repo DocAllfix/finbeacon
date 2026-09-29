@@ -193,15 +193,15 @@ export const DOMANDE = [
       "È un PDF con il nome dello studio in testata: sintesi, indicatori con soglia e giudizio, DSCR prospettico, aree di attenzione e azioni suggerite. Si genera dall'analisi con un clic.",
   },
   {
-    domanda: "Cosa succede in una demo?",
+    domanda: "Posso provarlo prima di parlarvi?",
     risposta:
-      "Ti mostriamo FinBeacon su un portafoglio di esempio e rispondiamo alle tue domande. Se vuoi, proviamo insieme un bilancio che porti tu.",
+      "Sì. La demo si apre subito, senza registrazione, su un portafoglio di esempio con dati inventati, in sola lettura. Se poi vuoi vederlo sui numeri del tuo studio, scrivici: te lo mostriamo su un bilancio che porti tu.",
   },
 ] as const;
 
 export const CHIUSURA = {
-  occhiello: "Richiedi una demo",
+  occhiello: "Parla con noi",
   titolo: "Guardalo sui numeri del tuo studio.",
   testo:
-    "Scrivici due righe: ti ricontattiamo per fissare una demo. Se preferisci scegliere subito un orario, prenota una chiamata.",
+    "La demo mostra un portafoglio inventato. Per vederlo sui tuoi clienti, scrivici due righe: ti ricontattiamo per una presentazione su un bilancio che porti tu.",
 } as const;

@@ -25,14 +25,12 @@ export function Chiusura() {
           <Paragrafo className="mt-5 max-w-[30rem]">{CHIUSURA.testo}</Paragrafo>
           {(URL_PRENOTAZIONE || URL_DEMO_PUBBLICA) && (
             <div className="mt-8 flex flex-wrap gap-3">
+              {URL_DEMO_PUBBLICA && (
+                <PulsanteSecondario href={URL_DEMO_PUBBLICA}>Prova la demo</PulsanteSecondario>
+              )}
               {URL_PRENOTAZIONE && (
                 <PulsanteSecondario href={URL_PRENOTAZIONE} esterno>
                   Prenota una chiamata
-                </PulsanteSecondario>
-              )}
-              {URL_DEMO_PUBBLICA && (
-                <PulsanteSecondario href={URL_DEMO_PUBBLICA} esterno>
-                  Entra nella demo
                 </PulsanteSecondario>
               )}
             </div>
@@ -66,9 +64,16 @@ export function Piede() {
               ))}
             </ul>
             <ul className="space-y-2">
+              {URL_DEMO_PUBBLICA && (
+                <li>
+                  <a href={URL_DEMO_PUBBLICA} className="text-testo-attenuato hover:text-testo">
+                    Prova la demo
+                  </a>
+                </li>
+              )}
               <li>
                 <Link href="/#richiesta" className="text-testo-attenuato hover:text-testo">
-                  Richiedi una demo
+                  Parla con noi
                 </Link>
               </li>
               <li>

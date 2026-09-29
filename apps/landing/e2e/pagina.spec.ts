@@ -89,6 +89,74 @@ test("l'anteprima calcola con il motore vero, e torna ai valori di partenza", as
   spia.verifica("anteprima");
 });
 
+/*
+ * «Demo» è solo quella che si apre da sola (29/09). Prima il primario diceva
+ * «Richiedi una demo» e portava a un modulo, mentre la demo vera era in fondo
+ * come «Entra nella demo»: due cose opposte con lo stesso nome.
+ */
+test("una sola cosa si chiama demo, e ci si arriva dal primo pulsante", async ({ page }) => {
+  await page.goto("/");
+  const corpo = await page.locator("body").innerText();
+  expect(corpo).not.toMatch(/Richiedi una demo|Entra nella demo/);
+  const hero = page.locator("section[aria-labelledby=titolo-principale]");
+  const prova = hero.getByRole("link", { name: /^Prova la demo/ });
+  if ((await prova.count()) > 0) {
+    // Con la demo configurata: primario, esterno, e la cornice porta allo stesso posto.
+    const dove = await prova.getAttribute("href");
+    expect(dove).toMatch(/^https:\/\//);
+    await expect(
+      hero.getByRole("link", { name: "Apri questo cliente nella demo" }),
+    ).toHaveAttribute("href", dove!);
+    await expect(hero.getByRole("link", { name: "Parla con noi" })).toHaveAttribute(
+      "href",
+      "#richiesta",
+    );
+  } else {
+    // Senza demo il primario è il contatto, e nessun link porta a una demo che non c'è.
+    await expect(hero.getByRole("link", { name: "Parla con noi" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /demo/i })).toHaveCount(0);
+  }
+});
+
+/*
+ * «L'anteprima calcola con il motore vero» passava anche quando l'anteprima SEMBRAVA rotta: con la
+ * liquidità il punteggio resta 71, e «contiene 71» è vero prima e dopo. Il
+ * visitatore del 29/09 ha mosso le leve, ha visto numeri fermi e ha concluso
+ * che non funzionava. Qui si verifica la cosa che vede lui: ogni leva cambia
+ * qualcosa di visibile, e ogni valore a destra risponde ad almeno una leva.
+ */
+test("ogni leva muove qualcosa, e ogni numero a destra risponde a una leva", async ({ page }) => {
+  await page.goto("/#anteprima");
+  const riquadro = page.locator("#anteprima [aria-live=polite]");
+  // I valori mostrati, esclusi gli «era …» che compaiono dopo un cambio.
+  const valori = () =>
+    riquadro
+      .locator(".cifre > span:first-child")
+      .allInnerTexts()
+      .then((v) => v.map((t) => t.trim()));
+  const partenza = await valori();
+  expect(partenza.length, "punteggio, DSCR prospettico e tre indicatori").toBe(5);
+
+  const mossi = new Set<number>();
+  for (const nome of ["Liquidità iniziale", "Reddito operativo", "Posizione finanziaria netta"]) {
+    const leva = page.getByRole("slider", { name: nome });
+    await leva.focus();
+    for (let i = 0; i < 20; i++) await page.keyboard.press("ArrowLeft");
+    const dopo = await valori();
+    const cambiati = dopo.flatMap((v, i) => (v !== partenza[i] ? [i] : []));
+    expect(cambiati.length, `${nome} non muove niente di visibile`).toBeGreaterThan(0);
+    cambiati.forEach((i) => mossi.add(i));
+    // e lo dice: accanto al valore cambiato compare da dove veniva
+    await expect(riquadro.getByText(/^era /).first()).toBeVisible();
+    const indietro = page.getByRole("button", { name: "Torna ai valori di partenza" });
+    await indietro.click();
+    await expect(indietro).toBeDisabled();
+  }
+  expect([...mossi].sort(), "un numero a destra non risponde a nessuna leva").toEqual([
+    0, 1, 2, 3, 4,
+  ]);
+});
+
 test.describe("modulo di richiesta", () => {
   test.beforeEach(svuotaPosta);
 

@@ -1,3 +1,4 @@
+import { URL_DEMO_PUBBLICA } from "@/lib/configurazione";
 import { DOMANDE, FUNZIONI, HERO, METODO, RISERVATEZZA } from "@/lib/contenuti";
 import { indirizzo } from "@/lib/indirizzo";
 
@@ -28,7 +29,8 @@ export function GET() {
     ...DOMANDE.flatMap((d) => [`### ${d.domanda}`, d.risposta, ""]),
     "## Collegamenti",
     `- [Home](${indirizzo("/")})`,
-    `- [Richiedi una demo](${indirizzo("/#richiesta")})`,
+    ...(URL_DEMO_PUBBLICA ? [`- [Prova la demo, senza registrazione](${URL_DEMO_PUBBLICA})`] : []),
+    `- [Parla con noi](${indirizzo("/#richiesta")})`,
     `- [Informativa sulla privacy](${indirizzo("/privacy")})`,
     "",
   ];

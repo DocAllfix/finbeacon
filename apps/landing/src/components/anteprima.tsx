@@ -18,6 +18,23 @@ import { Giudizio, TESTO_TONO } from "./giudizio";
  * contiene già punteggio e giudizi veri (nessun «0» per chi non esegue
  * JavaScript). Nessun calcolo qui: solo `analizza()`.
  */
+/*
+ * OGNI LEVA DICE COSA MUOVE (29/09). Senza, il visitatore spostava la liquidità
+ * e guardava il punteggio fermo a 71, convinto che l'anteprima fosse rotta. Non
+ * lo era: il punteggio legge il bilancio dell'anno, e il DSCR prospettico ne
+ * resta fuori per scelta del motore (è la lettura di continuità dell'art. 3
+ * CCII). La mappa qui sotto è la conseguenza delle formule di
+ * `calcolaIndicatori`, non un'opinione: se il motore cambia, va rivista.
+ */
+type Voce = "score" | "dscrPro" | "ros" | "roi" | "gi";
+const NOME_VOCE: Record<Voce, string> = {
+  score: "il punteggio",
+  dscrPro: "il DSCR prospettico",
+  ros: "il ROS",
+  roi: "il ROI",
+  gi: "il GI",
+};
+
 const LEVE = [
   {
     chiave: "liquidita",
@@ -27,6 +44,7 @@ const LEVE = [
     max: 300_000,
     passo: 1_000,
     partenza: PREVISIONALE_ESEMPIO.liquiditaIniziale,
+    muove: ["dscrPro"],
   },
   {
     chiave: "ro",
@@ -36,6 +54,7 @@ const LEVE = [
     max: 500_000,
     passo: 5_000,
     partenza: BILANCIO_ESEMPIO.ro,
+    muove: ["score", "ros", "roi"],
   },
   {
     chiave: "pfn",
@@ -45,6 +64,7 @@ const LEVE = [
     max: 4_000_000,
     passo: 50_000,
     partenza: BILANCIO_ESEMPIO.pfn,
+    muove: ["score", "gi"],
   },
 ] as const;
 
@@ -54,9 +74,68 @@ const PARTENZA = Object.fromEntries(LEVE.map((l) => [l.chiave, l.partenza])) as 
   number
 >;
 
+/*
+ * Solo gli indicatori che almeno una leva muove. Il DSCR sull'esercizio
+ * (flusso di cassa / servizio del debito) non dipende da nessuna delle tre, e
+ * una riga che resta immobile mentre tutto il resto si sposta sembrava un
+ * guasto. Il punteggio lo include comunque: il motore non cambia.
+ */
+const RIGHE = ["ros", "roi", "gi"] as const;
+
+const ANALISI_PARTENZA = analizza(BILANCIO_ESEMPIO, PREVISIONALE_ESEMPIO);
+
+/** «a», «a e b», «a, b e c». */
+function elenco(voci: readonly string[]) {
+  return voci.length < 2 ? (voci[0] ?? "") : `${voci.slice(0, -1).join(", ")} e ${voci.at(-1)}`;
+}
+
+function formatDscr(v: number | null) {
+  return v === null ? "n.d." : v >= 99 ? "∞" : formatNumero(v, 2);
+}
+
+/**
+ * Un valore che può cambiare. Diverso dalla partenza, lampeggia (lo span si
+ * rimonta a ogni nuovo valore, quindi l'animazione riparte) e dice da dove
+ * veniva: l'occhio trova subito cosa si è mosso, e chi ha il movimento spento
+ * legge la stessa cosa a parole.
+ */
+function Cifra({
+  valore,
+  partenza,
+  className = "",
+  classeEra = "",
+}: {
+  valore: string;
+  partenza: string;
+  className?: string;
+  classeEra?: string;
+}) {
+  const cambiato = valore !== partenza;
+  return (
+    <>
+      <span
+        key={valore}
+        className={`-mx-1 rounded-[0.3rem] px-1 ${cambiato ? "lampo" : ""} ${className}`}
+      >
+        {valore}
+      </span>
+      {cambiato && (
+        <span className={`block text-xs font-normal text-testo-attenuato ${classeEra}`}>
+          era {partenza}
+        </span>
+      )}
+    </>
+  );
+}
+
 export function Anteprima() {
   const [valori, setValori] = useState<Record<Chiave, number>>(PARTENZA);
+  const [attiva, setAttiva] = useState<Chiave | null>(null);
   const base = useId();
+  const mosse = new Set<Voce>(attiva ? LEVE.find((l) => l.chiave === attiva)!.muove : []);
+  /** Il fondo appena acceso sulle voci che la leva in mano sta muovendo. */
+  const evidenzia = (v: Voce) =>
+    `transition-colors duration-200 ${mosse.has(v) ? "bg-accento/8" : "bg-transparent"}`;
 
   const analisi = useMemo(
     () =>
@@ -68,8 +147,8 @@ export function Anteprima() {
   );
 
   const sintetico = sinteticoDaScore(analisi.score);
-  const dscr6m = analisi.indicatori.dscrProspettico;
-  const righe = righeIndicatori(analisi, ["ros", "roi", "gi", "dscr"]);
+  const righe = righeIndicatori(analisi, RIGHE);
+  const righePartenza = righeIndicatori(ANALISI_PARTENZA, RIGHE);
   const modificato = LEVE.some((l) => valori[l.chiave] !== l.partenza);
 
   return (
@@ -90,9 +169,14 @@ export function Anteprima() {
                   </output>
                 </div>
                 <p id={`${id}-aiuto`} className="mt-0.5 text-[0.8125rem] text-testo-attenuato">
-                  {l.aiuto}
+                  {l.aiuto}.{" "}
+                  <span className="text-testo">
+                    Muove {elenco(l.muove.map((v) => NOME_VOCE[v]))}.
+                  </span>
                 </p>
                 <input
+                  onFocus={() => setAttiva(l.chiave)}
+                  onBlur={() => setAttiva((a) => (a === l.chiave ? null : a))}
                   id={id}
                   type="range"
                   min={l.min}
@@ -127,13 +211,19 @@ export function Anteprima() {
         aria-live="polite"
         className="rounded-[0.8rem] border border-bordo bg-superficie p-6 sm:p-8"
       >
-        <div className="flex items-end justify-between gap-6 border-b border-filetto pb-6">
+        <div
+          className={`-mx-3 flex items-end justify-between gap-6 rounded-[0.5rem] border-b border-filetto px-3 pb-6 ${evidenzia("score")}`}
+        >
           <div>
             <p className="etichetta text-testo-attenuato">Punteggio di sintesi</p>
             <p
               className={`cifre mt-2 text-6xl leading-none font-semibold ${TESTO_TONO[sintetico.tone]}`}
             >
-              {analisi.score}
+              <Cifra
+                valore={String(analisi.score)}
+                partenza={String(ANALISI_PARTENZA.score)}
+                classeEra="mt-2"
+              />
             </p>
           </div>
           <div className="text-right">
@@ -142,18 +232,24 @@ export function Anteprima() {
           </div>
         </div>
 
-        <div className="border-b border-filetto py-5">
+        <div
+          className={`-mx-3 rounded-[0.5rem] border-b border-filetto px-3 py-5 ${evidenzia("dscrPro")}`}
+        >
           <div className="flex items-baseline justify-between gap-4">
             <p className="text-[0.9375rem] font-semibold">
               DSCR prospettico · 6 mesi
               <span className="block text-[0.8125rem] font-normal text-testo-attenuato">
-                soglia {formatNumero(SOGLIE_GIUDIZIO.dscr6m.soglia, 2)} · art. 3 CCII
+                soglia {formatNumero(SOGLIE_GIUDIZIO.dscr6m.soglia, 2)} · art. 3 CCII · fuori dal
+                punteggio
               </span>
             </p>
             <p
-              className={`cifre text-3xl font-semibold ${TESTO_TONO[analisi.giudizi.dscrPro.tone]}`}
+              className={`cifre text-right text-3xl font-semibold ${TESTO_TONO[analisi.giudizi.dscrPro.tone]}`}
             >
-              {dscr6m === null ? "n.d." : dscr6m >= 99 ? "∞" : formatNumero(dscr6m, 2)}
+              <Cifra
+                valore={formatDscr(analisi.indicatori.dscrProspettico)}
+                partenza={formatDscr(ANALISI_PARTENZA.indicatori.dscrProspettico)}
+              />
             </p>
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-3">
@@ -163,10 +259,10 @@ export function Anteprima() {
         </div>
 
         <ul>
-          {righe.map((r) => (
+          {righe.map((r, i) => (
             <li
               key={r.chiave}
-              className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 border-b border-filetto py-3 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_6.5rem_10.5rem]"
+              className={`-mx-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 rounded-[0.5rem] border-b border-filetto px-3 py-3 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_6.5rem_10.5rem] ${evidenzia(r.chiave as Voce)}`}
             >
               <span className="min-w-0 text-[0.9375rem]">
                 <span className="font-semibold">{r.titolo}</span>
@@ -174,7 +270,9 @@ export function Anteprima() {
                   {r.soglia}
                 </span>
               </span>
-              <span className="cifre text-right text-[0.9375rem]">{r.valore}</span>
+              <span className="cifre text-right text-[0.9375rem]">
+                <Cifra valore={r.valore} partenza={righePartenza[i]!.valore} />
+              </span>
               <span className="col-span-2 text-xs sm:col-span-1">
                 <Giudizio tono={r.giudizio.tone}>{r.giudizio.label}</Giudizio>
               </span>

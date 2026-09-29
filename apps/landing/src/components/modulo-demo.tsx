@@ -52,7 +52,7 @@ export function ModuloDemo({ emailRipiego }: { emailRipiego: string | null }) {
       >
         <p className="text-xl font-semibold">Richiesta ricevuta.</p>
         <p className="mt-3 text-[0.9375rem] leading-[1.65] text-testo-attenuato">
-          Ti scriviamo all&apos;indirizzo che hai indicato per fissare la demo.
+          Ti scriviamo all&apos;indirizzo che hai indicato.
         </p>
       </div>
     );
@@ -229,7 +229,7 @@ export function ModuloDemo({ emailRipiego }: { emailRipiego: string | null }) {
       </div>
 
       <p className="mt-6 text-[0.8125rem] leading-[1.55] text-testo-attenuato">
-        Usiamo questi dati solo per risponderti e organizzare la demo. Dettagli nell&apos;
+        Usiamo questi dati solo per risponderti. Dettagli nell&apos;
         <a href="/privacy" className="underline underline-offset-2 hover:text-testo">
           informativa sulla privacy
         </a>

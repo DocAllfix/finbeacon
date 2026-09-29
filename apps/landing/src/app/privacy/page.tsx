@@ -7,7 +7,7 @@ import { dataEstesa, REVISIONI } from "@/lib/revisioni";
 
 export const metadata: Metadata = {
   title: "Informativa sulla privacy",
-  description: "Come FinBeacon tratta i dati inviati con il modulo di richiesta demo.",
+  description: "Come FinBeacon tratta i dati inviati con il modulo di contatto e nella demo.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -21,7 +21,7 @@ export default function Privacy() {
   return (
     <PaginaTesto titolo="Informativa sulla privacy" aggiornamento={dataEstesa(REVISIONI.privacy)}>
       <p>
-        Questa informativa riguarda i dati che invii con il modulo «Richiedi una demo» di questo
+        Questa informativa riguarda i dati che invii con il modulo «Parla con noi» di questo
         sito, ai sensi dell&apos;art. 13 del Regolamento (UE) 2016/679.
       </p>
 
@@ -93,7 +93,7 @@ export default function Privacy() {
 
       <h2>Perché, e su quale base</h2>
       <p>
-        Per rispondere alla tua richiesta e organizzare la demo o l&apos;appuntamento che hai
+        Per rispondere alla tua richiesta e organizzare la presentazione o l&apos;appuntamento che hai
         chiesto. La base giuridica è l&apos;esecuzione di misure precontrattuali adottate su tua
         richiesta (art. 6, par. 1, lett. b del Regolamento). Non usiamo questi dati per inviarti
         comunicazioni commerciali.
