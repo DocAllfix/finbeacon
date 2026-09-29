@@ -1,6 +1,13 @@
 import Link from "next/link";
 
-import { Contenitore, Occhiello, Paragrafo, PulsanteSecondario, Titolo2 } from "@/components/base";
+import {
+  CollegamentoAFilo,
+  Contenitore,
+  Occhiello,
+  Paragrafo,
+  PulsanteSecondario,
+  Titolo2,
+} from "@/components/base";
 import { Logotipo } from "@/components/marchio";
 import { ModuloDemo } from "@/components/modulo-demo";
 import {
@@ -26,7 +33,9 @@ export function Chiusura() {
           {(URL_PRENOTAZIONE || URL_DEMO_PUBBLICA) && (
             <div className="mt-8 flex flex-wrap gap-3">
               {URL_DEMO_PUBBLICA && (
-                <PulsanteSecondario href={URL_DEMO_PUBBLICA}>Prova la demo</PulsanteSecondario>
+                <CollegamentoAFilo href={URL_DEMO_PUBBLICA}>
+                  Prima di scriverci, prova la demo
+                </CollegamentoAFilo>
               )}
               {URL_PRENOTAZIONE && (
                 <PulsanteSecondario href={URL_PRENOTAZIONE} esterno>
