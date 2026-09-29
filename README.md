@@ -192,3 +192,4 @@ archivio/         prototipi HTML e CSV/PDF di riferimento
 ```
 
 `PRODUCT.md` e `DESIGN.md` contengono le direttive di prodotto e di design seguite dalle interfacce; `ANALISI.md` la radiografia del prototipo di partenza.
+
