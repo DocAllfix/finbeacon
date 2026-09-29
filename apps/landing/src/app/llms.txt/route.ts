@@ -1,4 +1,5 @@
 import { URL_DEMO_PUBBLICA } from "@/lib/configurazione";
+import { guidePubblicate } from "@/lib/guide";
 import { DOMANDE, FUNZIONI, HERO, METODO, RISERVATEZZA } from "@/lib/contenuti";
 import { indirizzo } from "@/lib/indirizzo";
 
@@ -27,6 +28,15 @@ export function GET() {
     "",
     "## Domande frequenti",
     ...DOMANDE.flatMap((d) => [`### ${d.domanda}`, d.risposta, ""]),
+    ...(guidePubblicate().length > 0
+      ? [
+          "## Guide",
+          ...guidePubblicate().map(
+            (g) => `- [${g.titolo}](${indirizzo(`/guide/${g.slug}`)}): ${g.descrizione}`,
+          ),
+          "",
+        ]
+      : []),
     "## Collegamenti",
     `- [Home](${indirizzo("/")})`,
     ...(URL_DEMO_PUBBLICA ? [`- [Prova la demo, senza registrazione](${URL_DEMO_PUBBLICA})`] : []),

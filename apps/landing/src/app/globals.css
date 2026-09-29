@@ -229,6 +229,124 @@
   overflow-wrap: anywhere;
 }
 
+/*
+ * Le guide: lettura lunga, materiale da riusare davanti al cliente. Colonna a
+ * misura di lettura, titoli con respiro, e i numeri solo nei riquadri del
+ * motore (`components/guide/componenti.tsx`), in mono tabellare.
+ */
+.testo-guida {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--testo);
+  max-width: 68ch;
+}
+.testo-guida > * + * {
+  margin-top: 1.15rem;
+}
+.testo-guida h2 {
+  margin-top: 3rem;
+  font-size: 1.5rem;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  scroll-margin-top: 6rem;
+}
+.testo-guida h3 {
+  margin-top: 2rem;
+  font-size: 1.1875rem;
+  line-height: 1.35;
+  font-weight: 600;
+  scroll-margin-top: 6rem;
+}
+/* Il titolo è il link a sé stesso (rehype-autolink-headings): non deve sembrarlo. */
+.testo-guida .ancora {
+  color: inherit;
+  text-decoration: none;
+}
+.testo-guida .ancora:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--bordo);
+  text-underline-offset: 6px;
+}
+.testo-guida a:not(.ancora) {
+  color: var(--accento);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklch, var(--accento) 40%, transparent);
+  text-underline-offset: 3px;
+}
+.testo-guida a:not(.ancora):hover {
+  text-decoration-color: var(--accento);
+}
+.testo-guida ul,
+.testo-guida ol {
+  padding-left: 1.4rem;
+}
+.testo-guida ul {
+  list-style: disc;
+}
+.testo-guida ol {
+  list-style: decimal;
+}
+.testo-guida li + li {
+  margin-top: 0.4rem;
+}
+.testo-guida li::marker {
+  color: var(--testo-attenuato);
+}
+.testo-guida strong {
+  font-weight: 600;
+}
+.testo-guida blockquote {
+  border: 1px solid var(--bordo);
+  border-radius: 0.6rem;
+  padding: 1rem 1.25rem;
+  color: var(--testo-attenuato);
+}
+.testo-guida code {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.9em;
+}
+.testo-guida hr {
+  border: 0;
+  border-top: 1px solid var(--bordo);
+  margin: 2.5rem 0;
+}
+/* Riquadri dei componenti: un gradino tonale, bordo pieno, nessuna ombra. */
+.testo-guida .guida-riquadro {
+  margin-block: 1.75rem;
+  border: 1px solid var(--filetto);
+  border-radius: 0.7rem;
+  background: var(--tonale);
+  padding: 1rem 1.25rem;
+  line-height: 1.55;
+}
+/* Una tabella larga scorre dentro il suo contenitore, mai la pagina. */
+.testo-guida .guida-tabella {
+  overflow-x: auto;
+  border: 1px solid var(--filetto);
+  border-radius: 0.6rem;
+}
+.testo-guida table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.testo-guida th,
+.testo-guida td {
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid var(--filetto);
+  vertical-align: top;
+}
+.testo-guida th {
+  font-weight: 600;
+  background: var(--tonale);
+}
+.testo-guida tr:last-child td {
+  border-bottom: 0;
+}
+
 /* Un segnaposto si vede come tale: non può sembrare testo definitivo. */
 .testo-legale .da-completare {
   border: 1px dashed var(--attenzione);

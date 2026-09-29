@@ -1,0 +1,369 @@
+# Piano editoriale delle guide. Lo legge la routine della redazione
+# (.claude/skills/redazione/SKILL.md) e lo aggiorna nella stessa PR della guida.
+#
+# Come è stato costruito (29/09/2026): radici del dominio del prodotto, poi
+# `node scripts/suggerimenti.mjs "<radice>"` per le ricerche vere. `evidenze`
+# riporta le query uscite dall'autocompletamento: dicono cosa la gente scrive,
+# NON quanto. I volumi arriveranno da Search Console (revisione mensile).
+#
+# Campi
+#   priorita   1 = prima. A pari priorità, prima i temi collegati a guide già uscite.
+#   stato      da-fare | in-pr | pubblicata | sospesa
+#   formato    pilastro (guida lunga che ne regge altre) | guida | strumento
+#   solo-codice: true  = non è un articolo, serve codice (la routine lo salta).
+#   verifica   cosa controllare sulle fonti PRIMA di scrivere.
+
+voci:
+  - id: dscr-prospettico
+    titolo: "DSCR prospettico a 6 mesi: come si calcola e che soglie usare"
+    query: "dscr prospettico"
+    secondarie:
+      [
+        "calcolo dscr prospettico",
+        "calcolo dscr cndcec",
+        "calcolo dscr formula",
+        "calcolo dscr esempio",
+      ]
+    evidenze:
+      [
+        "calcolo dscr prospettico",
+        "calcolo dscr cndcec",
+        "calcolo dscr esempio",
+        "calcolo dscr excel",
+      ]
+    intento: informativo
+    argomento: crisi
+    formato: pilastro
+    priorita: 1
+    stato: da-fare
+    verifica: >
+      Leggere il documento CNDCEC sugli indici dell'allerta (ottobre 2019) e annotare pagina e
+      testo della soglia del DSCR. Scrivere le due soglie come da REDAZIONE.md, regola 4.
+      Verificare se il correttivo del 2024 ha cambiato qualcosa sul DSCR.
+
+  - id: calcolatore-dscr
+    titolo: "Calcolo del DSCR prospettico a 6 mesi"
+    query: "calcolo dscr prospettico"
+    evidenze: ["calcolo dscr prospettico", "calcolo dscr excel gratis"]
+    intento: strumento
+    argomento: strumenti
+    formato: strumento
+    priorita: 1
+    stato: da-fare
+    solo-codice: true
+
+  - id: adeguati-assetti
+    titolo: "Adeguati assetti organizzativi: cosa sono e chi è obbligato"
+    query: "adeguati assetti organizzativi"
+    secondarie:
+      [
+        "adeguati assetti organizzativi chi è obbligato",
+        "adeguati assetti organizzativi obbligo",
+        "adeguati assetti organizzativi srl",
+        "adeguati assetti 2086",
+      ]
+    evidenze:
+      [
+        "adeguati assetti organizzativi chi è obbligato",
+        "adeguati assetti organizzativi srl",
+        "adeguati assetti cosa sono",
+        "adeguati assetti codice civile",
+      ]
+    intento: informativo
+    argomento: crisi
+    formato: pilastro
+    priorita: 1
+    stato: da-fare
+    verifica: "Art. 2086 c.c. comma 2 e art. 3 CCII nel testo vigente su Normattiva."
+
+  - id: art-3-ccii
+    titolo: "Art. 3 CCII: misure e assetti adeguati, spiegato sui numeri"
+    query: "art 3 ccii"
+    secondarie: ["art 3 ccii spiegazione", "art 3 ccii normattiva"]
+    evidenze:
+      ["art 3 ccii", "art 3 ccii spiegazione", "art 3 ccii normattiva", "art 3 ccii brocardi"]
+    intento: informativo
+    argomento: crisi
+    formato: guida
+    priorita: 1
+    stato: da-fare
+    verifica: "Testo vigente dell'art. 3 (commi 3 e 4) su Normattiva, con la data dell'ultima modifica."
+
+  - id: pfn-ebitda
+    titolo: "PFN/EBITDA: come si calcola e quale valore è sostenibile"
+    query: "pfn ebitda"
+    secondarie:
+      [
+        "pfn ebitda come si calcola",
+        "pfn ebitda valore ottimale",
+        "pfn ebitda negativo",
+        "pfn ebitda esempio",
+      ]
+    evidenze:
+      [
+        "pfn ebitda come si calcola",
+        "pfn ebitda valore ottimale",
+        "pfn ebitda negativo",
+        "pfn ebitda inferiore a 1",
+        "pfn ebitda sostenibilità finanziaria",
+      ]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    priorita: 1
+    stato: da-fare
+    verifica: "Le soglie di giudizio sono quelle del motore; se si citano soglie bancarie, serve la fonte."
+
+  - id: indici-allerta
+    titolo: "Indici di allerta CNDCEC: cosa sono e se valgono ancora"
+    query: "indici di allerta cndcec"
+    secondarie:
+      ["indici di allerta ccii", "indici di allerta codice della crisi", "indici di allerta 2024"]
+    evidenze:
+      [
+        "indici di allerta cndcec",
+        "indici di allerta cndcec pdf",
+        "indici di allerta 2024",
+        "indici di allerta crisi d impresa excel",
+      ]
+    intento: informativo
+    argomento: crisi
+    formato: guida
+    priorita: 2
+    stato: da-fare
+    verifica: >
+      Il sistema degli indici è cambiato fra il testo originario del CCII e le versioni successive
+      (2022, correttivo 2024): ricostruire con le fonti primarie cosa vale OGGI prima di scrivere.
+      Tema ad alto rischio di errore: se non è chiaro dalle fonti, stato sospesa.
+
+  - id: budget-tesoreria
+    titolo: "Budget di tesoreria a 6 mesi: come costruirlo per il DSCR"
+    query: "budget di tesoreria"
+    secondarie:
+      ["budget di tesoreria cndcec", "budget di tesoreria esempio", "budget di tesoreria rolling"]
+    evidenze:
+      [
+        "budget di tesoreria cndcec",
+        "budget di tesoreria commercialisti",
+        "budget di tesoreria esempio",
+        "budget di tesoreria rolling",
+      ]
+    intento: operativo
+    argomento: crisi
+    formato: guida
+    priorita: 2
+    stato: da-fare
+
+  - id: test-pratico
+    titolo: "Test pratico della composizione negoziata: come si legge"
+    query: "test pratico composizione negoziata"
+    secondarie:
+      [
+        "test pratico composizione negoziata esempio",
+        "test pratico composizione negoziata è obbligatorio",
+        "risultato test pratico composizione negoziata",
+      ]
+    evidenze:
+      [
+        "test pratico composizione negoziata esempio",
+        "test pratico composizione negoziata è obbligatorio",
+        "test pratico composizione negoziata istruzioni",
+      ]
+    intento: operativo
+    argomento: crisi
+    formato: guida
+    priorita: 2
+    stato: da-fare
+    verifica: "Decreto dirigenziale e sezione del test sulla piattaforma della composizione negoziata."
+
+  - id: composizione-negoziata
+    titolo: "Composizione negoziata della crisi: come funziona passo per passo"
+    query: "composizione negoziata della crisi come funziona"
+    secondarie:
+      [
+        "composizione negoziata cos'è",
+        "composizione negoziata misure protettive",
+        "composizione negoziata piattaforma",
+      ]
+    evidenze:
+      [
+        "composizione negoziata della crisi come funziona",
+        "composizione negoziata della crisi misure protettive",
+        "composizione negoziata piattaforma",
+      ]
+    intento: informativo
+    argomento: crisi
+    formato: guida
+    priorita: 2
+    stato: da-fare
+
+  - id: ros-roi-roe
+    titolo: "ROS, ROI e ROE: formule e come si leggono insieme"
+    query: "ros roi roe"
+    secondarie: ["roi ros roe formule", "roi ros roe cosa sono", "ros roi roe leverage"]
+    evidenze:
+      ["indici ros roi roe", "roi ros roe formule", "roi ros roe cosa sono", "ros roi roe leverage"]
+    intento: informativo
+    argomento: indicatori
+    formato: pilastro
+    priorita: 2
+    stato: da-fare
+
+  - id: dscr-da-bilancio
+    titolo: "DSCR dal bilancio: calcolo sull'esercizio e limiti"
+    query: "calcolo dscr da bilancio"
+    secondarie: ["calcolo dscr con ebitda", "calcolo dscr formula"]
+    evidenze: ["calcolo dscr da bilancio", "calcolo dscr con ebitda"]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    priorita: 2
+    stato: da-fare
+    note: "Distinta dal pilastro dscr-prospettico: storico contro prospettico, collegarle."
+
+  - id: indici-di-bilancio
+    titolo: "Indici di bilancio: le formule che servono allo studio"
+    query: "indici di bilancio formule"
+    secondarie: ["indici di bilancio formule e spiegazioni", "indici di bilancio principali"]
+    evidenze:
+      [
+        "indici di bilancio formule",
+        "indici di bilancio formule e spiegazioni",
+        "indici di bilancio principali",
+      ]
+    intento: informativo
+    argomento: indicatori
+    formato: pilastro
+    priorita: 2
+    stato: da-fare
+    note: "Query molto contesa: scriverla quando esistono già le guide sui singoli indicatori, e farne il nodo che le collega."
+
+  - id: assetti-checklist
+    titolo: "Adeguati assetti: la check list per lo studio"
+    query: "adeguati assetti organizzativi check list"
+    evidenze:
+      [
+        "adeguati assetti organizzativi check list",
+        "adeguati assetti organizzativi amministrativi e contabili check list",
+      ]
+    intento: operativo
+    argomento: crisi
+    formato: guida
+    priorita: 2
+    stato: da-fare
+
+  - id: turnover
+    titolo: "Turnover del capitale investito: formula e lettura"
+    query: "turnover capitale investito"
+    secondarie: ["turnover capitale investito formula", "indice turnover capitale investito"]
+    evidenze: ["turnover capitale investito formula", "indice turnover capitale investito totale"]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    priorita: 3
+    stato: da-fare
+
+  - id: roe
+    titolo: "ROE: formula, significato e come leggerlo"
+    query: "roe significato"
+    secondarie: ["roe formula"]
+    evidenze: ["roe formula", "roe significato"]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    priorita: 3
+    stato: da-fare
+    note: "Non cannibalizzare ros-roi-roe: qui solo il ROE, con rimando alla guida d'insieme."
+
+  - id: ros
+    titolo: "ROS: formula, significato e soglie di lettura"
+    query: "ros formula"
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    priorita: 3
+    stato: da-fare
+    verifica: 'Rilanciare suggerimenti.mjs "ros" prima di scrivere: la radice corta è ambigua.'
+
+  - id: roi
+    titolo: "ROI: formula, significato e differenza con il ROE"
+    query: "roi formula"
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    priorita: 3
+    stato: da-fare
+    verifica: 'Rilanciare suggerimenti.mjs "roi" prima di scrivere: la radice corta è ambigua.'
+
+  - id: assetti-nota-integrativa
+    titolo: "Adeguati assetti in nota integrativa: cosa scrivere"
+    query: "adeguati assetti organizzativi nota integrativa"
+    evidenze: ["adeguati assetti organizzativi nota integrativa"]
+    intento: operativo
+    argomento: crisi
+    formato: guida
+    priorita: 3
+    stato: da-fare
+    verifica: "Serve una fonte primaria o un documento CNDCEC/OIC che lo preveda: senza, sospesa."
+
+  - id: organo-di-controllo
+    titolo: "Organo di controllo e crisi: quando e come segnalare"
+    query: "organo di controllo crisi d impresa"
+    evidenze: ["organo di controllo crisi d impresa"]
+    intento: informativo
+    argomento: crisi
+    formato: guida
+    priorita: 3
+    stato: da-fare
+    verifica: "Art. 25-octies CCII nel testo vigente."
+
+  - id: rendiconto-prospettico
+    titolo: "Rendiconto finanziario prospettico: quando serve e come si fa"
+    query: "rendiconto finanziario prospettico"
+    evidenze: ["rendiconto finanziario prospettico"]
+    intento: informativo
+    argomento: crisi
+    formato: guida
+    priorita: 3
+    stato: da-fare
+    verifica: "OIC 10 e documento CNDCEC sul DSCR (secondo approccio)."
+
+  - id: dscr-storico-prospettico
+    titolo: "DSCR storico e prospettico: le differenze che contano"
+    query: "differenza dscr storico e prospettico"
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    priorita: 3
+    stato: da-fare
+    note: "Solo dopo dscr-prospettico e dscr-da-bilancio; forse basta una sezione in una delle due."
+
+  - id: crisi-insolvenza
+    titolo: "Crisi e insolvenza: le definizioni del Codice e la differenza"
+    query: "differenza tra crisi e insolvenza"
+    intento: informativo
+    argomento: crisi
+    formato: guida
+    priorita: 3
+    stato: da-fare
+    verifica: "Art. 2 CCII, definizioni vigenti."
+
+  - id: ebitda
+    titolo: "EBITDA dal bilancio: come si calcola davvero"
+    query: "ebitda come si calcola"
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    priorita: 3
+    stato: da-fare
+    verifica: 'Rilanciare suggerimenti.mjs "ebitda" prima di scrivere.'
+
+  - id: report-banca
+    titolo: "I numeri per la banca: cosa guarda chi valuta un fido"
+    query: "indici di bancabilità"
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    priorita: 3
+    stato: da-fare
+    verifica: "Nessuna evidenza di ricerca ancora: rilanciare suggerimenti.mjs e scegliere la query prima di scrivere."

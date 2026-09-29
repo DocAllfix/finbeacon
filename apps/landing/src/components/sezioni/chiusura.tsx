@@ -17,6 +17,7 @@ import {
   URL_PRENOTAZIONE,
 } from "@/lib/configurazione";
 import { CHIUSURA, VOCI_MENU } from "@/lib/contenuti";
+import { guidePubblicate } from "@/lib/guide";
 
 export function Chiusura() {
   return (
@@ -85,6 +86,13 @@ export function Piede() {
                   Parla con noi
                 </Link>
               </li>
+              {guidePubblicate().length > 0 && (
+                <li>
+                  <Link href="/guide" className="text-testo-attenuato hover:text-testo">
+                    Guide
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link href="/privacy" className="text-testo-attenuato hover:text-testo">
                   Privacy

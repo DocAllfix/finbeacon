@@ -1,0 +1,39 @@
+name: Perimetro degli articoli
+
+# Una PR con l'etichetta «articolo» si pubblica da sola dopo 48 ore
+# (pubblica-guide.yml). Deve quindi poter toccare SOLO contenuti: se modifica
+# codice, configurazione o flussi di lavoro, questo controllo e' rosso e la PR
+# non si unisce, ne' da sola ne' per sbaglio. Gira su ogni PR (e' un controllo
+# richiesto su main): senza l'etichetta passa subito.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  perimetro:
+    name: Perimetro degli articoli
+    runs-on: ubuntu-latest
+    steps:
+      - name: Solo contenuti nelle PR «articolo»
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          ETICHETTE: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: |
+          if ! echo "$ETICHETTE" | grep -q '"articolo"'; then
+            echo "Nessuna etichetta «articolo»: niente da controllare."
+            exit 0
+          fi
+          fuori=$(gh pr view "$PR" -R "$REPO" --json files --jq '.files[].path' \
+            | grep -vE '^apps/landing/content/|^apps/landing/public/guide/' || true)
+          if [ -n "$fuori" ]; then
+            echo "::error::Una PR «articolo» puo' toccare solo apps/landing/content/ e apps/landing/public/guide/. Fuori perimetro:"
+            echo "$fuori"
+            exit 1
+          fi
+          echo "OK: la PR tocca solo contenuti."
