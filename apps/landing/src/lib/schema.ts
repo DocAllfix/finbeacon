@@ -1,4 +1,4 @@
-import { IDENTIFICAZIONE } from "./configurazione";
+import { IDENTIFICAZIONE, PROFILI_ESTERNI } from "./configurazione";
 import { DOMANDE, FUNZIONI, HERO } from "./contenuti";
 import { indirizzo, NOME, SITO } from "./indirizzo";
 
@@ -32,6 +32,7 @@ export function schemaHome(): Record<string, unknown> {
     ...(IDENTIFICAZIONE.codiceFiscale ? { taxID: IDENTIFICAZIONE.codiceFiscale } : {}),
     ...(IDENTIFICAZIONE.telefono ? { telephone: IDENTIFICAZIONE.telefono } : {}),
     ...(IDENTIFICAZIONE.email ? { email: IDENTIFICAZIONE.email } : {}),
+    ...(PROFILI_ESTERNI.length > 0 ? { sameAs: PROFILI_ESTERNI } : {}),
     ...(IDENTIFICAZIONE.indirizzo
       ? {
           address: {

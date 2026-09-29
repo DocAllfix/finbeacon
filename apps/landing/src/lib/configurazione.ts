@@ -13,6 +13,17 @@ export const URL_PRENOTAZIONE: string | null = process.env.NEXT_PUBLIC_URL_PRENO
  */
 export const URL_DEMO_PUBBLICA: string | null = process.env.NEXT_PUBLIC_URL_DEMO || null;
 
+/**
+ * I profili di FinBeacon fuori dal sito (LinkedIn e simili), per il `sameAs`
+ * dell'Organization: dicono a Google che quelle pagine e questo sito sono la
+ * stessa entità. Da variabile d'ambiente, separati da virgola; solo https.
+ * Nessun profilo = campo non scritto, mai un segnaposto.
+ */
+export const PROFILI_ESTERNI: string[] = (process.env.PROFILI_ESTERNI ?? "")
+  .split(",")
+  .map((u) => u.trim())
+  .filter((u) => u.startsWith("https://"));
+
 /** Indirizzo di ripiego mostrato se l'invio del modulo fallisce. */
 export const EMAIL_CONTATTO: string | null = process.env.NEXT_PUBLIC_EMAIL_CONTATTO || null;
 
