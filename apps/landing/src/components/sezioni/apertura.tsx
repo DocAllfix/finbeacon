@@ -109,8 +109,9 @@ export function Hero() {
 
         {/* Il primo dei due momenti notte: parla il prodotto. */}
         {/*
-         * Tutta la cornice porta alla demo: il cliente disegnato qui È quello
-         * che si apre là. Il link è uno solo, nella didascalia, e si allarga a
+         * Tutta la cornice porta alla demo. NON allo stesso cliente: la demo
+         * apre i suoi clienti inventati, e Meccanica Ardesia vive solo qui,
+         * quindi la didascalia dice «un altro cliente». Il link è uno solo, nella didascalia, e si allarga a
          * coprire la cornice con un ::after, così la cornice non diventa un
          * enorme link senza nome e la tastiera trova una fermata sola.
          */}
@@ -125,7 +126,7 @@ export function Hero() {
                 href={URL_DEMO_PUBBLICA}
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-accento outline-none after:absolute after:inset-0 after:z-30 after:rounded-[1.1rem]"
               >
-                Apri questo cliente nella demo
+                Provalo nella demo, su un altro cliente di esempio
                 <ArrowRight className="deck-freccia size-3.5" aria-hidden />
               </a>
             )}

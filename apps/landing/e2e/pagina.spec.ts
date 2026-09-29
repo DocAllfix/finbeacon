@@ -105,7 +105,7 @@ test("una sola cosa si chiama demo, e ci si arriva dal primo pulsante", async ({
     const dove = await prova.getAttribute("href");
     expect(dove).toMatch(/^https:\/\//);
     await expect(
-      hero.getByRole("link", { name: "Apri questo cliente nella demo" }),
+      hero.getByRole("link", { name: "Provalo nella demo, su un altro cliente di esempio" }),
     ).toHaveAttribute("href", dove!);
     await expect(hero.getByRole("link", { name: "Parla con noi" })).toHaveAttribute(
       "href",
