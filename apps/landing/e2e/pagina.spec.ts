@@ -517,3 +517,90 @@ test("privacy e note legali si aprono dai loro collegamenti, complete e pulite",
   }
   spia.verifica("pagine legali");
 });
+
+/*
+ * Le guide. In CI il build non è di produzione, quindi la bozza di formato
+ * (`content/guide/esempio-di-formato.mdx`) è visibile e fa da banco di prova:
+ * in produzione non esce mai (lo verificano i test unitari di `visibili`).
+ */
+test.describe("guide", () => {
+  const GUIDA = "/guide/esempio-di-formato";
+
+  test("l'indice elenca la guida e porta alla sua pagina", async ({ page }) => {
+    const spia = osservaConsole(page);
+    await page.goto("/guide");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.getByRole("link", { name: /Esempio di formato/ }).click();
+    await expect(page).toHaveURL(new RegExp(`${GUIDA}$`));
+    spia.verifica("indice guide");
+  });
+
+  test("la guida ha un solo h1, canonical, dati strutturati e sommario che funziona", async ({
+    page,
+  }) => {
+    const spia = osservaConsole(page);
+    await page.goto(GUIDA);
+    await expect(page.locator("h1")).toHaveCount(1);
+    await expect(page.locator("link[rel=canonical]")).toHaveAttribute(
+      "href",
+      `https://finbeacon.eu${GUIDA}`,
+    );
+    await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
+
+    const ld = JSON.parse(
+      (await page.locator('script[type="application/ld+json"]').first().textContent()) ?? "{}",
+    ) as { "@graph": Record<string, unknown>[] };
+    const articolo = ld["@graph"].find((n) => n["@type"] === "BlogPosting")!;
+    expect(articolo.headline).toBe(await page.locator("h1").textContent());
+    expect((articolo.author as { "@type": string })["@type"]).toBe("Person");
+    expect((articolo.citation as unknown[]).length).toBeGreaterThanOrEqual(2);
+    expect(ld["@graph"].some((n) => n["@type"] === "BreadcrumbList")).toBe(true);
+
+    // Ogni voce del sommario porta a un titolo che esiste davvero.
+    const ancore = await page
+      .locator('nav[aria-label="In questa guida"] a')
+      .evaluateAll((as) => as.map((a) => a.getAttribute("href")!.slice(1)));
+    expect(ancore.length).toBeGreaterThanOrEqual(3);
+    for (const id of ancore) await expect(page.locator(`[id="${id}"]`)).toHaveCount(1);
+
+    // I titoli non devono sembrare link (G: la classe dell'ancora andava persa).
+    const colore = await page
+      .locator(".testo-guida h2 a")
+      .first()
+      .evaluate((a) => getComputedStyle(a).textDecorationLine);
+    expect(colore).not.toContain("underline");
+    spia.verifica("guida");
+  });
+
+  test("i numeri della guida sono quelli del motore", async ({ page }) => {
+    await page.goto(GUIDA);
+    const a = analizza(BILANCIO_ESEMPIO, PREVISIONALE_ESEMPIO);
+    const testo = await page.locator(".testo-guida").innerText();
+    expect(testo).toContain(`${formatNumero(a.indicatori.ros!, 1)}%`);
+    expect(testo).toContain(formatNumero(a.indicatori.dscrProspettico!, 2));
+  });
+
+  test("nessuno scorrimento orizzontale, anche con la tabella, a tre larghezze", async ({
+    page,
+  }) => {
+    for (const larghezza of [1440, 768, 375]) {
+      await page.setViewportSize({ width: larghezza, height: 900 });
+      await page.goto(GUIDA);
+      const largo = await page.evaluate(
+        () => document.documentElement.scrollWidth > window.innerWidth,
+      );
+      expect(largo, `scorrimento orizzontale a ${larghezza}px`).toBe(false);
+    }
+  });
+
+  test("sitemap, feed e immagine di anteprima includono la guida", async ({ request }) => {
+    expect(await (await request.get("/sitemap.xml")).text()).toContain(GUIDA);
+    const feed = await request.get("/guide/feed.xml");
+    expect(feed.headers()["content-type"]).toContain("application/rss+xml");
+    expect(await feed.text()).toContain(`<link>https://finbeacon.eu${GUIDA}</link>`);
+    const og = await request.get(`${GUIDA}/opengraph-image`);
+    expect(og.status()).toBe(200);
+    expect(og.headers()["content-type"]).toBe("image/png");
+    expect((await request.get("/guide/non-esiste")).status()).toBe(404);
+  });
+});

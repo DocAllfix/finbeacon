@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { dataModifica, guidePubblicate } from "@/lib/guide";
 import { indirizzo } from "@/lib/indirizzo";
 import { REVISIONI } from "@/lib/revisioni";
 
@@ -9,6 +10,26 @@ import { REVISIONI } from "@/lib/revisioni";
  * deploy direbbe ai motori che cambia ogni giorno anche quando non cambia.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
+  // Le guide entrano con la loro data VERA (ultimo aggiornamento o uscita), e
+  // l'indice solo quando ne esiste almeno una: un indice vuoto è noindex.
+  const guide = guidePubblicate();
+  const vociGuide: MetadataRoute.Sitemap =
+    guide.length === 0
+      ? []
+      : [
+          {
+            url: indirizzo("/guide"),
+            lastModified: guide.map(dataModifica).sort().at(-1),
+            changeFrequency: "weekly",
+            priority: 0.7,
+          },
+          ...guide.map((g) => ({
+            url: indirizzo(`/guide/${g.slug}`),
+            lastModified: dataModifica(g),
+            changeFrequency: "monthly" as const,
+            priority: 0.6,
+          })),
+        ];
   return [
     { url: indirizzo("/"), changeFrequency: "monthly", priority: 1 },
     {
@@ -29,5 +50,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly",
       priority: 0.2,
     },
+    ...vociGuide,
   ];
 }

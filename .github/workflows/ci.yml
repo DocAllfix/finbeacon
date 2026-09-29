@@ -199,6 +199,11 @@ jobs:
       - name: Ogni pagina e' pre-renderizzata
         run: pnpm --filter landing verifica:statica
 
+      # Le guide escono per silenzio-assenso: questo e' il revisore che c'e'
+      # sempre. Promesse vietate, conti scritti a mano, niente link interni.
+      - name: Controlli di contenuto sulle guide
+        run: pnpm --filter landing verifica:guide
+
       - name: Browser per Playwright
         run: pnpm --filter landing exec playwright install --with-deps chromium
 
@@ -207,9 +212,10 @@ jobs:
         run: pnpm --filter landing test:e2e
 
       # Risultati salvati come artefatto, MAI caricati su un servizio pubblico.
-      # Niente SEO qui: fuori produzione la pagina e' volutamente noindex, e
-      # Lighthouse la penalizzerebbe per questo. La SEO si misura sulla produzione.
-      - name: Lighthouse (prestazioni, accessibilita', buone pratiche)
+      # Della SEO si controllano i singoli audit, non la categoria: fuori
+      # produzione la pagina e' volutamente noindex, e «is-crawlable» fallirebbe
+      # per costruzione. Home e una guida, con le stesse soglie.
+      - name: Lighthouse (prestazioni, accessibilita', buone pratiche, SEO)
         run: npx --yes @lhci/cli@0.14.0 autorun --config=apps/landing/lighthouserc.json
 
       - uses: actions/upload-artifact@v4

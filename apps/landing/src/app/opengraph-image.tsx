@@ -1,11 +1,9 @@
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
-
 import { formatNumero } from "@finbeacon/engine";
 import { ImageResponse } from "next/og";
 
 import { HERO } from "@/lib/contenuti";
 import { ANALISI_ESEMPIO, SERIE_DSCR6M, SOGLIA_DSCR6M } from "@/lib/esempio";
+import { COLORI, fontAnteprima, simboloSvg, svgDati } from "@/lib/immagine";
 import { tracciaSoglia } from "@/lib/soglia";
 
 /**
@@ -23,28 +21,7 @@ export const alt = `FinBeacon. ${HERO.titolo}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const C = {
-  carta: "#f8fafd",
-  inchiostro: "#161b20",
-  attenuato: "#50565c",
-  ottanio: "#00717f",
-  notte: "#0b1015",
-  superficieNotte: "#151a20",
-  inchiostroChiaro: "#ebeff2",
-  attenuatoNotte: "#a5acb2",
-  bordoNotte: "#2d343b",
-  ottanioLuce: "#47c5d2",
-  criticoTesto: "#ffa199",
-  criticoFondo: "#481b19",
-  criticoSegno: "#fa6863",
-};
-
-const SIMBOLO =
-  "M16 4H48A12 12 0 0 1 50.39 4.24L24.32 37.61A6.2 6.2 0 1 0 25.87 39.4L60 19.69V48A12 12 0 0 1 48 60H16A12 12 0 0 1 4 48V16A12 12 0 0 1 16 4Z";
-
-function svgDati(svg: string): string {
-  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
-}
+const C = COLORI;
 
 function grafico(): string {
   const L = 336;
@@ -64,16 +41,8 @@ function grafico(): string {
   );
 }
 
-async function font(nome: string) {
-  return readFile(join(process.cwd(), "src/assets/fonts", nome));
-}
-
 export default async function ImmagineAnteprima() {
-  const [sans, sansForte, mono] = await Promise.all([
-    font("IBMPlexSans-Regular.ttf"),
-    font("IBMPlexSans-SemiBold.ttf"),
-    font("IBMPlexMono-SemiBold.ttf"),
-  ]);
+  const fonts = await fontAnteprima();
   const dscr6m = ANALISI_ESEMPIO.indicatori.dscrProspettico!;
   const giudizio = ANALISI_ESEMPIO.giudizi.dscrPro;
 
@@ -99,14 +68,7 @@ export default async function ImmagineAnteprima() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={svgDati(
-              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><path fill="${C.ottanio}" fill-rule="evenodd" d="${SIMBOLO}"/></svg>`,
-            )}
-            width={52}
-            height={52}
-            alt=""
-          />
+          <img src={simboloSvg()} width={52} height={52} alt="" />
           <span style={{ fontSize: 36, fontWeight: 600, color: C.inchiostro, letterSpacing: -0.5 }}>
             FinBeacon
           </span>
@@ -202,11 +164,7 @@ export default async function ImmagineAnteprima() {
     </div>,
     {
       ...size,
-      fonts: [
-        { name: "Plex", data: sans, weight: 400, style: "normal" },
-        { name: "Plex", data: sansForte, weight: 600, style: "normal" },
-        { name: "PlexMono", data: mono, weight: 600, style: "normal" },
-      ],
+      fonts,
     },
   );
 }

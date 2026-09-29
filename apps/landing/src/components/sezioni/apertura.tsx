@@ -9,6 +9,7 @@ import { CollegamentoAFilo, Contenitore, PulsantePrimario } from "@/components/b
 import { Deck } from "@/components/deck";
 import { Logotipo } from "@/components/marchio";
 import { URL_DEMO_PUBBLICA } from "@/lib/configurazione";
+import { guidePubblicate } from "@/lib/guide";
 import { HERO, VOCI_MENU } from "@/lib/contenuti";
 import { ORDINE } from "@/lib/indicatori";
 
@@ -17,6 +18,7 @@ const REPORT_ESEMPIO = "/report-esempio.pdf";
 export const reportEsempioPresente = existsSync(join(process.cwd(), "public", REPORT_ESEMPIO));
 
 export function Intestazione() {
+  const ciSonoGuide = guidePubblicate().length > 0;
   return (
     <header className="sticky top-0 z-40 border-b border-filetto bg-fondo">
       <Contenitore className="flex h-16 items-center justify-between gap-6">
@@ -25,13 +27,24 @@ export function Intestazione() {
         </Link>
         <nav aria-label="Sezioni" className="hidden lg:block">
           <ul className="flex items-center gap-7 text-[0.9375rem] text-testo-attenuato">
+            {/*
+             * `/#…` e non `#…`: la testata compare anche sulle pagine legali e
+             * sulle guide, dove `#metodo` puntava a un'ancora inesistente.
+             */}
             {VOCI_MENU.map((v) => (
               <li key={v.href}>
-                <a href={v.href} className="py-2 hover:text-testo">
+                <a href={`/${v.href}`} className="py-2 hover:text-testo">
                   {v.testo}
                 </a>
               </li>
             ))}
+            {ciSonoGuide && (
+              <li>
+                <Link href="/guide" className="py-2 hover:text-testo">
+                  Guide
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
         {/*
@@ -45,7 +58,7 @@ export function Intestazione() {
             <>
               {/* Contenitore a parte: `hidden` sul collegamento perderebbe contro il suo `inline-flex`. */}
               <span className="hidden sm:contents">
-                <CollegamentoAFilo href="#richiesta" compatto>
+                <CollegamentoAFilo href="/#richiesta" compatto>
                   Parla con noi
                 </CollegamentoAFilo>
               </span>
@@ -54,7 +67,7 @@ export function Intestazione() {
               </PulsantePrimario>
             </>
           ) : (
-            <PulsantePrimario href="#richiesta" compatto>
+            <PulsantePrimario href="/#richiesta" compatto>
               Parla con noi
             </PulsantePrimario>
           )}

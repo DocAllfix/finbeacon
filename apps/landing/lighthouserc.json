@@ -3,7 +3,7 @@
     "collect": {
       "startServerCommand": "pnpm --filter landing exec next start -p 3230",
       "startServerReadyPattern": "Ready",
-      "url": ["http://127.0.0.1:3230/"],
+      "url": ["http://127.0.0.1:3230/", "http://127.0.0.1:3230/guide/esempio-di-formato"],
       "numberOfRuns": 3
     },
     "assert": {

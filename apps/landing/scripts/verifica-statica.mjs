@@ -38,15 +38,33 @@ for (const r of [
   "/manifest.webmanifest",
   "/llms.txt",
   "/opengraph-image",
+  "/guide/feed.xml",
 ]) {
   attese.add(r);
 }
 
-const dinamiche = [...attese].filter((r) => !statiche.has(r));
+/*
+ * Una rotta con un segmento dinamico (`/guide/[slug]`) non compare in `routes`
+ * col suo nome: ci compaiono le sue istanze. È statica se Next la registra in
+ * `dynamicRoutes` con `fallback: false`, cioè esistono solo le pagine generate
+ * al build e ogni altro slug è un 404, mai una pagina resa al volo.
+ */
+const conSegmenti = (r) => r.includes("[");
+const staticaConSegmenti = (r) => prerender.dynamicRoutes?.[r]?.fallback === false;
+const istanze = (r) => {
+  const modello = new RegExp(`^${r.replace(/\[[^\]]+\]/g, "[^/]+")}$`);
+  // Escluse le rotte con un nome loro (`/guide/feed.xml` non è una guida).
+  return [...statiche].filter((s) => modello.test(s) && !attese.has(s)).length;
+};
+const eStatica = (r) => (conSegmenti(r) ? staticaConSegmenti(r) : statiche.has(r));
+
+const dinamiche = [...attese].filter((r) => !eStatica(r));
 
 console.log("[verifica-statica] rotte attese statiche:");
 for (const r of [...attese].sort())
-  console.log(`  ${statiche.has(r) ? "OK      " : "DINAMICA"}  ${r}`);
+  console.log(
+    `  ${eStatica(r) ? "OK      " : "DINAMICA"}  ${r}${conSegmenti(r) ? `  (${istanze(r)} pagine generate)` : ""}`,
+  );
 
 if (dinamiche.length > 0) {
   console.error(

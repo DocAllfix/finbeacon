@@ -1,5 +1,7 @@
+import { AUTORI } from "./autori";
 import { IDENTIFICAZIONE, PROFILI_ESTERNI } from "./configurazione";
 import { DOMANDE, FUNZIONI, HERO } from "./contenuti";
+import { ARGOMENTI, dataModifica, type Guida } from "./guide";
 import { indirizzo, NOME, SITO } from "./indirizzo";
 
 /**
@@ -75,6 +77,56 @@ export function schemaHome(): Record<string, unknown> {
           name: d.domanda,
           acceptedAnswer: { "@type": "Answer", text: d.risposta },
         })),
+      },
+    ],
+  };
+}
+
+/**
+ * Una guida: `BlogPosting` con l'autore come PERSONA (su temi di legge e
+ * finanza Google pesa chi scrive) e l'editore che rimanda all'Organization
+ * della home per `@id`, così i motori capiscono che è la stessa entità invece
+ * di vederne due. Le fonti vanno in `citation`: dicono da dove viene quello
+ * che l'articolo afferma.
+ */
+export function schemaGuida(g: Guida): Record<string, unknown> {
+  const url = indirizzo(`/guide/${g.slug}`);
+  const autore = AUTORI[g.autore];
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": `${url}#guida`,
+        mainEntityOfPage: url,
+        headline: g.titolo,
+        description: g.descrizione,
+        inLanguage: "it-IT",
+        datePublished: g.data,
+        dateModified: dataModifica(g),
+        author: { "@type": "Person", name: autore.nome, jobTitle: autore.ruolo },
+        publisher: { "@id": `${SITO}/#organizzazione` },
+        image: indirizzo(`/guide/${g.slug}/opengraph-image`),
+        keywords: g.parolaChiave,
+        articleSection: ARGOMENTI[g.argomento],
+        citation: g.fonti.map((f) => ({ "@type": "CreativeWork", name: f.titolo, url: f.url })),
+      },
+      // Lo stesso nodo della home, ridotto: un `@id` che rimanda a un'altra
+      // pagina non è detto che i motori lo risolvano, un nodo nel grafo sì.
+      {
+        "@type": "Organization",
+        "@id": `${SITO}/#organizzazione`,
+        name: NOME,
+        url: SITO,
+        logo: indirizzo("/icon-512.png"),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: NOME, item: SITO },
+          { "@type": "ListItem", position: 2, name: "Guide", item: indirizzo("/guide") },
+          { "@type": "ListItem", position: 3, name: g.titolo, item: url },
+        ],
       },
     ],
   };

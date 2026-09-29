@@ -1,0 +1,113 @@
+name: Pubblica le guide
+
+# Il silenzio-assenso della redazione (decisione del 29/09): una PR con
+# l'etichetta «articolo» si unisce da sola quando
+#   - sono passate 48 ore dall'ultimo commit (una modifica fa ripartire l'attesa),
+#   - nessuno ha aggiunto l'etichetta «fermo» e non e' una bozza di PR,
+#   - tutti i controlli sono verdi, compreso il perimetro (solo contenuti).
+# Vercel pubblica da se' all'unione, tramite la sua integrazione GitHub.
+#
+# Per fermare un articolo: etichetta «fermo», oppure chiudere la PR.
+on:
+  schedule:
+    - cron: "17 * * * *" # ogni ora
+    - cron: "41 4 * * *" # ogni mattina: uscite programmate del giorno
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+concurrency:
+  group: pubblica-guide
+  cancel-in-progress: false
+
+jobs:
+  silenzio-assenso:
+    name: Unisci gli articoli fermi da 48 ore
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const ATTESA_MS = 48 * 60 * 60 * 1000;
+            const { owner, repo } = context.repo;
+            const aperte = await github.paginate(github.rest.pulls.list, {
+              owner, repo, state: "open", base: "main", per_page: 100,
+            });
+            const candidate = aperte.filter(
+              (p) => !p.draft && p.labels.some((l) => l.name === "articolo"),
+            );
+            core.info(`PR «articolo» aperte: ${candidate.length}`);
+
+            for (const p of candidate) {
+              const tag = `#${p.number} «${p.title}»`;
+              if (p.labels.some((l) => l.name === "fermo")) {
+                core.info(`${tag}: etichetta «fermo», non si tocca.`);
+                continue;
+              }
+              // L'attesa parte dall'ultimo commit, non dall'apertura: chi
+              // corregge un articolo si prende altre 48 ore di rilettura.
+              const commit = await github.rest.repos.getCommit({ owner, repo, ref: p.head.sha });
+              const dal = new Date(commit.data.commit.committer.date).getTime();
+              const mancano = dal + ATTESA_MS - Date.now();
+              if (mancano > 0) {
+                core.info(`${tag}: mancano ${Math.ceil(mancano / 3.6e6)} ore.`);
+                continue;
+              }
+              const esiti = await github.paginate(github.rest.checks.listForRef, {
+                owner, repo, ref: p.head.sha, per_page: 100,
+              });
+              const aperti = esiti.filter((c) => c.status !== "completed");
+              const rossi = esiti.filter(
+                (c) => c.status === "completed" && !["success", "skipped", "neutral"].includes(c.conclusion),
+              );
+              if (esiti.length === 0 || aperti.length > 0 || rossi.length > 0) {
+                core.info(
+                  `${tag}: controlli non verdi (in corso ${aperti.length}, falliti ${rossi.map((c) => c.name).join(", ") || 0}).`,
+                );
+                continue;
+              }
+              try {
+                await github.rest.pulls.merge({
+                  owner, repo, pull_number: p.number, sha: p.head.sha, merge_method: "squash",
+                });
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: p.number,
+                  body: "Pubblicata per silenzio-assenso: 48 ore senza l'etichetta `fermo` e controlli verdi.",
+                });
+                core.info(`${tag}: unita.`);
+              } catch (e) {
+                // La protezione di main e' l'ultima parola: se rifiuta, si riprova all'ora dopo.
+                core.warning(`${tag}: unione rifiutata (${e.message}).`);
+              }
+            }
+
+  uscite-del-giorno:
+    name: Pubblica le guide con la data di oggi
+    if: github.event.schedule == '41 4 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # Una guida unita prima della sua data resta nascosta fino al primo build
+      # di quel giorno. Il deploy si chiede SOLO se oggi esce qualcosa: niente
+      # build a vuoto.
+      - name: C'e' un'uscita oggi?
+        id: oggi
+        run: |
+          oggi=$(TZ=Europe/Rome date +%F)
+          uscite=$(grep -lE "^data: \"?$oggi\"?\s*$" apps/landing/content/guide/*.mdx 2>/dev/null \
+            | xargs -r grep -LE "^bozza: true" || true)
+          echo "Oggi: $oggi. Uscite: ${uscite:-nessuna}"
+          if [ -n "$uscite" ]; then echo "esce=si" >> "$GITHUB_OUTPUT"; fi
+      - name: Nuovo deploy della landing
+        if: steps.oggi.outputs.esce == 'si'
+        env:
+          HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_LANDING }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::warning::Manca il segreto VERCEL_DEPLOY_HOOK_LANDING: l'uscita di oggi aspetta il prossimo deploy."
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK" > /dev/null && echo "Deploy richiesto."
