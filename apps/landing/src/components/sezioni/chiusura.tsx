@@ -86,6 +86,14 @@ export function Piede() {
                   Parla con noi
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/strumenti/calcolo-dscr-prospettico"
+                  className="text-testo-attenuato hover:text-testo"
+                >
+                  Calcolo del DSCR
+                </Link>
+              </li>
               {guidePubblicate().length > 0 && (
                 <li>
                   <Link href="/guide" className="text-testo-attenuato hover:text-testo">

@@ -40,6 +40,7 @@ export function GET() {
     "## Collegamenti",
     `- [Home](${indirizzo("/")})`,
     ...(URL_DEMO_PUBBLICA ? [`- [Prova la demo, senza registrazione](${URL_DEMO_PUBBLICA})`] : []),
+    `- [Calcolo del DSCR prospettico a 6 mesi, gratuito](${indirizzo("/strumenti/calcolo-dscr-prospettico")})`,
     `- [Parla con noi](${indirizzo("/#richiesta")})`,
     `- [Informativa sulla privacy](${indirizzo("/privacy")})`,
     "",
