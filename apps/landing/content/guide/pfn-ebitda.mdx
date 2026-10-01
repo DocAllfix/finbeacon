@@ -1,0 +1,166 @@
+---
+titolo: "PFN/EBITDA: come si calcola e quale valore è sostenibile"
+descrizione: "Come si ricava il rapporto PFN/EBITDA dalle voci degli artt. 2424 e 2425 c.c., come si legge quando è negativo e con quali fasce lo giudica FinBeacon."
+data: 2026-10-03
+autore: alessandro-di-lonardo
+argomento: indicatori
+parolaChiave: "pfn ebitda"
+fonti:
+  - titolo: "Codice civile, art. 2424 – Contenuto dello stato patrimoniale (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2424"
+  - titolo: "Codice civile, art. 2425 – Contenuto del conto economico (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2425"
+  - titolo: "Codice civile, art. 2427 – Contenuto della nota integrativa (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2427"
+  - titolo: "Codice civile, art. 2467 – Finanziamenti dei soci (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2467"
+  - titolo: "Codice della crisi d'impresa e dell'insolvenza, art. 3 (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art3"
+---
+
+Il rapporto PFN/EBITDA divide la posizione finanziaria netta per il margine operativo lordo e
+dice quanti anni di EBITDA servirebbero a estinguere il debito finanziario netto. Nessuna delle
+norme citate qui fissa una soglia: il valore va letto con le caratteristiche dell'impresa, e
+FinBeacon lo giudica con quattro fasce del proprio motore, sotto 2 anni il giudizio migliore.
+
+## Come si calcola il rapporto PFN/EBITDA?
+
+Si divide la PFN di fine esercizio per l'EBITDA dello stesso esercizio. Il risultato si esprime
+in anni: è il tempo teorico di rientro se tutto il margine operativo lordo andasse a ridurre il
+debito netto. Sul cliente di esempio il motore di FinBeacon fa questo conto:
+
+<Formula chiave="gi" />
+
+FinBeacon chiama l'indicatore GI e riceve PFN ed EBITDA come dati inseriti dallo studio: non li
+ricava da solo dal bilancio. Le due grandezze, quindi, le costruisce il professionista, ed è lì
+che si decide quanto il rapporto sia confrontabile da un anno all'altro e da un cliente all'altro.
+
+## Da quali voci di bilancio si costruisce la PFN?
+
+Nello schema di stato patrimoniale dell'[art. 2424 c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2424)
+non esiste una voce «posizione finanziaria netta»: si costruisce sommando i debiti di natura
+finanziaria e sottraendo la liquidità. Le voci dello schema che entrano in gioco sono queste.
+
+| Segno | Voce dell'art. 2424 c.c.                                                |
+| ----- | ----------------------------------------------------------------------- |
+| +     | D.1 obbligazioni e D.2 obbligazioni convertibili                        |
+| +     | D.3 debiti verso soci per finanziamenti                                 |
+| +     | D.4 debiti verso banche                                                 |
+| +     | D.5 debiti verso altri finanziatori                                     |
+| −     | C.IV disponibilità liquide (depositi, assegni, danaro in cassa)         |
+| −     | C.III.6 altri titoli dell'attivo circolante, se prontamente liquidabili |
+
+Per i debiti lo schema chiede di indicare a parte gli importi esigibili oltre l'esercizio
+successivo: è il dato che serve per separare la PFN a breve da quella a medio-lungo termine.
+L'[art. 2427 c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2427),
+al n. 6, aggiunge in nota integrativa i debiti con durata residua oltre cinque anni e quelli
+assistiti da garanzie reali.
+
+### Le scelte da dichiarare
+
+Alcune voci non hanno una collocazione obbligata e cambiano il rapporto in modo sensibile. Chi
+presenta il dato a un cliente o a una banca dovrebbe scrivere come le ha trattate:
+
+1. **Leasing finanziario.** L'art. 2427, n. 22, chiede in nota integrativa un prospetto con il
+   valore attuale delle rate di canone non scadute e con il valore a cui i beni sarebbero
+   iscritti «qualora fossero stati considerati immobilizzazioni»: il debito residuo per canoni
+   è lì, non fra le voci D. È il numero da sommare alla PFN se si vuole tenerne conto.
+2. **Finanziamenti dei soci.** Sono debiti (voce D.3), ma l'[art. 2467 c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2467)
+   posterga il loro rimborso rispetto agli altri creditori quando sono stati concessi in una
+   situazione di eccessivo squilibrio dell'indebitamento rispetto al patrimonio netto, o quando
+   sarebbe stato ragionevole un conferimento. Includerli o escluderli è una scelta di analisi, da
+   motivare.
+3. **Debiti verso società del gruppo** (voci D.9, D.10, D.11 e D.11-bis): vanno nella PFN solo
+   per la parte di natura finanziaria, che lo schema non separa da quella commerciale.
+
+## Come si ricava l'EBITDA dal conto economico?
+
+Anche l'EBITDA non è una voce dello schema dell'[art. 2425 c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2425):
+si parte dalla differenza fra valore e costi della produzione (A − B) e si tolgono i costi che
+non comportano uscite di cassa operative. Una ricostruzione coerente con lo schema è:
+
+**EBITDA = (A − B) + B.10 ammortamenti e svalutazioni + B.12 accantonamenti per rischi + B.13 altri accantonamenti**
+
+Due punti da decidere e dichiarare. Il primo è la voce B.10.d, le svalutazioni dei crediti
+dell'attivo circolante: con la ricostruzione sopra torna nell'EBITDA, ma chi la considera un
+costo operativo ricorrente la lascia fra i costi. Il secondo sono i componenti straordinari che
+finiscono nelle voci A.5 e B.14: l'art. 2427, n. 13, obbliga a indicare in nota integrativa
+importo e natura dei ricavi e dei costi di entità o incidenza eccezionali, ed è da lì che si
+parte per normalizzare il margine.
+
+## PFN/EBITDA negativo: come si legge?
+
+Un rapporto negativo nasce da due situazioni opposte, e il solo segno non le distingue; e un
+rapporto positivo può nascere da due valori entrambi negativi. Per
+questo il motore di FinBeacon non giudica il numero da solo, ma guarda prima il segno
+dell'EBITDA.
+
+| PFN                    | EBITDA   | Rapporto         | Giudizio del motore |
+| ---------------------- | -------- | ---------------- | ------------------- |
+| negativa (cassa netta) | positivo | negativo         | Ottimo              |
+| positiva               | negativo | negativo         | Critico             |
+| positiva               | zero     | «non ripagabile» | Critico             |
+| negativa (cassa netta) | negativo | positivo         | Critico             |
+| zero                   | positivo | zero             | Ottimo              |
+
+<Nota>
+  Un PFN/EBITDA negativo è il migliore dei casi se la liquidità supera i debiti finanziari, il
+  peggiore se l'impresa non genera margine. Prima di commentare il numero, guardare il segno
+  dell'EBITDA.
+</Nota>
+
+## Quale valore di PFN/EBITDA è sostenibile?
+
+Nessuna delle norme citate in questa guida fissa una soglia per PFN/EBITDA. L'[art. 3 del
+Codice della crisi](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art3)
+(testo in vigore dal 28 settembre 2024) chiede che gli assetti consentano di rilevare gli
+squilibri patrimoniali o economico-finanziari «rapportati alle specifiche caratteristiche
+dell'impresa e dell'attività imprenditoriale svolta» (comma 3, lettera a): un criterio di
+lettura, non un numero. I segnali con soglie numeriche dello stesso articolo (comma 4)
+riguardano debiti scaduti verso dipendenti, fornitori, banche ed enti, non questo rapporto.
+
+FinBeacon giudica il GI con le fasce del suo motore, le stesse che assegnano il giudizio nell'analisi:
+
+| GI (PFN/EBITDA)         | Giudizio di FinBeacon |
+| ----------------------- | --------------------- |
+| sotto 2 anni            | Ottimo                |
+| da 2 a meno di 3,5 anni | Buono                 |
+| da 3,5 a meno di 5 anni | Attenziona            |
+| 5 anni o più            | Critico               |
+| EBITDA zero o negativo  | Critico               |
+
+Sono fasce prudenziali del prodotto, non soglie di legge né parametri di una banca. Un settore
+ad alta intensità di capitale regge valori che in un'impresa di servizi sarebbero un segnale: è
+la lettura «rapportata alle caratteristiche dell'impresa» che chiede l'art. 3.
+
+## Cosa non dice il rapporto PFN/EBITDA?
+
+Il rapporto confronta un saldo a una data con un flusso di un anno, e ha tre limiti da tenere
+presenti davanti al cliente.
+
+1. **La data di chiusura.** La PFN al 31 dicembre può essere più bassa o più alta della media
+   dell'anno per incassi concentrati o stagionalità; se il dato infrannuale è disponibile, va
+   confrontato.
+2. **L'EBITDA non è cassa.** Prima di arrivare al rimborso del debito il margine paga imposte,
+   investimenti e variazioni del capitale circolante, che il rapporto ignora.
+3. **Guarda indietro.** L'art. 3, comma 3, lettera b), CCII chiede di verificare la
+   sostenibilità dei debiti almeno per i dodici mesi successivi: un rapporto calcolato sul
+   bilancio chiuso non basta a farlo. Per la tenuta di cassa dei prossimi mesi serve un
+   indicatore prospettico, come il DSCR a sei mesi, che si può provare con lo
+   [strumento di calcolo gratuito](/strumenti/calcolo-dscr-prospettico).
+
+Come FinBeacon mette insieme GI, DSCR e gli altri indicatori in un giudizio unico è descritto nel
+[metodo](/#metodo).
+
+## Cosa verificare, in quest'ordine
+
+1. Il segno dell'EBITDA: se è zero o negativo, il rapporto non misura un tempo di rientro.
+2. La composizione della PFN: voci D.1–D.5, meno C.IV e i titoli liquidabili di C.III.
+3. Le scelte dichiarate: leasing (art. 2427, n. 22), finanziamenti dei soci (art. 2467),
+   debiti verso il gruppo.
+4. L'EBITDA normalizzato: trattamento di B.10.d e dei componenti eccezionali indicati in nota
+   integrativa (art. 2427, n. 13).
+5. La coerenza fra esercizi: stesse scelte ogni anno, altrimenti l'andamento del rapporto non
+   significa niente.
+6. Il confronto con un indicatore di cassa prospettico, prima di parlare di sostenibilità del
+   debito per i dodici mesi successivi.
