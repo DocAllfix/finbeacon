@@ -73,7 +73,9 @@ voci:
     argomento: crisi
     formato: pilastro
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: adeguati-assetti-organizzativi
+    data: 2026-10-02
     verifica: "Art. 2086 c.c. comma 2 e art. 3 CCII nel testo vigente su Normattiva."
 
   - id: art-3-ccii
