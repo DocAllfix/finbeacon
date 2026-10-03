@@ -113,7 +113,9 @@ voci:
     argomento: indicatori
     formato: guida
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: pfn-ebitda
+    data: 2026-10-03
     verifica: "Le soglie di giudizio sono quelle del motore; se si citano soglie bancarie, serve la fonte."
 
   - id: indici-allerta
