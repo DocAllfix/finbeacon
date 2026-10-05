@@ -1,0 +1,200 @@
+---
+titolo: "ROS, ROI e ROE: formule e come si leggono insieme"
+descrizione: "Da quali voci degli artt. 2424 e 2425 c.c. si ricavano ROS, ROI e ROE, come si scompone il ROE e con quali fasce li giudica il motore di FinBeacon."
+data: 2026-10-07
+autore: alessandro-di-lonardo
+argomento: indicatori
+parolaChiave: "ros roi roe"
+fonti:
+  - titolo: "Codice civile, art. 2425 – Contenuto del conto economico (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2425"
+  - titolo: "Codice civile, art. 2424 – Contenuto dello stato patrimoniale (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2424"
+  - titolo: "Codice civile, art. 2427 – Contenuto della nota integrativa (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2427"
+  - titolo: "Codice civile, art. 2435-bis – Bilancio in forma abbreviata (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2435bis"
+  - titolo: "Codice civile, art. 2435-ter – Bilancio delle micro-imprese (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2435ter"
+  - titolo: "Codice della crisi d'impresa e dell'insolvenza, art. 3 (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art3"
+correlati: [pfn-ebitda]
+---
+
+Il ROS misura quanto reddito operativo resta su ogni euro di produzione, il ROI quanto rende il
+capitale investito nella gestione, il ROE quanto rende il capitale dei soci. Si leggono insieme
+perché sono legati da un'identità: il ROE è il ROI moltiplicato per la leva (capitale investito
+su patrimonio netto) e per il peso di tutto ciò che sta sotto il reddito operativo.
+
+Le voci di bilancio citate sono quelle degli schemi degli [artt. 2424](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2424)
+e [2425 c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2425)
+nel testo in vigore per i bilanci degli esercizi iniziati dal 1° gennaio 2016, dopo il D.Lgs. 18
+agosto 2015, n. 139, consultato su Normattiva il 5 ottobre 2026.
+
+## Come si calcolano ROS, ROI e ROE?
+
+Nessuna norma definisce questi tre indici: sono rapporti costruiti dall'analista con le voci
+degli schemi di bilancio. Le formule qui sotto sono quelle che usa il motore di FinBeacon, con il
+conto fatto sul cliente di esempio.
+
+<Formula chiave="ros" />
+
+<Formula chiave="roi" />
+
+<Formula chiave="roe" />
+
+Il motore riceve reddito operativo, valore della produzione, capitale investito, utile e
+patrimonio netto come dati inseriti dallo studio: non li ricava da solo dal bilancio. Le scelte
+di costruzione, quindi, restano del professionista, ed è da quelle che dipende se il dato è
+confrontabile da un anno all'altro e da un cliente all'altro.
+
+## Da quali voci di bilancio si ricavano?
+
+Il numeratore di ROS e ROI è il reddito operativo, che nello schema dell'art. 2425 c.c. è la riga
+«Differenza tra valore e costi della produzione (A − B)». Il ROE parte invece dall'utile, voce 21
+del conto economico, e lo divide per il patrimonio netto, voce A del passivo dell'art. 2424 c.c.
+
+| Grandezza               | Dove si trova                                                                 | Indice   |
+| ----------------------- | ----------------------------------------------------------------------------- | -------- |
+| Reddito operativo       | Art. 2425 c.c., riga «Differenza tra valore e costi della produzione (A − B)» | ROS, ROI |
+| Valore della produzione | Art. 2425 c.c., totale della voce A (voci da 1 a 5)                           | ROS      |
+| Ricavi (fatturato)      | Art. 2425 c.c., voce A.1 ricavi delle vendite e delle prestazioni             | Turnover |
+| Capitale investito      | Nessuna voce: si costruisce dall'attivo dell'art. 2424 c.c.                   | ROI      |
+| Utile (perdita)         | Art. 2425 c.c., voce 21 utile (perdite) dell'esercizio                        | ROE      |
+| Patrimonio netto        | Art. 2424 c.c., passivo, voce A (sottovoci da I a X)                          | ROE      |
+
+### Le scelte da dichiarare
+
+Tre punti cambiano il risultato e conviene scriverli accanto al numero quando lo si presenta a un
+cliente o a una banca.
+
+1. **I componenti eccezionali.** Lo schema dell'art. 2425 in vigore non ha un'area per i
+   componenti straordinari: il risultato prima delle imposte è (A − B ± C ± D). Un ricavo o un
+   costo eccezionale può quindi trovarsi nelle voci A e B, cioè dentro il reddito operativo. L'[art.
+   2427 c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2427),
+   al n. 13, chiede in nota integrativa l'importo e la natura dei singoli elementi di ricavo o di
+   costo di entità o incidenza eccezionali: è da lì che si parte per normalizzare ROS e ROI.
+2. **Il capitale investito.** Lo stato patrimoniale non ha una voce con questo nome. Si può usare
+   il totale dell'attivo oppure un capitale investito operativo; conta che sia coerente con il
+   numeratore. Se il capitale comprende immobilizzazioni finanziarie e liquidità, i cui proventi
+   stanno nella voce C, il reddito operativo non li remunera e il ROI ne esce più basso.
+3. **Il patrimonio netto di riferimento.** La voce A del passivo comprende già, alla sottovoce
+   IX, l'utile (perdita) dell'esercizio: lo stesso utile sta al numeratore e al denominatore del
+   ROE. Usare il patrimonio di fine anno, quello di inizio anno o la media è una scelta di
+   analisi, da tenere ferma nel tempo.
+
+### Bilancio abbreviato e micro-imprese
+
+Nel bilancio in forma abbreviata il conto economico conserva la riga A − B: l'[art. 2435-bis
+c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2435bis)
+consente di raggruppare alcune voci (fra cui A.2 con A.3 e le sottovoci a, b e c di B.10), non di
+togliere il risultato operativo, e la nota integrativa abbreviata deve comunque dare le
+informazioni del n. 13 dell'art. 2427. Le micro-imprese dell'[art. 2435-ter
+c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2435ter)
+sono invece esonerate dalla nota integrativa se riportano in calce allo stato patrimoniale le
+informazioni dei numeri 9 e 16 dell'art. 2427: in quel caso il dettaglio dei componenti
+eccezionali va chiesto al cliente.
+
+## Come si scompone il ROE?
+
+Il ROE è il prodotto di tre rapporti, ed è un'identità algebrica: semplificando, resta utile su
+patrimonio netto. Vale quando reddito operativo e capitale investito sono diversi da zero.
+
+**ROE = ROI × (Capitale investito / Patrimonio netto) × (Utile / Reddito operativo)**
+
+| Fattore                               | Cosa misura                                                                                    |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| ROI                                   | Il rendimento della gestione operativa sul capitale impiegato                                  |
+| Capitale investito / Patrimonio netto | La leva: quanto capitale l'impresa impiega per ogni euro dei soci                              |
+| Utile / Reddito operativo             | Quanto del reddito operativo arriva all'utile, dopo gestione finanziaria, rettifiche e imposte |
+
+Da qui si legge il confronto fra ROE e ROI. Il ROE supera il ROI quando il prodotto degli ultimi
+due fattori è maggiore di uno: la leva amplifica il rendimento più di quanto oneri finanziari e
+imposte lo riducano. Se il ROE è sotto il ROI, il debito o le imposte assorbono più di quanto la
+leva aggiunge. Il terzo fattore spiega anche un ROE alto con ROI basso: proventi da
+partecipazioni o rivalutazioni (voci C.15 e D.18) entrano nell'utile ma non nel reddito
+operativo.
+
+<Nota>
+
+Un ROE alto ottenuto con molta leva va letto accanto alla sostenibilità del debito. Il rapporto
+fra posizione finanziaria netta ed EBITDA è spiegato nella guida su
+[PFN/EBITDA](/guide/pfn-ebitda).
+
+</Nota>
+
+## ROS e turnover: le due leve del ROI
+
+Il ROI si scompone a sua volta in margine e rotazione: **ROI = ROS × (Valore della produzione /
+Capitale investito)**. Un ROI basso nasce da margini sottili, da un capitale che gira poco o da
+entrambi, e le due cause chiedono interventi diversi.
+
+FinBeacon misura la rotazione con il turnover, che usa i ricavi al posto del valore della
+produzione:
+
+<Formula chiave="turnover" />
+
+Per questo, nel motore, ROS per turnover coincide con il ROI solo quando i ricavi sono uguali al
+valore della produzione. La differenza è fatta dalle voci da A.2 a A.5: variazioni delle
+rimanenze di prodotti, dei lavori in corso su ordinazione, incrementi di immobilizzazioni per
+lavori interni, altri ricavi e proventi. In un'impresa con molto magazzino di prodotti o
+commesse pluriennali lo scarto non è trascurabile, e conviene guardarlo prima di attribuire un
+calo del ROI al margine o alla rotazione.
+
+## Quali valori sono buoni? Le fasce di FinBeacon
+
+Nessuna norma fissa soglie per ROS, ROI o ROE. L'[art. 3, comma 3, lettera a), del Codice della
+crisi](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art3)
+(testo in vigore dal 28 settembre 2024) chiede che gli assetti consentano di rilevare squilibri
+patrimoniali o economico-finanziari «rapportati alle specifiche caratteristiche dell'impresa e
+dell'attività imprenditoriale svolta»: un criterio di lettura, non un valore.
+
+FinBeacon giudica i tre indici con le fasce del suo motore:
+
+| Indice | Fasce del motore di FinBeacon                                                                        |
+| ------ | ---------------------------------------------------------------------------------------------------- |
+| ROS    | sotto 2%: Critico · da 2% a meno di 5%: Sufficiente · da 5% a meno di 10%: Buono · 10% o più: Ottimo |
+| ROI    | negativo: Perdita · da 0 a meno di 4%: Critico · da 4% a meno di 8%: Buono · 8% o più: Ottimo        |
+| ROE    | negativo: Critico · da 0 a meno di 5%: Basso · da 5% a meno di 15%: Buono · 15% o più: Ottimo        |
+
+Il motore legge lo stesso ROI anche contro una seconda soglia, del 5%, come segnale di capacità di
+autofinanziare la crescita. Sono fasce prudenziali del prodotto, non soglie di legge né
+parametri bancari: un'impresa ad alta intensità di capitale ha ROI strutturalmente più bassi di
+un'impresa di servizi, ed è la lettura «rapportata alle caratteristiche dell'impresa» che chiede
+l'art. 3.
+
+Nell'analisi estesa che accompagna il report, il motore segnala una leva finanziaria positiva
+quando il ROE supera il ROI di oltre quattro punti con ROI positivo, e indica che il capitale
+rende meno del suo costo medio quando il ROI scende sotto il 4%. Come questi giudizi entrano nel
+punteggio complessivo è descritto nel [metodo](/#metodo); il prospetto completo del cliente di
+esempio si vede nell'[anteprima](/#anteprima).
+
+## Quando i tre indici non si leggono
+
+Alcune combinazioni producono un numero che non ha il significato abituale, e vanno riconosciute
+prima di commentarlo.
+
+1. **Patrimonio netto negativo.** Il ROE cambia segno: una perdita divisa per un patrimonio
+   negativo dà un valore positivo. In questo caso il ROE non va letto, né da solo né con le
+   fasce di giudizio (comprese quelle di FinBeacon): il dato da guardare è il patrimonio netto.
+2. **Reddito operativo negativo o nullo.** ROS e ROI sono negativi o zero e la scomposizione del
+   ROE non si può fare, perché il terzo fattore ha il reddito operativo al denominatore.
+3. **Patrimonio netto molto piccolo.** Il ROE diventa grande per effetto del denominatore, anche
+   con utili modesti: è un segnale di sottocapitalizzazione prima che di redditività.
+4. **Componenti eccezionali rilevanti.** Un ROS che migliora per un ricavo eccezionale iscritto
+   fra le voci A non descrive la gestione ricorrente: si confronta con la nota integrativa (art. 2427, n. 13).
+
+## Cosa verificare, in quest'ordine
+
+1. Il segno del patrimonio netto e del reddito operativo: se uno dei due è negativo, ROE o
+   scomposizione non si leggono nel modo consueto.
+2. I componenti eccezionali dentro A − B, dalla nota integrativa (art. 2427, n. 13), o dal
+   cliente se è una micro-impresa senza nota integrativa.
+3. La definizione di capitale investito e di patrimonio netto di riferimento, e che sia la stessa
+   degli anni precedenti.
+4. Lo scarto fra ricavi (A.1) e valore della produzione (totale A), prima di separare l'effetto
+   margine dall'effetto rotazione.
+5. Il confronto fra ROE e ROI con la scomposizione: se la differenza viene dalla leva, dagli oneri
+   finanziari o da componenti sotto il reddito operativo.
+6. La sostenibilità del debito che sostiene la leva, con il rapporto
+   [PFN/EBITDA](/guide/pfn-ebitda).
