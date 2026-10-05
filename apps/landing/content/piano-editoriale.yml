@@ -88,7 +88,12 @@ voci:
     argomento: crisi
     formato: guida
     priorita: 1
-    stato: da-fare
+    stato: sospesa
+    motivo: >
+      Sospesa dalla routine il 05/10/2026: la guida adeguati-assetti-organizzativi (uscita il
+      02/10/2026) commenta già l'art. 3 CCII comma per comma (commi 1-4, testo in vigore dal
+      28/09/2024). Una guida separata sulla query «art 3 ccii» rischia di sovrapporsi: decidere
+      se tenerla con un taglio diverso o coprire la query con un aggiornamento di quella guida.
     verifica: "Testo vigente dell'art. 3 (commi 3 e 4) su Normattiva, con la data dell'ultima modifica."
 
   - id: pfn-ebitda
@@ -211,7 +216,9 @@ voci:
     argomento: indicatori
     formato: pilastro
     priorita: 2
-    stato: da-fare
+    stato: in-pr
+    slug: ros-roi-roe
+    data: 2026-10-07
 
   - id: dscr-da-bilancio
     titolo: "DSCR dal bilancio: calcolo sull'esercizio e limiti"
