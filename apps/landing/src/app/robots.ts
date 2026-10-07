@@ -28,7 +28,9 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: "*", allow: "/" },
       { userAgent: MOTORI_GENERATIVI, allow: "/" },
     ],
+    // Niente `host`: è una direttiva di Yandex che Google non riconosce e
+    // riporta come «sconosciuta» nel rapporto sul robots.txt. Il dominio
+    // canonico lo dicono già il canonical e i reindirizzamenti.
     sitemap: indirizzo("/sitemap.xml"),
-    host: indirizzo("/"),
   };
 }
