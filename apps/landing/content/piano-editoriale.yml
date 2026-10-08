@@ -199,7 +199,9 @@ voci:
     argomento: crisi
     formato: guida
     priorita: 2
-    stato: da-fare
+    stato: in-pr
+    slug: composizione-negoziata-crisi
+    data: 2026-10-10
 
   - id: ros-roi-roe
     titolo: "ROS, ROI e ROE: formule e come si leggono insieme"
