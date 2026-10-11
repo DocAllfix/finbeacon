@@ -807,3 +807,21 @@ html[data-colore="4"] mark.evidenzia::before {
     transform: scaleX(0);
   }
 }
+
+/*
+ * L'appoggio del pannello dell'apertura A: una trama a puntini (riferimento:
+ * Ramp), sfumata in alto, e un'ombra lunga e morbida tinta del testo, non nera.
+ */
+.puntinato {
+  background-image: radial-gradient(
+    color-mix(in oklch, var(--testo) 16%, transparent) 1px,
+    transparent 1.2px
+  );
+  background-size: 18px 18px;
+  mask-image: linear-gradient(to bottom, transparent, black 30%, black 75%, transparent);
+}
+.pannello-cliente {
+  box-shadow:
+    0 1px 0 color-mix(in oklch, var(--testo) 4%, transparent),
+    0 30px 60px -30px color-mix(in oklch, var(--testo) 22%, transparent);
+}

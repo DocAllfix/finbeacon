@@ -121,14 +121,6 @@ function TitoloApertura({ id }: { id: string }) {
   );
 }
 
-function Sottotitolo() {
-  return (
-    <p className="text-[clamp(1.125rem,1rem+0.5vw,1.375rem)] leading-snug font-medium text-balance">
-      {HERO.sottotitolo}
-    </p>
-  );
-}
-
 /*
  * Due verbi, mai confusi (29/09): «demo» è SOLO quella che si apre subito. Il
  * contatto umano si chiama «Parla con noi».
@@ -148,88 +140,101 @@ function Azioni({ className = "" }: { className?: string }) {
   );
 }
 
-function Didascalia({ testo, collegamento }: { testo: string; collegamento: string }) {
-  return (
-    <figcaption className="mt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-xs text-testo-attenuato">
-      <span>{testo}</span>
-      {URL_DEMO_PUBBLICA && (
-        <a
-          href={URL_DEMO_PUBBLICA}
-          className="inline-flex items-center gap-1.5 py-1 text-sm font-medium text-accento"
-        >
-          {collegamento}
-          <ArrowRight className="size-3.5" aria-hidden />
-        </a>
-      )}
-    </figcaption>
-  );
-}
-
 type PropsApertura = { idTitolo: string; prova?: Apertura };
 
 /**
- * A · Numero. Il protagonista è il dato che Evalis Deck non può mostrare: il
- * DSCR prospettico che scende sotto soglia mentre il punteggio dell'anno è
- * ancora discreto. Cifra, soglia e serie escono dal motore.
+ * A · Numero, ricomposta (11/10) sui riferimenti di Linear e Ramp: un solo asse
+ * a sinistra, titolo su due righe larghe, una riga con sottotitolo e azioni, e
+ * sotto UN oggetto solo, largo quanto la pagina e tagliato dalla piega. Prima
+ * erano due oggetti (la cifra e la scheda del grafico) in gara col titolo.
+ *
+ * Il pannello è la scheda di un cliente come la vede lo studio: la cifra con
+ * soglia e giudizio a sinistra, la serie dei sei mesi a destra. Tutto dal motore.
  */
 function AperturaNumero({ idTitolo, prova }: PropsApertura) {
   const dscr = ANALISI_ESEMPIO.indicatori.dscrProspettico!;
   const sintesi = sinteticoDaScore(ANALISI_ESEMPIO.score);
+  const giudizio = ANALISI_ESEMPIO.giudizi.dscrPro;
   return (
     <section data-apertura={prova} aria-labelledby={idTitolo} className="relative overflow-x-clip">
-      <div className="carta-rigata pointer-events-none absolute inset-0" aria-hidden />
-      <Contenitore className="relative pt-14 pb-20 md:pt-20 lg:pt-24 lg:pb-24">
-        <div className="grid gap-y-7 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-end lg:gap-x-16">
-          <div>
-            <Occhiello>{HERO.occhiello}</Occhiello>
-            <TitoloApertura id={idTitolo} />
-          </div>
-          <div className="lg:pb-2">
-            <Sottotitolo />
-            <Azioni className="mt-7" />
-          </div>
+      <Contenitore className="pt-14 md:pt-20 lg:pt-24">
+        <Occhiello>{HERO.occhiello}</Occhiello>
+        <h1
+          id={idTitolo}
+          className="mt-4 max-w-[17ch] text-[clamp(2.5rem,1.2rem+4.6vw,5rem)] leading-[1.02] font-semibold tracking-[-0.035em] text-balance"
+        >
+          {evidenziato(HERO.titolo, "la crisi")}
+        </h1>
+        <div className="mt-7 flex flex-col gap-y-7 lg:flex-row lg:items-center lg:justify-between lg:gap-x-12">
+          <p className="max-w-[40rem] text-[clamp(1.0625rem,1rem+0.35vw,1.3125rem)] leading-snug text-pretty text-testo-attenuato">
+            {HERO.sottotitolo}
+          </p>
+          <Azioni className="shrink-0" />
         </div>
-
-        <figure className="mt-14 grid gap-8 border-t border-testo pt-7 lg:mt-16 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.3fr)] lg:gap-14">
-          <div>
-            <p className="text-sm text-testo-attenuato">
-              DSCR prospettico a 6 mesi · {CLIENTE_ESEMPIO}
-            </p>
-            {/* Nel carattere dei titoli: in Plex Mono, a questa misura, la virgola apriva un buco. */}
-            <p className="mt-2 font-[family-name:var(--font-titoli)] text-[clamp(5rem,3rem+7vw,9.5rem)] leading-[0.9] font-semibold tracking-[-0.04em] text-critico-testo tabular-nums">
-              {formatNumero(dscr, 2)}
-            </p>
-            <p className="mt-4 max-w-[26rem] text-[0.9375rem] leading-[1.6] text-testo-attenuato">
-              Sotto la soglia di{" "}
-              <span className="cifre text-testo">{formatNumero(SOGLIA_DSCR6M, 2)}</span> (art. 3
-              CCII), mentre il punteggio sull&apos;esercizio è ancora{" "}
-              <span className="cifre text-testo">{ANALISI_ESEMPIO.score}</span>, «
-              {sintesi.label.toLowerCase()}». La cassa lo dice prima del bilancio.
-            </p>
-          </div>
-          <div>
-            <div
-              data-cornice
-              className="rounded-[var(--radius-scheda)] border border-bordo bg-superficie px-5 pt-4 pb-4 text-testo sm:px-6"
-            >
-              <div className="mb-4 flex items-baseline justify-between gap-4 text-xs text-testo-attenuato">
-                <span>Sei rilevazioni mensili</span>
-                <span className="cifre">soglia {formatNumero(SOGLIA_DSCR6M, 2)}</span>
-              </div>
-              <GraficoSoglia
-                valori={SERIE_DSCR6M.map((r) => r.dscr6m)}
-                soglia={SOGLIA_DSCR6M}
-                etichette={SERIE_DSCR6M.map((r) => r.mese)}
-                animato
-              />
-            </div>
-            <Didascalia
-              testo="Esempio con dati inventati, calcolato dal motore di FinBeacon."
-              collegamento="Provalo nella demo, su un altro cliente di esempio"
-            />
-          </div>
-        </figure>
       </Contenitore>
+
+      {/* Il pannello sta su una fascia a puntini che parte a metà della sua altezza: lo «appoggia». */}
+      <div className="relative mt-14 pb-20 lg:mt-16 lg:pb-24">
+        <div
+          className="puntinato pointer-events-none absolute inset-x-0 top-24 bottom-0"
+          aria-hidden
+        />
+        <Contenitore className="relative">
+          <figure className="pannello-cliente m-0 overflow-hidden rounded-[0.9rem] border border-bordo bg-superficie">
+            <figcaption className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-b border-filetto px-5 py-3.5 sm:px-7">
+              <span className="text-[0.9375rem] font-semibold">{CLIENTE_ESEMPIO}</span>
+              <span className="flex items-center gap-3 text-sm text-testo-attenuato">
+                Punteggio sull&apos;esercizio
+                <span className="cifre text-testo">{ANALISI_ESEMPIO.score}</span>
+                <span className="text-xs">
+                  <Giudizio tono={sintesi.tone}>{sintesi.label}</Giudizio>
+                </span>
+              </span>
+            </figcaption>
+            <div className="grid lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.5fr)]">
+              <div className="border-b border-filetto px-5 py-7 sm:px-7 lg:border-r lg:border-b-0 lg:py-9">
+                <p className="text-sm text-testo-attenuato">DSCR prospettico a 6 mesi</p>
+                <p className="mt-2 font-[family-name:var(--font-titoli)] text-[clamp(4rem,2.6rem+4.5vw,6.25rem)] leading-[0.9] font-semibold tracking-[-0.045em] text-critico-testo tabular-nums">
+                  {formatNumero(dscr, 2)}
+                </p>
+                <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-testo-attenuato">
+                  <span className="text-xs">
+                    <Giudizio tono={giudizio.tone}>{giudizio.label}</Giudizio>
+                  </span>
+                  <span className="cifre">
+                    soglia {formatNumero(SOGLIA_DSCR6M, 2)} · art. 3 CCII
+                  </span>
+                </p>
+                <p className="mt-5 max-w-[22rem] text-[0.9375rem] leading-[1.6] text-testo-attenuato">
+                  Il bilancio dice «{sintesi.label.toLowerCase()}». La cassa dei prossimi sei mesi
+                  non copre il debito.
+                </p>
+              </div>
+              <div data-cornice className="px-5 pt-6 pb-5 text-testo sm:px-7 lg:pt-9">
+                <p className="mb-5 text-sm text-testo-attenuato">Una rilevazione al mese</p>
+                <GraficoSoglia
+                  valori={SERIE_DSCR6M.map((r) => r.dscr6m)}
+                  soglia={SOGLIA_DSCR6M}
+                  etichette={SERIE_DSCR6M.map((r) => r.mese)}
+                  animato
+                />
+              </div>
+            </div>
+          </figure>
+          <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-xs text-testo-attenuato">
+            <span>Esempio con dati inventati, calcolato dal motore di FinBeacon.</span>
+            {URL_DEMO_PUBBLICA && (
+              <a
+                href={URL_DEMO_PUBBLICA}
+                className="inline-flex items-center gap-1.5 py-1 text-sm font-medium text-accento"
+              >
+                Provalo nella demo, su un altro cliente di esempio
+                <ArrowRight className="size-3.5" aria-hidden />
+              </a>
+            )}
+          </div>
+        </Contenitore>
+      </div>
     </section>
   );
 }
