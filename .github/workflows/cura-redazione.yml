@@ -9,7 +9,8 @@ name: Cura della redazione
 #    sul ramo dati `dati/suggerimenti`, che non è protetto e non va mai unito.
 #    La routine le legge da lì per rifornire il piano (skill redazione, passo 1).
 #
-# 2. SENTINELLA. Ogni giorno: se negli ultimi 8 giorni non è stata aperta
+# 2. SENTINELLA. Ogni giorno: se l'ultima esecuzione di «Pubblica le guide» o
+#    delle ricerche è fallita, se negli ultimi 8 giorni non è stata aperta
 #    nessuna PR «articolo», o se una PR «articolo» è aperta da più di 5 giorni,
 #    apre una issue con l'etichetta «redazione-ferma» (GitHub manda la email).
 #    Una sola issue aperta per volta; si chiude da sola quando torna tutto a posto.
@@ -23,6 +24,7 @@ permissions:
   contents: write
   issues: write
   pull-requests: read
+  actions: read
 
 concurrency:
   group: cura-redazione
@@ -84,6 +86,28 @@ jobs:
             });
             const articoli = tutte.filter((p) => p.labels.some((l) => l.name === "articolo"));
             const problemi = [];
+
+            // Un flusso che FALLISCE si vede prima di uno che non produce (11/10,
+            // dalla sessione FlowTest CRM: là un guasto è rimasto invisibile 11
+            // giorni). La routine della redazione gira su claude.ai e da qui non
+            // si vede; i due flussi GitHub sì: l'ultima esecuzione deve essere riuscita.
+            for (const [file, nome] of [
+              ["pubblica-guide.yml", "Pubblica le guide"],
+              ["cura-redazione.yml", "Ricerche per il piano editoriale"],
+            ]) {
+              const { data } = await github.rest.actions.listWorkflowRuns({
+                owner, repo, workflow_id: file, status: "completed", per_page: 10,
+              });
+              // Per cura-redazione conta l'ultima esecuzione della domenica o manuale,
+              // non quella della sentinella stessa.
+              const esecuzioni = data.workflow_runs.filter(
+                (r) => r.id !== context.runId && (file !== "cura-redazione.yml" || r.event === "workflow_dispatch" || new Date(r.created_at).getUTCDay() === 0),
+              );
+              const ultima = esecuzioni[0];
+              if (ultima && !["success", "skipped"].includes(ultima.conclusion)) {
+                problemi.push(`L'ultima esecuzione di «${nome}» è finita con «${ultima.conclusion}» (${ultima.created_at.slice(0, 10)}): ${ultima.html_url}`);
+              }
+            }
 
             const ultima = articoli[0];
             const giorniDallUltima = ultima ? (ora - new Date(ultima.created_at)) / GIORNO : Infinity;
