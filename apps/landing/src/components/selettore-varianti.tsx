@@ -53,7 +53,7 @@ export function SelettoreVarianti() {
             className={voce}
           >
             <span className="cifre uppercase">{a.id}</span>
-            <span className="ml-1">{a.nome}</span>
+            <span className="ml-1 max-sm:sr-only">{a.nome}</span>
           </button>
         ))}
       </div>

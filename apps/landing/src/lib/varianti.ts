@@ -1,5 +1,5 @@
 /**
- * Le tre aperture in prova (11/10). Il committente sceglie sull'anteprima di
+ * Le aperture in prova (11/10; B e C tolte dopo la scelta della A). Il committente sceglie sull'anteprima di
  * Vercel con il selettore in basso; poi resta solo quella scelta e questo file
  * se ne va.
  *
@@ -8,8 +8,10 @@
  */
 export const APERTURE = [
   { id: "a", nome: "Numero" },
-  { id: "b", nome: "Schermata" },
-  { id: "c", nome: "Affiancata" },
+  { id: "d", nome: "Prova" },
+  { id: "e", nome: "Linea" },
+  { id: "f", nome: "Mesi" },
+  { id: "g", nome: "Portafoglio" },
 ] as const;
 
 export type Apertura = (typeof APERTURE)[number]["id"];
@@ -24,8 +26,9 @@ export const APERTURA_PREDEFINITA: Apertura = "a";
 export const COLORI = [
   { id: "0", nome: "Attuale" },
   { id: "1", nome: "Dettaglio" },
-  { id: "2", nome: "Faro" },
-  { id: "3", nome: "Inchiostro" },
+  { id: "2", nome: "Grafite" },
+  { id: "3", nome: "Velina" },
+  { id: "4", nome: "Evidenziatore" },
 ] as const;
 
 export type Colore = (typeof COLORI)[number]["id"];

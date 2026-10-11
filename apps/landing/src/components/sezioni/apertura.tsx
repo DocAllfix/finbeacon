@@ -3,18 +3,26 @@ import { join } from "node:path";
 
 import { FASCE_SALUTE, formatNumero, SOGLIE_GIUDIZIO } from "@finbeacon/engine";
 import { ArrowRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
 import { CollegamentoAFilo, Contenitore, Occhiello, PulsantePrimario } from "@/components/base";
 import { GraficoSoglia } from "@/components/grafico-soglia";
+import { Giudizio } from "@/components/giudizio";
 import { Logotipo } from "@/components/marchio";
+import { ProvaDscr } from "@/components/prova-dscr";
 import { URL_DEMO_PUBBLICA } from "@/lib/configurazione";
 import { HERO, VOCI_MENU } from "@/lib/contenuti";
-import { ANALISI_ESEMPIO, CLIENTE_ESEMPIO, SERIE_DSCR6M, SOGLIA_DSCR6M } from "@/lib/esempio";
+import {
+  ANALISI_ESEMPIO,
+  CLIENTE_ESEMPIO,
+  SERIE_DSCR6M,
+  SOGLIA_DSCR6M,
+  STUDIO_ESEMPIO,
+} from "@/lib/esempio";
 import { sinteticoDaScore } from "@/lib/fasce";
 import { guidePubblicate } from "@/lib/guide";
 import { ORDINE } from "@/lib/indicatori";
+import { PORTAFOGLIO_ESEMPIO } from "@/lib/portafoglio-esempio";
 import { APERTURA_PREDEFINITA, APERTURE, VARIANTI_IN_PROVA, type Apertura } from "@/lib/varianti";
 
 /** Il report d'esempio si offre solo se il file c'è davvero: niente link rotti. */
@@ -89,13 +97,26 @@ export function Intestazione() {
  * paragrafo lungo e la rassicurazione sono scesi nel Prospetto.
  */
 
+/** Il segno dell'evidenziatore sulle parole chiave: invisibile, salvo la palette 4. */
+function evidenziato(testo: string, parole: string) {
+  const i = testo.indexOf(parole);
+  if (i < 0) return testo;
+  return (
+    <>
+      {testo.slice(0, i)}
+      <mark className="evidenzia">{parole}</mark>
+      {testo.slice(i + parole.length)}
+    </>
+  );
+}
+
 function TitoloApertura({ id }: { id: string }) {
   return (
     <h1
       id={id}
       className="mt-4 text-[clamp(2.5rem,1.3rem+4.4vw,4.75rem)] leading-[1.02] font-semibold tracking-[-0.03em] text-balance"
     >
-      {HERO.titolo}
+      {evidenziato(HERO.titolo, "la crisi")}
     </h1>
   );
 }
@@ -214,84 +235,222 @@ function AperturaNumero({ idTitolo, prova }: PropsApertura) {
 }
 
 /**
- * Lo schermo vero della demo, che esce dal bordo destro della pagina: niente
- * finto prodotto disegnato in div. Sopra 1024px il margine negativo porta
- * l'immagine fino al bordo della finestra; la sezione taglia il resto.
+ * Testata delle aperture D-G: titolo a sinistra, sottotitolo a destra, nessun
+ * pulsante. Le azioni vengono DOPO l'oggetto (il dato, la leva, i mesi, il
+ * portafoglio): niente blocco «titolo + sottotitolo + due pulsanti», che
+ * l'utente non vuole (resoconto di Axialoop, 11/10).
  */
-const FINO_AL_BORDO = "-mr-5 sm:-mr-8 lg:mr-[min(-2rem,calc(34rem_-_50vw))]";
+function Testata({ idTitolo }: { idTitolo: string }) {
+  return (
+    <div className="grid gap-y-6 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:items-end lg:gap-x-16">
+      <div>
+        <Occhiello>{HERO.occhiello}</Occhiello>
+        <TitoloApertura id={idTitolo} />
+      </div>
+      <p className="max-w-[26rem] text-[clamp(1.0625rem,1rem+0.3vw,1.25rem)] leading-snug text-testo-attenuato lg:pb-2">
+        {HERO.sottotitolo}
+      </p>
+    </div>
+  );
+}
 
-/** B · Schermata. Titolo largo sopra, la pagina d'analisi della demo sotto, a tutta larghezza. */
-function AperturaSchermata({ idTitolo, prova }: PropsApertura) {
+/** D · Prova. Il primo gesto sulla pagina è muovere la cassa e vedere il DSCR passare la soglia. */
+function AperturaProva({ idTitolo, prova }: PropsApertura) {
+  return (
+    <section data-apertura={prova} aria-labelledby={idTitolo} className="relative overflow-x-clip">
+      <Contenitore className="pt-14 pb-20 md:pt-20 lg:pt-24 lg:pb-24">
+        <Testata idTitolo={idTitolo} />
+        <div className="mt-12 grid gap-y-8 lg:mt-14 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-end lg:gap-x-16">
+          <div className="order-2 lg:order-1">
+            <p className="max-w-[24rem] text-[0.9375rem] leading-[1.6] text-testo-attenuato">
+              {CLIENTE_ESEMPIO}: il punteggio dell&apos;anno è {ANALISI_ESEMPIO.score}, ma la cassa
+              dei prossimi sei mesi non copre il debito. Prova a cambiarla.
+            </p>
+            <Azioni className="mt-7" />
+          </div>
+          <div className="order-1 lg:order-2">
+            <ProvaDscr />
+          </div>
+        </div>
+      </Contenitore>
+    </section>
+  );
+}
+
+/**
+ * E · Linea. Una sola riga attraversa la pagina: la soglia. Il titolo sta
+ * sopra, il DSCR del cliente è caduto sotto. Tipografia pura, niente grafico.
+ */
+function AperturaLinea({ idTitolo, prova }: PropsApertura) {
+  const dscr = ANALISI_ESEMPIO.indicatori.dscrProspettico!;
   return (
     <section data-apertura={prova} aria-labelledby={idTitolo} className="relative overflow-x-clip">
       <Contenitore className="pt-14 md:pt-20 lg:pt-24">
-        <div className="grid gap-y-7 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-end lg:gap-x-16">
-          <div>
-            <Occhiello>{HERO.occhiello}</Occhiello>
-            <TitoloApertura id={idTitolo} />
-          </div>
-          <div className="lg:pb-2">
-            <Sottotitolo />
-            <Azioni className="mt-7" />
-          </div>
-        </div>
+        <Testata idTitolo={idTitolo} />
       </Contenitore>
-      <Contenitore className="pt-12 pb-20 lg:pt-16 lg:pb-24">
-        <figure className={`m-0 ${FINO_AL_BORDO}`}>
-          <div className="overflow-hidden rounded-l-[0.9rem] border border-r-0 border-bordo">
-            <Image
-              src="/apertura/analisi.webp"
-              alt="La pagina di analisi di un cliente nella demo di FinBeacon: punteggio 49 su 100, «Equilibrio fragile», l'azione prioritaria e gli indicatori con il loro giudizio."
-              width={2880}
-              height={1800}
-              sizes="(min-width: 1024px) 85vw, 100vw"
-              priority={!prova || prova === APERTURA_PREDEFINITA}
-              className="h-auto w-full max-lg:aspect-[4/3] max-lg:object-cover max-lg:object-[28%_0%]"
-            />
-          </div>
-          <Didascalia
-            testo="La demo, così come si apre: un cliente di esempio con dati inventati."
-            collegamento="Aprila e prova su questo cliente"
-          />
-        </figure>
+      {/* La linea va da bordo a bordo della finestra: è la soglia, non un filetto di sezione. */}
+      <Contenitore className="mt-12 flex justify-end lg:mt-16">
+        <p className="cifre pb-2 text-xs text-testo-attenuato">
+          soglia {formatNumero(SOGLIA_DSCR6M, 2)} · art. 3 CCII
+        </p>
+      </Contenitore>
+      <div className="linea-soglia h-0.5 w-full origin-left bg-testo" aria-hidden />
+      <Contenitore className="grid gap-y-8 pt-5 pb-20 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:items-end lg:gap-x-16 lg:pb-24">
+        <div>
+          <p className="text-sm text-testo-attenuato">
+            {CLIENTE_ESEMPIO} · DSCR prospettico a 6 mesi
+          </p>
+          <p className="linea-caduta mt-1 font-[family-name:var(--font-titoli)] text-[clamp(6rem,3rem+12vw,13rem)] leading-[0.85] font-semibold tracking-[-0.05em] text-critico-testo tabular-nums">
+            {formatNumero(dscr, 2)}
+          </p>
+        </div>
+        <div className="lg:pb-4">
+          <p className="max-w-[24rem] text-[0.9375rem] leading-[1.6] text-testo-attenuato">
+            Il punteggio dell&apos;anno dice {ANALISI_ESEMPIO.score}. La cassa è già sotto la linea:
+            FinBeacon lo segnala sei mesi prima.
+          </p>
+          <Azioni className="mt-7" />
+        </div>
       </Contenitore>
     </section>
   );
 }
 
-/** C · Affiancata. Testo a sinistra; a destra gli indicatori della demo, tagliati dal bordo. */
-function AperturaAffiancata({ idTitolo, prova }: PropsApertura) {
+/**
+ * F · Sei mesi. La cassa letta come un registro: sei rilevazioni, una per
+ * mese, e il filetto rosso dove il DSCR passa sotto soglia. Valori dal motore.
+ */
+function AperturaMesi({ idTitolo, prova }: PropsApertura) {
+  const primoSotto = SERIE_DSCR6M.findIndex((r) => r.dscr6m < SOGLIA_DSCR6M);
   return (
     <section data-apertura={prova} aria-labelledby={idTitolo} className="relative overflow-x-clip">
-      <Contenitore className="grid items-center gap-x-14 gap-y-12 pt-14 pb-20 md:pt-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:pt-24 lg:pb-28">
-        <div className="max-w-[34rem]">
-          <Occhiello>{HERO.occhiello}</Occhiello>
-          <TitoloApertura id={idTitolo} />
-          <div className="mt-6">
-            <Sottotitolo />
-          </div>
-          <Azioni className="mt-9" />
-        </div>
-        <figure className={`m-0 ${FINO_AL_BORDO}`}>
-          <div className="overflow-hidden rounded-l-[0.9rem] border border-r-0 border-bordo">
-            <Image
-              src="/apertura/indicatori.webp"
-              alt="Nella demo di FinBeacon: grado di indebitamento buono, DSCR sull'esercizio 0,86 critico e DSCR prospettico a 6 mesi 0,39, sotto la soglia CNDCEC di 1,1, con le azioni consigliate."
-              width={1560}
-              height={1273}
-              sizes="(min-width: 1024px) 55vw, 100vw"
-              priority={!prova || prova === APERTURA_PREDEFINITA}
-              className="h-auto w-full"
-            />
-          </div>
-          <Didascalia testo="Dalla demo: dati inventati." collegamento="Aprila nella demo" />
+      <Contenitore className="pt-14 pb-20 md:pt-20 lg:pt-24 lg:pb-24">
+        <Testata idTitolo={idTitolo} />
+        <figure className="mt-12 lg:mt-16">
+          <figcaption className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-t border-testo pt-3 text-sm text-testo-attenuato">
+            <span>{CLIENTE_ESEMPIO} · DSCR prospettico, una rilevazione al mese</span>
+            <span className="cifre text-xs">soglia {formatNumero(SOGLIA_DSCR6M, 2)}</span>
+          </figcaption>
+          <ol className="mesi-registro mt-6 grid grid-cols-3 gap-y-8 lg:grid-cols-6">
+            {SERIE_DSCR6M.map((r, i) => {
+              const sotto = r.dscr6m < SOGLIA_DSCR6M;
+              return (
+                <li
+                  key={r.mese}
+                  style={{ "--i": i } as React.CSSProperties}
+                  className={`relative pr-3 pl-4 ${i === primoSotto ? "border-l-2 border-critico" : "border-l border-filetto"}`}
+                >
+                  <span className="cifre block text-xs text-testo-attenuato">{r.mese}</span>
+                  <span
+                    className={`mt-1 block font-[family-name:var(--font-titoli)] text-[clamp(2.25rem,1.4rem+3vw,4rem)] leading-none font-semibold tracking-[-0.03em] tabular-nums ${sotto ? "text-critico-testo" : "text-testo"}`}
+                  >
+                    {formatNumero(r.dscr6m, 2)}
+                  </span>
+                  {i === primoSotto && (
+                    <span className="mt-2 block text-xs font-medium text-critico-testo">
+                      sotto soglia
+                    </span>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
         </figure>
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-x-10 gap-y-6">
+          <p className="max-w-[30rem] text-[0.9375rem] leading-[1.6] text-testo-attenuato">
+            Il bilancio dell&apos;anno non è cambiato. La cassa sì, mese dopo mese.
+          </p>
+          <Azioni />
+        </div>
       </Contenitore>
     </section>
   );
 }
 
-const COMPOSIZIONI = { a: AperturaNumero, b: AperturaSchermata, c: AperturaAffiancata } as const;
+/**
+ * G · Portafoglio. «Cliente per cliente» preso alla lettera: lo studio vede
+ * tutti i suoi clienti in un registro, e la riga che scende sotto soglia si
+ * accende. Cinque clienti inventati, giudizi dal motore.
+ */
+function AperturaPortafoglio({ idTitolo, prova }: PropsApertura) {
+  return (
+    <section data-apertura={prova} aria-labelledby={idTitolo} className="relative overflow-x-clip">
+      <Contenitore className="pt-14 pb-20 md:pt-20 lg:pt-24 lg:pb-24">
+        <Testata idTitolo={idTitolo} />
+        <figure className="mt-12 lg:mt-16">
+          <table className="w-full border-t border-testo text-left">
+            <caption className="sr-only">
+              Portafoglio di uno studio di esempio, con dati inventati
+            </caption>
+            <thead>
+              <tr className="text-xs text-testo-attenuato">
+                <th scope="col" className="py-3 font-normal">
+                  {STUDIO_ESEMPIO}
+                </th>
+                <th scope="col" className="hidden py-3 text-right font-normal sm:table-cell">
+                  Punteggio
+                </th>
+                <th scope="col" className="py-3 text-right font-normal">
+                  DSCR 6 mesi
+                </th>
+                <th scope="col" className="hidden py-3 pl-6 font-normal md:table-cell">
+                  Giudizio
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {PORTAFOGLIO_ESEMPIO.map((c, i) => {
+                const dscr = c.analisi.indicatori.dscrProspettico;
+                const g = c.analisi.giudizi.dscrPro;
+                return (
+                  <tr
+                    key={c.nome}
+                    style={{ "--i": i } as React.CSSProperties}
+                    className={`registro-riga border-t border-filetto ${c.dscr6mSotto ? "bg-critico-fondo" : ""}`}
+                  >
+                    <th
+                      scope="row"
+                      className={`py-4 pr-4 pl-3 text-[0.9375rem] ${c.dscr6mSotto ? "font-semibold" : "font-medium"}`}
+                    >
+                      {c.nome}
+                    </th>
+                    <td className="cifre hidden py-4 text-right sm:table-cell">
+                      {c.analisi.score}
+                    </td>
+                    <td
+                      className={`cifre py-4 pr-3 text-right text-lg ${c.dscr6mSotto ? "font-semibold text-critico-testo" : ""}`}
+                    >
+                      {dscr === null ? "n.d." : formatNumero(dscr, 2)}
+                    </td>
+                    <td className="hidden py-4 pl-6 text-xs md:table-cell">
+                      <Giudizio tono={g.tone}>{g.label}</Giudizio>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </figure>
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-x-10 gap-y-6">
+          <p className="max-w-[30rem] text-[0.9375rem] leading-[1.6] text-testo-attenuato">
+            {PORTAFOGLIO_ESEMPIO.filter((c) => c.dscr6mSotto).length} clienti su{" "}
+            {PORTAFOGLIO_ESEMPIO.length} hanno la cassa sotto soglia: si chiamano per primi. Dati
+            inventati.
+          </p>
+          <Azioni />
+        </div>
+      </Contenitore>
+    </section>
+  );
+}
+
+const COMPOSIZIONI = {
+  a: AperturaNumero,
+  d: AperturaProva,
+  e: AperturaLinea,
+  f: AperturaMesi,
+  g: AperturaPortafoglio,
+} as const;
 
 export function Hero() {
   if (!VARIANTI_IN_PROVA) {

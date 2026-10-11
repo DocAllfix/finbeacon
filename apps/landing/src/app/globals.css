@@ -614,41 +614,97 @@
 
 /*
  * Le aperture in prova (solo anteprima, vedi src/lib/varianti.ts): senza
- * scelta si vede la A; ?v=b o ?v=c la sostituiscono. Fuori anteprima la
- * pagina ne contiene una sola e queste regole non trovano niente.
+ * scelta si vede la A; ?v=d|e|f|g la sostituisce. Fuori anteprima la pagina ne
+ * contiene una sola, senza attributo, e queste regole non trovano niente.
  */
-[data-apertura]:not([data-apertura="a"]),
-html[data-variante="b"] [data-apertura="a"],
-html[data-variante="c"] [data-apertura="a"] {
+[data-apertura]:not([data-apertura="a"]) {
   display: none;
 }
-html[data-variante="b"] [data-apertura="b"],
-html[data-variante="c"] [data-apertura="c"] {
+html[data-variante]:not([data-variante="a"]) [data-apertura="a"] {
+  display: none;
+}
+html[data-variante="d"] [data-apertura="d"],
+html[data-variante="e"] [data-apertura="e"],
+html[data-variante="f"] [data-apertura="f"],
+html[data-variante="g"] [data-apertura="g"] {
   display: block;
 }
 
+/* Il segno dell'evidenziatore nel titolo: neutro, lo colora solo la palette 4. */
+mark.evidenzia {
+  background: none;
+  color: inherit;
+}
+
 /*
- * Le palette in prova (solo anteprima, ?c=1|2|3, vedi src/lib/varianti.ts).
- * Sostituiscono i RUOLI, non i token di DESIGN.md. Misurato l'11/10: fondo
- * bianco freddo, nero freddo, grigio freddo, un solo accento verde-petrolio sui
- * pulsanti e due bande scure erano lo stesso sistema di Evalis Deck.
+ * Movimento delle aperture (regole di Emil Kowalski, catalogo Axialoop):
+ * solo transform e opacity, sotto i 500 ms, curva forte, stagger 40 ms, una
+ * volta sola. Con movimento ridotto non parte niente e tutto è già al suo posto.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .linea-soglia {
+    animation: linea-traccia 520ms cubic-bezier(0.23, 1, 0.32, 1) 120ms both;
+  }
+  .linea-caduta {
+    animation: linea-cade 480ms cubic-bezier(0.23, 1, 0.32, 1) 420ms both;
+  }
+  .mesi-registro > li,
+  .registro-riga {
+    animation: riga-entra 320ms cubic-bezier(0.23, 1, 0.32, 1) both;
+    animation-delay: calc(160ms + var(--i, 0) * 40ms);
+  }
+  .prova-cifra {
+    animation: cifra-pop 160ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+  .prova-segno {
+    transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+}
+@keyframes linea-traccia {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes linea-cade {
+  from {
+    opacity: 0;
+    transform: translateY(-0.35em);
+  }
+}
+@keyframes riga-entra {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes cifra-pop {
+  from {
+    opacity: 0.55;
+    transform: scale(0.97);
+  }
+}
+
+/*
+ * Le palette in prova (solo anteprima, ?c=1..4). Sostituiscono i RUOLI, non i
+ * token di DESIGN.md. Misurato l'11/10: fondo bianco freddo, nero freddo,
+ * grigio freddo, un solo accento verde-petrolio sui pulsanti e due bande scure
+ * erano lo stesso sistema di Evalis Deck. Base scelta dall'utente: la 1.
  */
 
-/* 1 · Dettaglio: pulsanti in inchiostro, ottanio solo per link e dati, niente bande scure. */
-html[data-colore="1"] .tasto-primario {
+/* Comune a tutte: pulsanti in inchiostro, nessuna banda scura (la sezione notte torna chiara). */
+html[data-colore] .tasto-primario {
   background-color: var(--testo);
   color: var(--fondo);
 }
-html[data-colore="1"] .notte,
-html[data-colore="2"] .notte {
-  --fondo: var(--tonale-prova, var(--sidebar-carta));
-  --superficie: var(--superficie-carta);
-  --tonale: var(--fondo-carta);
-  --testo: var(--inchiostro-scuro);
-  --testo-attenuato: var(--inchiostro-attenuato-carta);
-  --bordo: var(--bordo-carta);
-  --filetto: var(--filetto-carta);
-  --accento: var(--accento-prova, var(--ottanio-profondo));
+html[data-colore] .notte {
+  --fondo: var(--tonale-pagina, var(--sidebar-carta));
+  --superficie: var(--superficie-pagina, var(--superficie-carta));
+  --tonale: var(--fondo-pagina, var(--fondo-carta));
+  --testo: var(--testo-pagina, var(--inchiostro-scuro));
+  --testo-attenuato: var(--attenuato-pagina, var(--inchiostro-attenuato-carta));
+  --bordo: var(--bordo-pagina, var(--bordo-carta));
+  --filetto: var(--filetto-pagina, var(--filetto-carta));
+  --accento: var(--accento-pagina, var(--ottanio-profondo));
   --su-accento: oklch(0.985 0.005 210);
   --ottimo: var(--verde-ottimo-carta);
   --ottimo-testo: oklch(0.4 0.1 155);
@@ -665,49 +721,89 @@ html[data-colore="2"] .notte {
   color-scheme: light;
 }
 
-/* 2 · Faro: grigi neutri, senza blu né beige, e un solo arancio segnale. */
-html[data-colore="2"] {
-  --fondo: oklch(0.982 0.002 90);
-  --superficie: oklch(0.996 0.001 90);
-  --tonale: oklch(0.953 0.003 90);
-  --tonale-prova: oklch(0.953 0.003 90);
-  --testo: oklch(0.19 0.004 90);
-  --testo-attenuato: oklch(0.45 0.005 90);
-  --bordo: oklch(0.885 0.004 90);
-  --filetto: oklch(0.925 0.003 90);
-  --accento: oklch(0.56 0.18 42);
-  --accento-prova: oklch(0.56 0.18 42);
+/*
+ * 2 · Grafite: via il blu dai grigi (era la metà della somiglianza). Grigi
+ * neutri, quasi senza tinta; l'ottanio resta per link e dati, il rosso critico
+ * diventa l'unico colore forte della pagina. Una grana leggerissima toglie la
+ * piattezza da schermo (redesign-existing-projects: «flat, zero texture»).
+ */
+html[data-colore="2"],
+html[data-colore="4"] {
+  --fondo: oklch(0.975 0.001 95);
+  --superficie: oklch(0.993 0.001 95);
+  --tonale: oklch(0.945 0.002 95);
+  --testo: oklch(0.2 0.003 95);
+  --testo-attenuato: oklch(0.46 0.004 95);
+  --bordo: oklch(0.875 0.003 95);
+  --filetto: oklch(0.915 0.002 95);
+  --fondo-pagina: oklch(0.975 0.001 95);
+  --superficie-pagina: oklch(0.993 0.001 95);
+  --tonale-pagina: oklch(0.945 0.002 95);
+  --testo-pagina: oklch(0.2 0.003 95);
+  --attenuato-pagina: oklch(0.46 0.004 95);
+  --bordo-pagina: oklch(0.875 0.003 95);
+  --filetto-pagina: oklch(0.915 0.002 95);
 }
-html[data-colore="2"] .notte {
-  --testo: oklch(0.19 0.004 90);
-  --testo-attenuato: oklch(0.45 0.005 90);
-  --bordo: oklch(0.885 0.004 90);
-  --filetto: oklch(0.925 0.003 90);
-}
-html[data-colore="2"] .tasto-primario {
-  background-color: oklch(0.72 0.17 52);
-  color: oklch(0.18 0.02 50);
+html[data-colore="2"] body::after,
+html[data-colore="4"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 
-/* 3 · Inchiostro: blu cobalto pieno nell'apertura e nell'anteprima, segnale ambra. */
+/*
+ * 3 · Velina: il fondo non è più bianco ma una velina d'ottanio chiarissima,
+ * su cui le superfici bianche si staccano come fogli. Evalis è bianco: qui il
+ * colore del marchio diventa il campo, non il pulsante.
+ */
 html[data-colore="3"] {
-  --accento: oklch(0.45 0.17 262);
+  --fondo: oklch(0.955 0.02 200);
+  --superficie: oklch(0.995 0.004 200);
+  --tonale: oklch(0.93 0.026 200);
+  --testo: oklch(0.21 0.025 215);
+  --testo-attenuato: oklch(0.43 0.03 210);
+  --bordo: oklch(0.86 0.025 205);
+  --filetto: oklch(0.9 0.022 205);
+  --accento: oklch(0.45 0.09 210);
+  --fondo-pagina: oklch(0.955 0.02 200);
+  --superficie-pagina: oklch(0.995 0.004 200);
+  --tonale-pagina: oklch(0.93 0.026 200);
+  --testo-pagina: oklch(0.21 0.025 215);
+  --attenuato-pagina: oklch(0.43 0.03 210);
+  --bordo-pagina: oklch(0.86 0.025 205);
+  --filetto-pagina: oklch(0.9 0.022 205);
+  --accento-pagina: oklch(0.45 0.09 210);
 }
-html[data-colore="3"] section[aria-labelledby^="titolo-principale"],
-html[data-colore="3"] .notte {
-  --fondo: oklch(0.36 0.15 264);
-  --superficie: oklch(0.41 0.14 264);
-  --tonale: oklch(0.32 0.13 264);
-  --testo: oklch(0.975 0.008 264);
-  --testo-attenuato: oklch(0.84 0.04 264);
-  --bordo: oklch(0.54 0.11 264);
-  --filetto: oklch(0.47 0.12 264);
-  --accento: oklch(0.83 0.14 78);
-  --su-accento: oklch(0.2 0.04 264);
-  --critico: oklch(0.78 0.13 30);
-  --critico-testo: oklch(0.86 0.1 30);
-  --critico-fondo: oklch(0.42 0.1 20);
-  color-scheme: dark;
-  background-color: var(--fondo);
-  color: var(--testo);
+
+/*
+ * 4 · Evidenziatore: la Grafite, più il gesto del commercialista sul bilancio
+ * stampato: l'evidenziatore giallo. Solo su «la crisi» nel titolo e sulla
+ * soglia. Non un colore d'interfaccia: un segno a mano.
+ */
+html[data-colore="4"] mark.evidenzia {
+  position: relative;
+  isolation: isolate;
+}
+html[data-colore="4"] mark.evidenzia::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: auto -0.06em 0.06em;
+  height: 0.42em;
+  background: oklch(0.9 0.16 100 / 0.9);
+  transform-origin: left;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-colore="4"] mark.evidenzia::before {
+    animation: evidenzia 520ms cubic-bezier(0.23, 1, 0.32, 1) 300ms both;
+  }
+}
+@keyframes evidenzia {
+  from {
+    transform: scaleX(0);
+  }
 }
