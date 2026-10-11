@@ -165,6 +165,11 @@
     outline-offset: 3px;
     border-radius: 2px;
   }
+  /* I titoli grandi nel loro carattere; titoletti, corpo e cifre restano Plex. */
+  h1,
+  h2 {
+    font-family: var(--font-titoli), var(--font-sans);
+  }
   ::selection {
     background-color: color-mix(in oklch, var(--accento) 22%, transparent);
   }
@@ -393,16 +398,36 @@
 
 /*
  * I due gesti della pagina: il tasto primario e il collegamento a filo
- * (componenti in `components/base.tsx`).
+ * (componenti in `components/base.tsx`). Il tasto è un rettangolo pieno con la
+ * sola parola (11/10): la cella scura con la freccia incassata era il tasto di
+ * serie dei modelli generati. Movimento secondo Emil Kowalski: pressione
+ * scale(0.97) in 120 ms, la freccia si muove solo con un puntatore vero.
  */
 .tasto-primario {
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.16);
+  transition:
+    transform 120ms cubic-bezier(0.23, 1, 0.32, 1),
+    filter 160ms ease-out;
 }
 .tasto-primario:active {
-  translate: 0 1px;
+  transform: scale(0.97);
 }
-.tasto-freccia-entra {
-  translate: -2.5rem 0;
+@media (hover: hover) and (pointer: fine) {
+  .tasto-primario:hover {
+    filter: brightness(1.08);
+  }
+  .tasto-freccia {
+    transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .tasto-primario:hover .tasto-freccia,
+  .tasto-primario:focus-visible .tasto-freccia {
+    transform: translateX(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tasto-primario,
+  .tasto-freccia {
+    transition: none;
+  }
 }
 .a-filo > span::after {
   content: "";
@@ -427,24 +452,8 @@
   scale: 1 1;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .tasto-freccia,
-  .tasto-freccia-entra {
-    transition: translate 320ms var(--ease-uscita);
-  }
-  .tasto-primario:hover .tasto-freccia {
-    translate: 2.5rem 0;
-  }
-  .tasto-primario:hover .tasto-freccia-entra {
-    translate: 0 0;
-  }
   .a-filo > span::after {
     transition: scale 320ms var(--ease-uscita);
-  }
-}
-/* Senza movimento la freccia non si scambia: resta ferma, e quella di riserva non si vede. */
-@media (prefers-reduced-motion: reduce) {
-  .tasto-freccia-entra {
-    display: none;
   }
 }
 
@@ -605,4 +614,38 @@
     opacity: 1;
     transform: scaleY(1);
   }
+}
+
+/*
+ * Il cursore del pannello dell'apertura: la cifra ricalcolata entra con un
+ * piccolo scatto (Emil Kowalski: solo transform e opacity, 160 ms).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .prova-cifra {
+    animation: cifra-pop 160ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  }
+}
+@keyframes cifra-pop {
+  from {
+    opacity: 0.55;
+    transform: scale(0.97);
+  }
+}
+
+/*
+ * L'appoggio del pannello dell'apertura A: una trama a puntini (riferimento:
+ * Ramp), sfumata in alto, e un'ombra lunga e morbida tinta del testo, non nera.
+ */
+.puntinato {
+  background-image: radial-gradient(
+    color-mix(in oklch, var(--testo) 16%, transparent) 1px,
+    transparent 1.2px
+  );
+  background-size: 18px 18px;
+  mask-image: linear-gradient(to bottom, transparent, black 30%, black 75%, transparent);
+}
+.pannello-cliente {
+  box-shadow:
+    0 1px 0 color-mix(in oklch, var(--testo) 4%, transparent),
+    0 30px 60px -30px color-mix(in oklch, var(--testo) 22%, transparent);
 }

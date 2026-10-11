@@ -16,10 +16,15 @@ export function Contenitore({
   return <div className={`mx-auto w-full max-w-[72rem] px-5 sm:px-8 ${className}`}>{children}</div>;
 }
 
+/*
+ * L'occhiello è una frase, non un'etichetta: niente trattino e niente
+ * maiuscoletto spaziato (11/10). Trattino + maiuscole sopra un titolo enorme era
+ * la formula di Evalis Deck e di metà delle pagine generate; le maiuscole
+ * spaziate restano alle micro-etichette dentro il prodotto.
+ */
 export function Occhiello({ children, id }: { children: React.ReactNode; id?: string }) {
   return (
-    <p id={id} className="etichetta flex items-center gap-3 text-testo-attenuato">
-      <span className="h-px w-6 bg-testo-attenuato" aria-hidden />
+    <p id={id} className="text-[0.9375rem] leading-snug font-medium text-accento">
       {children}
     </p>
   );
@@ -37,7 +42,7 @@ export function Titolo2({
   return (
     <h2
       id={id}
-      className={`mt-5 text-[clamp(2rem,1.35rem+2.5vw,3.25rem)] leading-[1.06] tracking-[-0.025em] font-semibold text-balance ${className}`}
+      className={`mt-3 max-w-[22ch] text-[clamp(2rem,1.35rem+2.5vw,3.25rem)] leading-[1.06] tracking-[-0.02em] font-semibold text-balance ${className}`}
     >
       {children}
     </h2>
@@ -64,14 +69,11 @@ const PULSANTE =
 /**
  * L'azione principale: una sola per schermata (DESIGN.md), nell'accento.
  *
- * Due parti, come un tasto con la sua freccia incassata: l'etichetta, un
- * filetto, e una cella più scura con la freccia. Al passaggio la freccia esce a
- * destra e una nuova entra da sinistra (solo transform, spento senza
- * movimento). Nessuna ombra esterna: solo un filo di luce sul bordo alto, che
- * dà al tasto una materia senza farlo galleggiare (Regola del Piano Unico).
- *
- * Sostituisce il rettangolo pieno con la freccia accanto al testo (29/09): era
- * il pulsante di qualunque modello generato, e sembrava tale.
+ * Un rettangolo pieno con la parola e una freccia piccola, che al passaggio di
+ * un puntatore vero scivola di qualche pixel (11/10); nel tasto compatto della
+ * testata la freccia non c'è. Alla pressione il tasto si stringe appena
+ * (scale 0.97). Sostituisce la cella scura con la freccia
+ * incassata, che era il tasto di serie dei modelli generati e sembrava tale.
  */
 export function PulsantePrimario({
   href,
@@ -82,20 +84,13 @@ export function PulsantePrimario({
   compatto?: boolean;
   children: React.ReactNode;
 }) {
-  const cella = compatto ? "size-7" : "size-9";
   return (
     <Link
       href={href}
-      className={`tasto-primario group/tasto inline-flex items-center rounded-[var(--radius-pulsante)] bg-accento font-medium whitespace-nowrap text-su-accento ${compatto ? "h-10 gap-3 pr-1.5 pl-4 text-sm" : "h-12 gap-4 pr-1.5 pl-5 text-[0.9375rem]"}`}
+      className={`tasto-primario inline-flex items-center gap-2 rounded-[var(--radius-pulsante)] bg-accento font-medium whitespace-nowrap text-su-accento ${compatto ? "h-10 px-4 text-sm" : "h-12 pr-5 pl-6 text-[0.9375rem]"}`}
     >
-      <span>{children}</span>
-      <span
-        className={`relative grid ${cella} shrink-0 place-items-center overflow-hidden rounded-[calc(var(--radius-pulsante)-0.15rem)] bg-[oklch(0.1_0.02_230/0.22)]`}
-        aria-hidden
-      >
-        <ArrowRight className="tasto-freccia size-4" />
-        <ArrowRight className="tasto-freccia-entra absolute size-4" />
-      </span>
+      {children}
+      {!compatto && <ArrowRight className="tasto-freccia size-4" aria-hidden />}
     </Link>
   );
 }

@@ -37,21 +37,16 @@ export function GiroProdotto({
                 aria-expanded={aperta}
                 aria-controls={idTesto}
                 onClick={() => setAttivo(i)}
-                className="group grid w-full cursor-pointer grid-cols-[2.5rem_minmax(0,1fr)] items-baseline gap-x-4 py-5 text-left"
+                className="group w-full cursor-pointer py-5 text-left"
               >
-                <span
-                  className={`cifre text-sm ${aperta ? "text-accento" : "text-testo-attenuato"}`}
-                  aria-hidden
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+                {/* Senza numeri (11/10): restano solo ai passi, che sono una sequenza. */}
                 <span
                   className={`text-[1.0625rem] leading-snug font-semibold ${aperta ? "" : "text-testo-attenuato group-hover:text-testo"}`}
                 >
                   {v.titolo}
                 </span>
               </button>
-              <div id={idTesto} hidden={!aperta} className="pb-6 pl-[3.5rem]">
+              <div id={idTesto} hidden={!aperta} className="pb-6">
                 <p className="max-w-[34rem] text-[0.9375rem] leading-[1.6] text-testo-attenuato">
                   {v.testo}
                 </p>

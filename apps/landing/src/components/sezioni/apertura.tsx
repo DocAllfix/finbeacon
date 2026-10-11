@@ -2,16 +2,17 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { FASCE_SALUTE, formatNumero, SOGLIE_GIUDIZIO } from "@finbeacon/engine";
-import { ArrowDownToLine, ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-import { CollegamentoAFilo, Contenitore, PulsantePrimario } from "@/components/base";
-import { Deck } from "@/components/deck";
+import { CollegamentoAFilo, Contenitore, Occhiello, PulsantePrimario } from "@/components/base";
 import { Logotipo } from "@/components/marchio";
+import { PannelloCliente } from "@/components/pannello-cliente";
 import { URL_DEMO_PUBBLICA } from "@/lib/configurazione";
-import { guidePubblicate } from "@/lib/guide";
 import { HERO, VOCI_MENU } from "@/lib/contenuti";
+import { guidePubblicate } from "@/lib/guide";
 import { ORDINE } from "@/lib/indicatori";
+import { SOGLIA_DSCR6M } from "@/lib/esempio";
 
 /** Il report d'esempio si offre solo se il file c'è davvero: niente link rotti. */
 const REPORT_ESEMPIO = "/report-esempio.pdf";
@@ -77,91 +78,95 @@ export function Intestazione() {
   );
 }
 
+/*
+ * L'apertura (11/10, scelta del committente fra le prove della PR #36).
+ *
+ * Prima: testo a sinistra e una cornice scura con un documento inclinato e
+ * schede sospese, la stessa composizione di Evalis Deck. Ora, sui riferimenti
+ * di Linear e Ramp: titolo e una scheda di tre righe, una riga ponte che dice
+ * cosa fare, e un solo pannello largo, la scheda di un cliente con la leva
+ * della liquidità. La demo si offre dentro il pannello, dopo averlo provato.
+ *
+ * Due verbi, mai confusi (29/09): «demo» è SOLO quella che si apre subito; il
+ * contatto umano si chiama «Parla con noi». Senza demo configurata, il tasto
+ * del pannello diventa il contatto.
+ */
 export function Hero() {
+  const righe = [
+    ["Indicatori di bilancio", `${ORDINE.length}, con soglia e giudizio`],
+    ["DSCR a 6 mesi", `soglia ${formatNumero(SOGLIA_DSCR6M, 2)} · art. 3 CCII`],
+    ["Report", "per il cliente e per la banca"],
+  ] as const;
   return (
     <section aria-labelledby="titolo-principale" className="relative overflow-x-clip">
-      {/* Carta rigata: il bilancio stampato, come trama. Solo decorativa. */}
-      <div className="carta-rigata pointer-events-none absolute inset-0" aria-hidden />
-      <Contenitore className="relative grid items-center gap-x-14 gap-y-12 pt-14 pb-20 md:pt-20 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.15fr)] lg:pt-24 lg:pb-28">
-        <div className="max-w-[36rem]">
-          <p className="etichetta flex items-center gap-3 text-testo-attenuato">
-            <span className="h-px w-6 bg-testo-attenuato" aria-hidden />
-            {HERO.occhiello}
-          </p>
-          <h1
-            id="titolo-principale"
-            className="mt-6 text-[clamp(2.25rem,1.3rem+3.6vw,4rem)] leading-[1.03] font-semibold tracking-[-0.03em] text-balance"
-          >
-            {HERO.titolo}
-          </h1>
-          <p className="mt-6 text-[clamp(1.125rem,1rem+0.5vw,1.375rem)] leading-snug font-medium text-balance">
-            {HERO.sottotitolo}
-          </p>
-          <p className="mt-5 text-[1.0625rem] leading-[1.65] text-testo-attenuato">{HERO.testo}</p>
-
-          {/*
-           * Due verbi, mai confusi (29/09): «demo» è SOLO quella che si apre
-           * subito. Il contatto umano si chiama «Parla con noi». Prima il
-           * primario era «Richiedi una demo» e portava a un modulo, mentre la
-           * demo provabile stava in fondo alla pagina come «Entra nella demo»:
-           * due cose opposte con lo stesso nome.
-           */}
-          <div className="mt-9 flex flex-wrap items-center gap-x-7 gap-y-3">
-            {URL_DEMO_PUBBLICA ? (
-              <>
-                <PulsantePrimario href={URL_DEMO_PUBBLICA}>Prova la demo</PulsantePrimario>
-                <CollegamentoAFilo href="#richiesta">Parla con noi</CollegamentoAFilo>
-              </>
-            ) : (
-              <PulsantePrimario href="#richiesta">Parla con noi</PulsantePrimario>
-            )}
+      <Contenitore className="pt-14 md:pt-20 lg:pt-24">
+        <div className="grid gap-y-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-end lg:gap-x-16">
+          <div>
+            <Occhiello>{HERO.occhiello}</Occhiello>
+            <h1
+              id="titolo-principale"
+              className="mt-4 max-w-[17ch] text-[clamp(2.5rem,1.2rem+4.6vw,5rem)] leading-[1.02] font-semibold tracking-[-0.035em] text-balance"
+            >
+              {HERO.titolo}
+            </h1>
           </div>
-          {URL_DEMO_PUBBLICA && (
-            <p className="mt-3 text-sm text-testo-attenuato">
-              Si apre subito, senza registrazione: un portafoglio di esempio con dati inventati.
-            </p>
-          )}
-
-          <div className="mt-6 flex flex-col gap-2 text-sm text-testo-attenuato">
-            {reportEsempioPresente && (
-              <a
-                href={REPORT_ESEMPIO}
-                className="inline-flex items-center gap-2 self-start py-1 font-medium text-testo underline decoration-bordo underline-offset-4 hover:decoration-testo"
+          <dl className="border-t border-testo text-[0.9375rem]">
+            {righe.map(([voce, valore]) => (
+              <div
+                key={voce}
+                className="flex items-baseline justify-between gap-4 border-b border-filetto py-3"
               >
-                <ArrowDownToLine className="size-4" aria-hidden />
-                Scarica un report d&apos;esempio (PDF)
-              </a>
-            )}
-            <p>{HERO.rassicurazione}</p>
-          </div>
+                <dt className="text-testo-attenuato">{voce}</dt>
+                <dd className="text-right font-medium">{valore}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
 
-        {/* Il primo dei due momenti notte: parla il prodotto. */}
-        {/*
-         * Tutta la cornice porta alla demo. NON allo stesso cliente: la demo
-         * apre i suoi clienti inventati, e Meccanica Ardesia vive solo qui,
-         * quindi la didascalia dice «un altro cliente». Il link è uno solo, nella didascalia, e si allarga a
-         * coprire la cornice con un ::after, così la cornice non diventa un
-         * enorme link senza nome e la tastiera trova una fermata sola.
-         */}
-        <figure
-          className={`deck-hero notte relative m-0 rounded-[1.1rem] px-4 pt-6 pb-4 sm:px-6 sm:pt-8 sm:pb-5 ${URL_DEMO_PUBBLICA ? "has-[a:focus-visible]:outline-2 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-accento" : ""}`}
-        >
-          <Deck />
-          <figcaption className="mt-4 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-xs text-testo-attenuato">
-            <span>Esempio con dati inventati, calcolato dal motore di FinBeacon.</span>
-            {URL_DEMO_PUBBLICA && (
-              <a
-                href={URL_DEMO_PUBBLICA}
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-accento outline-none after:absolute after:inset-0 after:z-30 after:rounded-[1.1rem]"
-              >
-                Provalo nella demo, su un altro cliente di esempio
-                <ArrowRight className="deck-freccia size-3.5" aria-hidden />
-              </a>
-            )}
-          </figcaption>
-        </figure>
+        {/* Il ponte: dice che il pannello qui sotto si muove. */}
+        <div className="mt-10 flex flex-col gap-y-4 border-t border-filetto pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-x-8">
+          <p className="flex items-center gap-2.5 text-[0.9375rem] font-medium">
+            <ArrowDown className="size-4 shrink-0 text-accento" aria-hidden />
+            Prova su un cliente d&apos;esempio: sposta la sua liquidità.
+          </p>
+          {URL_DEMO_PUBBLICA && (
+            <Link
+              href="#richiesta"
+              className="inline-flex shrink-0 items-center gap-2 py-3 text-[0.9375rem] font-medium text-testo-attenuato hover:text-testo"
+            >
+              Parla con noi
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          )}
+        </div>
       </Contenitore>
+
+      {/* Il pannello sta su una fascia a puntini che parte a metà della sua altezza: lo «appoggia». */}
+      <div className="relative mt-10 pb-20 lg:pb-24">
+        <div
+          className="puntinato pointer-events-none absolute inset-x-0 top-24 bottom-0"
+          aria-hidden
+        />
+        <Contenitore className="relative">
+          <PannelloCliente
+            piede={
+              <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-filetto px-5 py-4 sm:px-7">
+                <p className="text-[0.9375rem] text-testo-attenuato">
+                  Hai mosso un cliente inventato. Nella demo c&apos;è un portafoglio intero.
+                </p>
+                {URL_DEMO_PUBBLICA ? (
+                  <PulsantePrimario href={URL_DEMO_PUBBLICA}>Apri la demo</PulsantePrimario>
+                ) : (
+                  <PulsantePrimario href="#richiesta">Parla con noi</PulsantePrimario>
+                )}
+              </div>
+            }
+          />
+          <p className="mt-4 text-xs text-testo-attenuato">
+            Esempio con dati inventati, calcolato dal motore di FinBeacon.
+          </p>
+        </Contenitore>
+      </div>
     </section>
   );
 }
@@ -189,14 +194,20 @@ export function Prospetto() {
     },
   ];
   return (
-    <section aria-labelledby="titolo-prospetto" className="bg-tonale">
-      <Contenitore className="grid gap-8 py-14 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] md:gap-14">
-        <h2
-          id="titolo-prospetto"
-          className="text-xl leading-snug font-semibold text-balance md:text-2xl"
-        >
-          Cosa calcola FinBeacon, per ogni cliente dello studio.
-        </h2>
+    // Fascia sottile (11/10): dopo il pannello dell'apertura un secondo blocco tonale pesava troppo.
+    <section aria-labelledby="titolo-prospetto">
+      <Contenitore className="grid gap-8 border-t border-filetto py-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] md:gap-14">
+        {/* Il paragrafo lungo e la rassicurazione stavano nell'apertura (fino all'11/10). */}
+        <div>
+          <h2
+            id="titolo-prospetto"
+            className="text-xl leading-snug font-semibold text-balance md:text-2xl"
+          >
+            Cosa calcola FinBeacon, per ogni cliente dello studio.
+          </h2>
+          <p className="mt-4 text-[0.9375rem] leading-[1.65] text-testo-attenuato">{HERO.testo}</p>
+          <p className="mt-4 text-sm text-testo-attenuato">{HERO.rassicurazione}</p>
+        </div>
         <dl className="border-t border-bordo">
           {voci.map((v) => (
             <div key={v.voce} className="flex items-baseline gap-4 border-b border-filetto py-3.5">

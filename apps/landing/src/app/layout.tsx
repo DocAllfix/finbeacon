@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, Instrument_Sans } from "next/font/google";
 
 import { Comparse } from "@/components/comparse";
 import { HERO } from "@/lib/contenuti";
@@ -28,6 +28,17 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
   // Solo cifre e brevi etichette: non serve prima del testo.
   preload: false,
+});
+
+/*
+ * Il carattere dei titoli (11/10): una grottesca sobria, stretta il giusto, che
+ * né Evalis Deck (Bricolage, Geist) né la Academy (DM) usano. Il corpo resta Plex.
+ */
+const instrumentSans = Instrument_Sans({
+  variable: "--font-titoli",
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  display: "swap",
 });
 
 const DESCRIZIONE =
@@ -74,7 +85,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     // e non si eredita dai figli: le mancate corrispondenze vere restano visibili.
     <html
       lang="it"
-      className={`${plexSans.variable} ${plexMono.variable}`}
+      className={`${plexSans.variable} ${plexMono.variable} ${instrumentSans.variable}`}
       suppressHydrationWarning
     >
       <head>

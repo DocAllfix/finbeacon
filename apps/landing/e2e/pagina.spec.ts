@@ -72,7 +72,9 @@ test("il velo del grafico non esce mai dalla scheda mentre si anima", async ({ p
   let peggiore = 0;
   for (let t = 0; t < 18; t++) {
     const fuori = await page.evaluate(() => {
-      const cornice = document.querySelector("figure.deck-hero")!.getBoundingClientRect();
+      const cornice = document
+        .querySelector("section[aria-labelledby=titolo-principale] [data-cornice]")!
+        .getBoundingClientRect();
       const veli = [...document.querySelectorAll(".soglia-velo")]
         .map((v) => v.getBoundingClientRect())
         .filter((r) => r.width > 0);
@@ -94,7 +96,7 @@ test("nessuna immagine raster sopra la piega: l'elemento più grande è testo", 
 test("l'anteprima calcola con il motore vero, e torna ai valori di partenza", async ({ page }) => {
   const spia = osservaConsole(page);
   await page.goto("/#anteprima");
-  const leva = page.getByRole("slider", { name: "Liquidità iniziale" });
+  const leva = page.locator("#anteprima").getByRole("slider", { name: "Liquidità iniziale" });
   await leva.focus();
   // 30 passi da 1.000 € in su, da tastiera
   for (let i = 0; i < 30; i++) await page.keyboard.press("ArrowRight");
@@ -123,13 +125,17 @@ test("una sola cosa si chiama demo, e ci si arriva dal primo pulsante", async ({
   const corpo = await page.locator("body").innerText();
   expect(corpo).not.toMatch(/Richiedi una demo|Entra nella demo/);
   const hero = page.locator("section[aria-labelledby=titolo-principale]");
-  const prova = hero.getByRole("link", { name: /^Prova la demo/ });
-  if ((await prova.count()) > 0) {
-    // Con la demo configurata: primario, esterno, e la cornice porta allo stesso posto.
-    const dove = await prova.getAttribute("href");
+  /*
+   * Dall'11/10 il tasto della demo sta nel pannello dell'apertura («Apri la
+   * demo»), e la testata ripete «Prova la demo»: tutti e due portano allo
+   * stesso indirizzo esterno.
+   */
+  const apri = hero.getByRole("link", { name: /^Apri la demo/ });
+  if ((await apri.count()) > 0) {
+    const dove = await apri.getAttribute("href");
     expect(dove).toMatch(/^https:\/\//);
     await expect(
-      hero.getByRole("link", { name: "Provalo nella demo, su un altro cliente di esempio" }),
+      page.getByRole("banner").getByRole("link", { name: /^Prova la demo/ }),
     ).toHaveAttribute("href", dove!);
     await expect(hero.getByRole("link", { name: "Parla con noi" })).toHaveAttribute(
       "href",
@@ -163,7 +169,7 @@ test("ogni leva muove qualcosa, e ogni numero a destra risponde a una leva", asy
 
   const mossi = new Set<number>();
   for (const nome of ["Liquidità iniziale", "Reddito operativo", "Posizione finanziaria netta"]) {
-    const leva = page.getByRole("slider", { name: nome });
+    const leva = page.locator("#anteprima").getByRole("slider", { name: nome });
     await leva.focus();
     for (let i = 0; i < 20; i++) await page.keyboard.press("ArrowLeft");
     const dopo = await valori();
