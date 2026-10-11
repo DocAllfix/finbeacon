@@ -880,3 +880,15 @@ html[data-tasti] header .tasto-primario > span[aria-hidden] {
     transition: none;
   }
 }
+
+/* Il testo sopra il pannello in prova (solo anteprima, ?x=2..5). */
+[data-testa-v]:not([data-testa-v="1"]),
+html[data-testa] [data-testa-v="1"] {
+  display: none;
+}
+html[data-testa="2"] [data-testa-v="2"],
+html[data-testa="3"] [data-testa-v="3"],
+html[data-testa="4"] [data-testa-v="4"],
+html[data-testa="5"] [data-testa-v="5"] {
+  display: block;
+}

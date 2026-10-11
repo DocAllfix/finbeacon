@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { APERTURA_PREDEFINITA, APERTURE, COLORI, TASTI } from "@/lib/varianti";
+import { APERTURA_PREDEFINITA, APERTURE, COLORI, TASTI, TESTE } from "@/lib/varianti";
 
 /**
  * Il selettore delle prove, solo sull'anteprima (vedi `lib/varianti.ts`):
@@ -11,8 +11,8 @@ import { APERTURA_PREDEFINITA, APERTURE, COLORI, TASTI } from "@/lib/varianti";
  */
 type Gruppo = {
   etichetta: string;
-  attributo: "variante" | "colore" | "tasti";
-  parametro: "v" | "c" | "t";
+  attributo: "variante" | "colore" | "tasti" | "testa";
+  parametro: "v" | "c" | "t" | "x";
   voci: readonly { id: string; nome: string }[];
   /** Il valore che vale «nessuna scelta»: toglie l'attributo invece di scriverlo. */
   base: string;
@@ -36,7 +36,8 @@ const GRUPPI: Gruppo[] = [
     base: "0",
     nomi: false,
   },
-  { etichetta: "Tasti", attributo: "tasti", parametro: "t", voci: TASTI, base: "1", nomi: true },
+  { etichetta: "Tasti", attributo: "tasti", parametro: "t", voci: TASTI, base: "1", nomi: false },
+  { etichetta: "Testa", attributo: "testa", parametro: "x", voci: TESTE, base: "1", nomi: true },
 ];
 
 export function SelettoreVarianti() {

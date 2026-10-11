@@ -39,6 +39,15 @@ export const TASTI = [
   { id: "5", nome: "Coppia" },
 ] as const;
 
+/** Il testo sopra il pannello in prova (11/10). «1» è quello attuale. */
+export const TESTE = [
+  { id: "1", nome: "Attuale" },
+  { id: "2", nome: "Concreto" },
+  { id: "3", nome: "Domanda" },
+  { id: "4", nome: "Bilancio e cassa" },
+  { id: "5", nome: "Scheda" },
+] as const;
+
 export type Tasti = (typeof TASTI)[number]["id"];
 
 export type Colore = (typeof COLORI)[number]["id"];

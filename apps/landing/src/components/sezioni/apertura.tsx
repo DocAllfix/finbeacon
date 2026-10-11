@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { FASCE_SALUTE, formatNumero, SOGLIE_GIUDIZIO } from "@finbeacon/engine";
-import { ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { CollegamentoAFilo, Contenitore, Occhiello, PulsantePrimario } from "@/components/base";
@@ -12,10 +12,12 @@ import { URL_DEMO_PUBBLICA } from "@/lib/configurazione";
 import { HERO, VOCI_MENU } from "@/lib/contenuti";
 import { guidePubblicate } from "@/lib/guide";
 import { ORDINE } from "@/lib/indicatori";
+import { ANALISI_ESEMPIO, SOGLIA_DSCR6M } from "@/lib/esempio";
 import {
   APERTURA_PREDEFINITA,
   APERTURE,
   TASTI,
+  TESTE,
   VARIANTI_IN_PROVA,
   type Apertura,
 } from "@/lib/varianti";
@@ -278,24 +280,160 @@ type PropsApertura = { idTitolo: string; prova?: Apertura };
  * Il pannello è la scheda di un cliente come la vede lo studio: la cifra con
  * soglia e giudizio a sinistra, la serie dei sei mesi a destra. Tutto dal motore.
  */
+/*
+ * Il testo sopra il pannello, in prova (11/10, ?x=). Fuori anteprima resta il
+ * primo. Il ponte rende esplicito che il pannello si muove: prima lo diceva
+ * solo «Spostala», in piccolo dentro il pannello.
+ */
+const CLASSE_TITOLO =
+  "max-w-[17ch] text-[clamp(2.5rem,1.2rem+4.6vw,5rem)] leading-[1.02] font-semibold tracking-[-0.035em] text-balance";
+const CLASSE_SOTTO =
+  "max-w-[40rem] text-[clamp(1.0625rem,1rem+0.35vw,1.3125rem)] leading-snug text-pretty text-testo-attenuato";
+
+function Ponte({ testo }: { testo: string }) {
+  return (
+    <div className="mt-10 flex flex-col gap-y-4 border-t border-filetto pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-x-8">
+      <p className="flex items-center gap-2.5 text-[0.9375rem] font-medium">
+        <ArrowDown className="size-4 shrink-0 text-accento" aria-hidden />
+        {testo}
+      </p>
+      <Azioni className="shrink-0" />
+    </div>
+  );
+}
+
+function TestaAttuale({ id }: { id: string }) {
+  return (
+    <>
+      <Occhiello>{HERO.occhiello}</Occhiello>
+      <h1 id={id} className={`mt-4 ${CLASSE_TITOLO}`}>
+        {evidenziato(HERO.titolo, "la crisi")}
+      </h1>
+      <div className="mt-7 flex flex-col gap-y-7 lg:flex-row lg:items-center lg:justify-between lg:gap-x-12">
+        <p className={CLASSE_SOTTO}>{HERO.sottotitolo}</p>
+        <Azioni className="shrink-0" />
+      </div>
+    </>
+  );
+}
+
+function TestaConcreta({ id }: { id: string }) {
+  return (
+    <>
+      <Occhiello>Analisi di bilancio e allerta crisi, per commercialisti</Occhiello>
+      <h1 id={id} className={`mt-4 ${CLASSE_TITOLO}`}>
+        {evidenziato(HERO.titolo, "la crisi")}
+      </h1>
+      <p className={`mt-6 ${CLASSE_SOTTO}`}>
+        {ORDINE.length} indicatori con le soglie del Codice della crisi, il DSCR a sei mesi e il
+        report per il cliente e per la banca.
+      </p>
+      <Ponte testo="Prova su un cliente d'esempio: sposta la sua liquidità." />
+    </>
+  );
+}
+
+function TestaDomanda({ id }: { id: string }) {
+  return (
+    <>
+      <h1
+        id={id}
+        className="max-w-[20ch] text-[clamp(2.25rem,1.1rem+4.2vw,4.5rem)] leading-[1.04] font-semibold tracking-[-0.035em] text-balance"
+      >
+        Quale cliente andrà in crisi nei prossimi sei mesi?
+      </h1>
+      <p className={`mt-6 ${CLASSE_SOTTO}`}>
+        FinBeacon lo legge nel bilancio e nella cassa di ogni cliente dello studio, con le soglie
+        del Codice della crisi.
+      </p>
+      <Ponte testo="Eccone uno, d'esempio: sposta la sua liquidità." />
+    </>
+  );
+}
+
+function TestaBilancioCassa({ id }: { id: string }) {
+  return (
+    <>
+      <Occhiello>{HERO.occhiello}</Occhiello>
+      <h1 id={id} className={`mt-4 ${CLASSE_TITOLO}`}>
+        Il bilancio dice {ANALISI_ESEMPIO.score}. La cassa dice crisi.
+      </h1>
+      <p className={`mt-6 ${CLASSE_SOTTO}`}>
+        FinBeacon legge tutti e due, cliente per cliente, e te lo dice sei mesi prima.
+      </p>
+      <Ponte testo="Questo è il cliente: prova a cambiare la sua cassa." />
+    </>
+  );
+}
+
+function TestaScheda({ id }: { id: string }) {
+  const righe = [
+    ["Indicatori di bilancio", `${ORDINE.length}, con soglia e giudizio`],
+    ["DSCR a 6 mesi", `soglia ${formatNumero(SOGLIA_DSCR6M, 2)} · art. 3 CCII`],
+    ["Report", "per il cliente e per la banca"],
+  ] as const;
+  return (
+    <>
+      <div className="grid gap-y-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-end lg:gap-x-16">
+        <div>
+          <Occhiello>{HERO.occhiello}</Occhiello>
+          <h1 id={id} className={`mt-4 ${CLASSE_TITOLO}`}>
+            {evidenziato(HERO.titolo, "la crisi")}
+          </h1>
+        </div>
+        <dl className="border-t border-testo text-[0.9375rem]">
+          {righe.map(([voce, valore]) => (
+            <div
+              key={voce}
+              className="flex items-baseline justify-between gap-4 border-b border-filetto py-3"
+            >
+              <dt className="text-testo-attenuato">{voce}</dt>
+              <dd className="text-right font-medium">{valore}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+      <Ponte testo="Prova su un cliente d'esempio: sposta la sua liquidità." />
+    </>
+  );
+}
+
+const TESTE_RESE = {
+  "1": TestaAttuale,
+  "2": TestaConcreta,
+  "3": TestaDomanda,
+  "4": TestaBilancioCassa,
+  "5": TestaScheda,
+} as const;
+
+function TestaApertura({ idTitolo }: { idTitolo: string }) {
+  if (!VARIANTI_IN_PROVA) {
+    return (
+      <Contenitore className="pt-14 md:pt-20 lg:pt-24">
+        <TestaAttuale id={idTitolo} />
+      </Contenitore>
+    );
+  }
+  return (
+    <>
+      {TESTE.map(({ id }) => {
+        const Testa = TESTE_RESE[id];
+        return (
+          <div key={id} data-testa-v={id}>
+            <Contenitore className="pt-14 md:pt-20 lg:pt-24">
+              <Testa id={id === "1" ? idTitolo : `${idTitolo}-x${id}`} />
+            </Contenitore>
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
 function AperturaNumero({ idTitolo, prova, modo }: PropsApertura & { modo: ModoPannello }) {
   return (
     <section data-apertura={prova} aria-labelledby={idTitolo} className="relative overflow-x-clip">
-      <Contenitore className="pt-14 md:pt-20 lg:pt-24">
-        <Occhiello>{HERO.occhiello}</Occhiello>
-        <h1
-          id={idTitolo}
-          className="mt-4 max-w-[17ch] text-[clamp(2.5rem,1.2rem+4.6vw,5rem)] leading-[1.02] font-semibold tracking-[-0.035em] text-balance"
-        >
-          {evidenziato(HERO.titolo, "la crisi")}
-        </h1>
-        <div className="mt-7 flex flex-col gap-y-7 lg:flex-row lg:items-center lg:justify-between lg:gap-x-12">
-          <p className="max-w-[40rem] text-[clamp(1.0625rem,1rem+0.35vw,1.3125rem)] leading-snug text-pretty text-testo-attenuato">
-            {HERO.sottotitolo}
-          </p>
-          <Azioni className="shrink-0" />
-        </div>
-      </Contenitore>
+      <TestaApertura idTitolo={idTitolo} />
 
       {/* Il pannello sta su una fascia a puntini che parte a metà della sua altezza: lo «appoggia». */}
       <div className="relative mt-14 pb-20 lg:mt-16 lg:pb-24">
