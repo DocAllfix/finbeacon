@@ -4,9 +4,10 @@ import { Fragment } from "react";
 
 import { Anteprima } from "@/components/anteprima";
 import { Contenitore, Occhiello, Paragrafo, Titolo2 } from "@/components/base";
-import { Giudizio, SEGNO_TONO, TESTO_TONO } from "@/components/giudizio";
+import { Giudizio } from "@/components/giudizio";
 import { ANTEPRIMA, DOMANDE, METODO, RISERVATEZZA } from "@/lib/contenuti";
-import { ANALISI_ESEMPIO, BILANCIO_ESEMPIO, CLIENTE_ESEMPIO, SOGLIA_DSCR6M } from "@/lib/esempio";
+import { righeIndicatori } from "@/lib/indicatori";
+import { ANALISI_ESEMPIO, BILANCIO_ESEMPIO, SOGLIA_DSCR6M } from "@/lib/esempio";
 
 /** Il secondo momento notte: il motore vero, da provare. */
 export function SezioneAnteprima() {
@@ -50,23 +51,20 @@ export function Metodo() {
   return (
     <section id="metodo" aria-labelledby="titolo-metodo" className="scroll-mt-20">
       <Contenitore className="py-24 md:py-32">
-        <div className="comparsa grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-16">
-          <div>
-            <Occhiello>{METODO.occhiello}</Occhiello>
-            <Titolo2 id="titolo-metodo">{METODO.titolo}</Titolo2>
-          </div>
-          <Paragrafo className="max-w-[30rem] lg:pb-2">{METODO.testo}</Paragrafo>
+        {/* Stessa grammatica dell'apertura (11/10): un asse, titolo largo, testo sotto. */}
+        <div className="comparsa">
+          <Occhiello>{METODO.occhiello}</Occhiello>
+          <Titolo2 id="titolo-metodo">{METODO.titolo}</Titolo2>
+          <Paragrafo className="mt-5 max-w-[40rem]">{METODO.testo}</Paragrafo>
         </div>
         <ol className="mt-14 border-t border-bordo">
+          {/* Senza numeri (11/10): i numeri restano solo ai passi, che sono una sequenza. */}
           {METODO.punti.map((p, i) => (
             <li
               key={p.titolo}
-              className="comparsa grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-4 gap-y-5 border-b border-filetto py-8 md:grid-cols-[2.5rem_minmax(0,1fr)_minmax(0,1.05fr)] md:gap-x-10"
+              className="comparsa grid gap-y-5 border-b border-filetto py-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] md:gap-x-16"
             >
-              <span className="cifre pt-1 text-sm text-testo-attenuato" aria-hidden>
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div className="max-w-[26rem]">
+              <div className="max-w-[28rem]">
                 <h3 className="text-[1.1875rem] leading-snug font-semibold tracking-[-0.01em]">
                   {p.titolo}
                 </h3>
@@ -74,7 +72,7 @@ export function Metodo() {
                   {p.testo}
                 </p>
               </div>
-              <div className="col-start-2 md:col-start-3">{reperti[i]}</div>
+              <div>{reperti[i]}</div>
             </li>
           ))}
         </ol>
@@ -93,36 +91,29 @@ function Lastra({ children, didascalia }: { children: React.ReactNode; didascali
   );
 }
 
-/** 01 — La soglia, su un righello: il valore da una parte, la norma dall'altra. */
+/**
+ * 01 — Le soglie, tutte, come un registro (11/10). Prima era il righello del
+ * DSCR a 6 mesi: lo stesso 0,94 dell'apertura, ripetuto. Ora il reperto dice
+ * una cosa nuova: ogni indicatore ha la sua soglia, scritta, e viene dal motore.
+ */
 function RepertoSoglia() {
-  const valore = ANALISI_ESEMPIO.indicatori.dscrProspettico!;
-  const giudizio = ANALISI_ESEMPIO.giudizi.dscrPro;
-  // Righello da 0 a 2: la soglia CCII cade a poco più di metà.
-  const pos = (v: number) => `${Math.min(100, Math.max(0, (v / 2) * 100))}%`;
+  const righe = righeIndicatori(ANALISI_ESEMPIO);
   return (
-    <Lastra didascalia={`${CLIENTE_ESEMPIO}, dati inventati. La soglia viene dal motore.`}>
-      <div className="flex items-baseline justify-between gap-4">
-        <span className="text-sm font-medium">DSCR prospettico · 6 mesi</span>
-        <span className={`cifre text-xl font-semibold ${TESTO_TONO[giudizio.tone]}`}>
-          {formatNumero(valore, 2)}
-        </span>
-      </div>
-      <div className="relative mt-5 mb-7 h-px bg-bordo" aria-hidden>
-        <span
-          className="absolute top-1/2 h-4 w-px -translate-y-1/2 bg-testo"
-          style={{ left: pos(SOGLIA_DSCR6M) }}
-        />
-        <span
-          className="cifre absolute top-3 -translate-x-1/2 text-xs whitespace-nowrap text-testo"
-          style={{ left: pos(SOGLIA_DSCR6M) }}
-        >
-          soglia {formatNumero(SOGLIA_DSCR6M, 2)} · art. 3 CCII
-        </span>
-        <span
-          className={`absolute top-1/2 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ${SEGNO_TONO[giudizio.tone]}`}
-          style={{ left: pos(valore) }}
-        />
-      </div>
+    <Lastra didascalia="Le soglie vengono dal motore, le stesse dell'analisi e del report.">
+      <dl className="divide-y divide-filetto text-sm">
+        {righe.map((r) => (
+          <div key={r.chiave} className="flex items-baseline justify-between gap-4 py-1.5">
+            <dt className="font-medium">{r.titolo}</dt>
+            <dd className="cifre text-testo-attenuato">{r.soglia}</dd>
+          </div>
+        ))}
+        <div className="flex items-baseline justify-between gap-4 py-1.5">
+          <dt className="font-medium">DSCR a 6 mesi</dt>
+          <dd className="cifre text-testo-attenuato">
+            da {formatNumero(SOGLIA_DSCR6M, 2)} · art. 3 CCII
+          </dd>
+        </div>
+      </dl>
     </Lastra>
   );
 }

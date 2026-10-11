@@ -614,7 +614,7 @@
 
 /*
  * Le aperture in prova (solo anteprima, vedi src/lib/varianti.ts): senza
- * scelta si vede la A; ?v=d|e|f|g la sostituisce. Fuori anteprima la pagina ne
+ * scelta si vede la A; ?v=h|i|l la sostituisce. Fuori anteprima la pagina ne
  * contiene una sola, senza attributo, e queste regole non trovano niente.
  */
 [data-apertura]:not([data-apertura="a"]) {
@@ -623,10 +623,9 @@
 html[data-variante]:not([data-variante="a"]) [data-apertura="a"] {
   display: none;
 }
-html[data-variante="d"] [data-apertura="d"],
-html[data-variante="e"] [data-apertura="e"],
-html[data-variante="f"] [data-apertura="f"],
-html[data-variante="g"] [data-apertura="g"] {
+html[data-variante="h"] [data-apertura="h"],
+html[data-variante="i"] [data-apertura="i"],
+html[data-variante="l"] [data-apertura="l"] {
   display: block;
 }
 
@@ -642,33 +641,16 @@ mark.evidenzia {
  * volta sola. Con movimento ridotto non parte niente e tutto è già al suo posto.
  */
 @media (prefers-reduced-motion: no-preference) {
-  .linea-soglia {
-    animation: linea-traccia 520ms cubic-bezier(0.23, 1, 0.32, 1) 120ms both;
+  /* La riga d'allerta arriva quando il grafico ha finito di passare la soglia. */
+  .pannello-avviso {
+    animation: riga-entra 320ms cubic-bezier(0.23, 1, 0.32, 1) 1900ms both;
   }
-  .linea-caduta {
-    animation: linea-cade 480ms cubic-bezier(0.23, 1, 0.32, 1) 420ms both;
-  }
-  .mesi-registro > li,
   .registro-riga {
     animation: riga-entra 320ms cubic-bezier(0.23, 1, 0.32, 1) both;
     animation-delay: calc(160ms + var(--i, 0) * 40ms);
   }
   .prova-cifra {
     animation: cifra-pop 160ms cubic-bezier(0.23, 1, 0.32, 1) both;
-  }
-  .prova-segno {
-    transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
-  }
-}
-@keyframes linea-traccia {
-  from {
-    transform: scaleX(0);
-  }
-}
-@keyframes linea-cade {
-  from {
-    opacity: 0;
-    transform: translateY(-0.35em);
   }
 }
 @keyframes riga-entra {

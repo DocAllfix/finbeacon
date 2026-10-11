@@ -1,5 +1,5 @@
 /**
- * Le aperture in prova (11/10; B e C tolte dopo la scelta della A). Il committente sceglie sull'anteprima di
+ * Le aperture in prova (11/10): tutte sulla composizione A, cambia il pannello. Il committente sceglie sull'anteprima di
  * Vercel con il selettore in basso; poi resta solo quella scelta e questo file
  * se ne va.
  *
@@ -7,11 +7,10 @@
  * rende UNA sola, la predefinita: niente selettore, niente sezioni nascoste.
  */
 export const APERTURE = [
-  { id: "a", nome: "Numero" },
-  { id: "d", nome: "Prova" },
-  { id: "e", nome: "Linea" },
-  { id: "f", nome: "Mesi" },
-  { id: "g", nome: "Portafoglio" },
+  { id: "a", nome: "Fermo" },
+  { id: "h", nome: "Avviso" },
+  { id: "i", nome: "Prova" },
+  { id: "l", nome: "Portafoglio" },
 ] as const;
 
 export type Apertura = (typeof APERTURE)[number]["id"];

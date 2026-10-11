@@ -104,7 +104,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <script
             dangerouslySetInnerHTML={{
               __html:
-                "try{var q=new URLSearchParams(location.search),v=q.get('v'),c=q.get('c'),d=document.documentElement.dataset;if(/^[adefg]$/.test(v))d.variante=v;if(/^[1-4]$/.test(c))d.colore=c}catch(e){}",
+                "try{var q=new URLSearchParams(location.search),v=q.get('v'),c=q.get('c'),d=document.documentElement.dataset;if(/^[ahil]$/.test(v))d.variante=v;if(/^[1-4]$/.test(c))d.colore=c}catch(e){}",
             }}
           />
         )}

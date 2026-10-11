@@ -32,12 +32,11 @@ export function Funzioni() {
   return (
     <section id="cosa-fa" aria-labelledby="titolo-funzioni" className="scroll-mt-20 bg-tonale">
       <Contenitore className="py-24 md:py-32">
-        <div className="comparsa grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14">
-          <div>
-            <Occhiello>Cosa fa</Occhiello>
-            <Titolo2 id="titolo-funzioni">Lo studio che guarda avanti, non solo indietro.</Titolo2>
-          </div>
-          <Paragrafo className="max-w-[34rem] self-end">
+        {/* Stessa grammatica dell'apertura (11/10): un asse, titolo largo, testo sotto. */}
+        <div className="comparsa">
+          <Occhiello>Cosa fa</Occhiello>
+          <Titolo2 id="titolo-funzioni">Lo studio che guarda avanti, non solo indietro.</Titolo2>
+          <Paragrafo className="mt-5 max-w-[40rem]">
             Il bilancio racconta l&apos;anno passato. FinBeacon lo legge insieme alla tesoreria dei
             prossimi sei mesi, e mette ogni cliente al suo posto. Apri una voce per vederla al
             lavoro.
