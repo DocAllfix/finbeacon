@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono, IBM_Plex_Sans } from "next/font/google";
+import { IBM_Plex_Mono, IBM_Plex_Sans, Instrument_Sans } from "next/font/google";
 
 import { Comparse } from "@/components/comparse";
+import { SelettoreVarianti } from "@/components/selettore-varianti";
 import { HERO } from "@/lib/contenuti";
 import { IN_PRODUZIONE, NOME, SITO } from "@/lib/indirizzo";
+import { VARIANTI_IN_PROVA } from "@/lib/varianti";
 
 import "./globals.css";
 
@@ -28,6 +30,17 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
   // Solo cifre e brevi etichette: non serve prima del testo.
   preload: false,
+});
+
+/*
+ * Il carattere dei titoli (11/10): una grottesca sobria, stretta il giusto, che
+ * né Evalis Deck (Bricolage, Geist) né la Academy (DM) usano. Il corpo resta Plex.
+ */
+const instrumentSans = Instrument_Sans({
+  variable: "--font-titoli",
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  display: "swap",
 });
 
 const DESCRIZIONE =
@@ -74,7 +87,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     // e non si eredita dai figli: le mancate corrispondenze vere restano visibili.
     <html
       lang="it"
-      className={`${plexSans.variable} ${plexMono.variable}`}
+      className={`${plexSans.variable} ${plexMono.variable} ${instrumentSans.variable}`}
       suppressHydrationWarning
     >
       <head>
@@ -86,6 +99,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <script
           dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }}
         />
+        {/* Solo in anteprima: l'apertura scelta con ?v= si applica prima del primo disegno. */}
+        {VARIANTI_IN_PROVA && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html:
+                "try{var v=new URLSearchParams(location.search).get('v');if(/^[abc]$/.test(v))document.documentElement.dataset.variante=v}catch(e){}",
+            }}
+          />
+        )}
       </head>
       <body>
         <a
@@ -96,6 +118,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </a>
         {children}
         <Comparse />
+        {VARIANTI_IN_PROVA && <SelettoreVarianti />}
       </body>
     </html>
   );

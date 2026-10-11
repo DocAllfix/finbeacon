@@ -16,10 +16,15 @@ export function Contenitore({
   return <div className={`mx-auto w-full max-w-[72rem] px-5 sm:px-8 ${className}`}>{children}</div>;
 }
 
+/*
+ * L'occhiello è una frase, non un'etichetta: niente trattino e niente
+ * maiuscoletto spaziato (11/10). Trattino + maiuscole sopra un titolo enorme era
+ * la formula di Evalis Deck e di metà delle pagine generate; le maiuscole
+ * spaziate restano alle micro-etichette dentro il prodotto.
+ */
 export function Occhiello({ children, id }: { children: React.ReactNode; id?: string }) {
   return (
-    <p id={id} className="etichetta flex items-center gap-3 text-testo-attenuato">
-      <span className="h-px w-6 bg-testo-attenuato" aria-hidden />
+    <p id={id} className="text-[0.9375rem] leading-snug font-medium text-accento">
       {children}
     </p>
   );
@@ -37,7 +42,7 @@ export function Titolo2({
   return (
     <h2
       id={id}
-      className={`mt-5 text-[clamp(2rem,1.35rem+2.5vw,3.25rem)] leading-[1.06] tracking-[-0.025em] font-semibold text-balance ${className}`}
+      className={`mt-3 text-[clamp(2rem,1.35rem+2.5vw,3.25rem)] leading-[1.06] tracking-[-0.02em] font-semibold text-balance ${className}`}
     >
       {children}
     </h2>

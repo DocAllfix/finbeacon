@@ -165,6 +165,11 @@
     outline-offset: 3px;
     border-radius: 2px;
   }
+  /* I titoli grandi nel loro carattere; titoletti, corpo e cifre restano Plex. */
+  h1,
+  h2 {
+    font-family: var(--font-titoli), var(--font-sans);
+  }
   ::selection {
     background-color: color-mix(in oklch, var(--accento) 22%, transparent);
   }
@@ -605,4 +610,19 @@
     opacity: 1;
     transform: scaleY(1);
   }
+}
+
+/*
+ * Le aperture in prova (solo anteprima, vedi src/lib/varianti.ts): senza
+ * scelta si vede la A; ?v=b o ?v=c la sostituiscono. Fuori anteprima la
+ * pagina ne contiene una sola e queste regole non trovano niente.
+ */
+[data-apertura]:not([data-apertura="a"]),
+html[data-variante="b"] [data-apertura="a"],
+html[data-variante="c"] [data-apertura="a"] {
+  display: none;
+}
+html[data-variante="b"] [data-apertura="b"],
+html[data-variante="c"] [data-apertura="c"] {
+  display: block;
 }

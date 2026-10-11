@@ -14,11 +14,7 @@ import { sinteticoDaScore } from "@/lib/fasce";
 
 /**
  * «Come funziona»: tre passi, ciascuno con il suo frammento di prodotto
- * (modello: la fascia dei passi di FormazioneEvalis). Non tre schede uguali:
- * tre colonne sotto un filetto, con contenuti diversi.
- *
- * Il filo che le unisce è la linea della soglia del marchio, e il punto di luce
- * si accende sul secondo passo: è lì che il giudizio arriva.
+ * lungo un filo verticale, con contenuti diversi.
  */
 
 /** Stessa regola del nome del file nell'applicazione (api/report/[id]/route.ts). */
@@ -124,46 +120,38 @@ export function Passi() {
       aria-labelledby="titolo-passi"
       className="scroll-mt-20 border-t border-filetto"
     >
-      <Contenitore className="py-24 md:py-28">
-        <div className="comparsa max-w-[40rem]">
+      {/*
+       * Un filo verticale, non tre colonne (11/10): le tre colonne numerate
+       * con la loro schedina erano la sezione gemella di Evalis Deck. Il titolo
+       * resta fermo a sinistra mentre i passi scorrono; il punto acceso è sul
+       * secondo, dove arriva il giudizio.
+       */}
+      <Contenitore className="grid gap-12 py-24 md:py-28 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
+        <div className="comparsa max-w-[30rem] lg:sticky lg:top-28 lg:self-start">
           <Occhiello>{PASSI.occhiello}</Occhiello>
           <Titolo2 id="titolo-passi">{PASSI.titolo}</Titolo2>
         </div>
 
-        <div className="relative mt-14">
-          {/*
-           * Il filo della soglia, solo da schermo largo: una linea sopra le tre
-           * colonne e un punto di luce sul passo del giudizio. Decorativo.
-           */}
-          <div
-            className="absolute top-0 right-0 left-0 hidden h-px bg-bordo lg:block"
-            aria-hidden
-          />
-          <span
-            className="absolute top-0 left-1/2 hidden size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-accento lg:block"
-            aria-hidden
-          />
-
-          <ol className="grid grid-cols-1 gap-12 lg:grid-cols-3 lg:gap-10">
-            {PASSI.passi.map((p, i) => (
-              <li
-                key={p.titolo}
-                className="comparsa min-w-0 border-t border-bordo pt-8 lg:border-t-0 lg:pt-10"
-              >
-                <span className="cifre text-sm text-testo-attenuato" aria-hidden>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="mt-3 text-xl leading-snug font-semibold tracking-[-0.01em]">
-                  {p.titolo}
-                </h3>
-                <p className="mt-3 text-[0.9375rem] leading-[1.6] text-testo-attenuato">
-                  {p.testo}
-                </p>
-                {frammenti[i]}
-              </li>
-            ))}
-          </ol>
-        </div>
+        <ol className="relative before:absolute before:top-2 before:bottom-2 before:left-[0.4375rem] before:w-px before:bg-bordo">
+          {PASSI.passi.map((p, i) => (
+            <li key={p.titolo} className="comparsa relative min-w-0 pb-14 pl-12 last:pb-0">
+              <span
+                className={`absolute top-1.5 left-0 size-[0.9375rem] rounded-full border-2 ${i === 1 ? "border-accento bg-accento" : "border-bordo bg-fondo"}`}
+                aria-hidden
+              />
+              <span className="cifre block text-sm text-testo-attenuato" aria-hidden>
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="mt-1 text-xl leading-snug font-semibold tracking-[-0.01em]">
+                {p.titolo}
+              </h3>
+              <p className="mt-2.5 max-w-[34rem] text-[0.9375rem] leading-[1.6] text-testo-attenuato">
+                {p.testo}
+              </p>
+              <div className="max-w-[24rem]">{frammenti[i]}</div>
+            </li>
+          ))}
+        </ol>
       </Contenitore>
     </section>
   );

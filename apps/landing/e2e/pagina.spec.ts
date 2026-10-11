@@ -72,7 +72,9 @@ test("il velo del grafico non esce mai dalla scheda mentre si anima", async ({ p
   let peggiore = 0;
   for (let t = 0; t < 18; t++) {
     const fuori = await page.evaluate(() => {
-      const cornice = document.querySelector("figure.deck-hero")!.getBoundingClientRect();
+      const cornice = document
+        .querySelector("section[aria-labelledby=titolo-principale] [data-cornice]")!
+        .getBoundingClientRect();
       const veli = [...document.querySelectorAll(".soglia-velo")]
         .map((v) => v.getBoundingClientRect())
         .filter((r) => r.width > 0);
