@@ -398,16 +398,36 @@
 
 /*
  * I due gesti della pagina: il tasto primario e il collegamento a filo
- * (componenti in `components/base.tsx`).
+ * (componenti in `components/base.tsx`). Il tasto è un rettangolo pieno con la
+ * sola parola (11/10): la cella scura con la freccia incassata era il tasto di
+ * serie dei modelli generati. Movimento secondo Emil Kowalski: pressione
+ * scale(0.97) in 120 ms, la freccia si muove solo con un puntatore vero.
  */
 .tasto-primario {
-  box-shadow: inset 0 1px 0 oklch(1 0 0 / 0.16);
+  transition:
+    transform 120ms cubic-bezier(0.23, 1, 0.32, 1),
+    filter 160ms ease-out;
 }
 .tasto-primario:active {
-  translate: 0 1px;
+  transform: scale(0.97);
 }
-.tasto-freccia-entra {
-  translate: -2.5rem 0;
+@media (hover: hover) and (pointer: fine) {
+  .tasto-primario:hover {
+    filter: brightness(1.08);
+  }
+  .tasto-freccia {
+    transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .tasto-primario:hover .tasto-freccia,
+  .tasto-primario:focus-visible .tasto-freccia {
+    transform: translateX(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tasto-primario,
+  .tasto-freccia {
+    transition: none;
+  }
 }
 .a-filo > span::after {
   content: "";
@@ -432,24 +452,8 @@
   scale: 1 1;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .tasto-freccia,
-  .tasto-freccia-entra {
-    transition: translate 320ms var(--ease-uscita);
-  }
-  .tasto-primario:hover .tasto-freccia {
-    translate: 2.5rem 0;
-  }
-  .tasto-primario:hover .tasto-freccia-entra {
-    translate: 0 0;
-  }
   .a-filo > span::after {
     transition: scale 320ms var(--ease-uscita);
-  }
-}
-/* Senza movimento la freccia non si scambia: resta ferma, e quella di riserva non si vede. */
-@media (prefers-reduced-motion: reduce) {
-  .tasto-freccia-entra {
-    display: none;
   }
 }
 
@@ -613,180 +617,18 @@
 }
 
 /*
- * Le aperture in prova (solo anteprima, vedi src/lib/varianti.ts): senza
- * scelta si vede la A; ?v=h|i|l la sostituisce. Fuori anteprima la pagina ne
- * contiene una sola, senza attributo, e queste regole non trovano niente.
- */
-[data-apertura]:not([data-apertura="a"]) {
-  display: none;
-}
-html[data-variante]:not([data-variante="a"]) [data-apertura="a"] {
-  display: none;
-}
-html[data-variante="h"] [data-apertura="h"],
-html[data-variante="i"] [data-apertura="i"],
-html[data-variante="l"] [data-apertura="l"] {
-  display: block;
-}
-
-/* Il segno dell'evidenziatore nel titolo: neutro, lo colora solo la palette 4. */
-mark.evidenzia {
-  background: none;
-  color: inherit;
-}
-
-/*
- * Movimento delle aperture (regole di Emil Kowalski, catalogo Axialoop):
- * solo transform e opacity, sotto i 500 ms, curva forte, stagger 40 ms, una
- * volta sola. Con movimento ridotto non parte niente e tutto è già al suo posto.
+ * Il cursore del pannello dell'apertura: la cifra ricalcolata entra con un
+ * piccolo scatto (Emil Kowalski: solo transform e opacity, 160 ms).
  */
 @media (prefers-reduced-motion: no-preference) {
-  /* La riga d'allerta arriva quando il grafico ha finito di passare la soglia. */
-  .pannello-avviso {
-    animation: riga-entra 320ms cubic-bezier(0.23, 1, 0.32, 1) 1900ms both;
-  }
-  .registro-riga {
-    animation: riga-entra 320ms cubic-bezier(0.23, 1, 0.32, 1) both;
-    animation-delay: calc(160ms + var(--i, 0) * 40ms);
-  }
   .prova-cifra {
     animation: cifra-pop 160ms cubic-bezier(0.23, 1, 0.32, 1) both;
-  }
-}
-@keyframes riga-entra {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
   }
 }
 @keyframes cifra-pop {
   from {
     opacity: 0.55;
     transform: scale(0.97);
-  }
-}
-
-/*
- * Le palette in prova (solo anteprima, ?c=1..4). Sostituiscono i RUOLI, non i
- * token di DESIGN.md. Misurato l'11/10: fondo bianco freddo, nero freddo,
- * grigio freddo, un solo accento verde-petrolio sui pulsanti e due bande scure
- * erano lo stesso sistema di Evalis Deck. Base scelta dall'utente: la 1.
- */
-
-/* Comune a tutte: pulsanti in inchiostro, nessuna banda scura (la sezione notte torna chiara). */
-html[data-colore] .tasto-primario {
-  background-color: var(--testo);
-  color: var(--fondo);
-}
-html[data-colore] .notte {
-  --fondo: var(--tonale-pagina, var(--sidebar-carta));
-  --superficie: var(--superficie-pagina, var(--superficie-carta));
-  --tonale: var(--fondo-pagina, var(--fondo-carta));
-  --testo: var(--testo-pagina, var(--inchiostro-scuro));
-  --testo-attenuato: var(--attenuato-pagina, var(--inchiostro-attenuato-carta));
-  --bordo: var(--bordo-pagina, var(--bordo-carta));
-  --filetto: var(--filetto-pagina, var(--filetto-carta));
-  --accento: var(--accento-pagina, var(--ottanio-profondo));
-  --su-accento: oklch(0.985 0.005 210);
-  --ottimo: var(--verde-ottimo-carta);
-  --ottimo-testo: oklch(0.4 0.1 155);
-  --ottimo-fondo: oklch(0.96 0.025 155);
-  --buono: var(--verde-buono-carta);
-  --buono-testo: oklch(0.48 0.06 168);
-  --buono-fondo: oklch(0.968 0.012 168);
-  --attenzione: var(--ambra-attenzione-carta);
-  --attenzione-testo: oklch(0.47 0.1 70);
-  --attenzione-fondo: oklch(0.97 0.03 85);
-  --critico: var(--rosso-critico-carta);
-  --critico-testo: oklch(0.45 0.16 25);
-  --critico-fondo: oklch(0.965 0.015 25);
-  color-scheme: light;
-}
-
-/*
- * 2 · Grafite: via il blu dai grigi (era la metà della somiglianza). Grigi
- * neutri, quasi senza tinta; l'ottanio resta per link e dati, il rosso critico
- * diventa l'unico colore forte della pagina. Una grana leggerissima toglie la
- * piattezza da schermo (redesign-existing-projects: «flat, zero texture»).
- */
-html[data-colore="2"],
-html[data-colore="4"] {
-  --fondo: oklch(0.975 0.001 95);
-  --superficie: oklch(0.993 0.001 95);
-  --tonale: oklch(0.945 0.002 95);
-  --testo: oklch(0.2 0.003 95);
-  --testo-attenuato: oklch(0.46 0.004 95);
-  --bordo: oklch(0.875 0.003 95);
-  --filetto: oklch(0.915 0.002 95);
-  --fondo-pagina: oklch(0.975 0.001 95);
-  --superficie-pagina: oklch(0.993 0.001 95);
-  --tonale-pagina: oklch(0.945 0.002 95);
-  --testo-pagina: oklch(0.2 0.003 95);
-  --attenuato-pagina: oklch(0.46 0.004 95);
-  --bordo-pagina: oklch(0.875 0.003 95);
-  --filetto-pagina: oklch(0.915 0.002 95);
-}
-html[data-colore="2"] body::after,
-html[data-colore="4"] body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 45;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-}
-
-/*
- * 3 · Velina: il fondo non è più bianco ma una velina d'ottanio chiarissima,
- * su cui le superfici bianche si staccano come fogli. Evalis è bianco: qui il
- * colore del marchio diventa il campo, non il pulsante.
- */
-html[data-colore="3"] {
-  --fondo: oklch(0.955 0.02 200);
-  --superficie: oklch(0.995 0.004 200);
-  --tonale: oklch(0.93 0.026 200);
-  --testo: oklch(0.21 0.025 215);
-  --testo-attenuato: oklch(0.43 0.03 210);
-  --bordo: oklch(0.86 0.025 205);
-  --filetto: oklch(0.9 0.022 205);
-  --accento: oklch(0.45 0.09 210);
-  --fondo-pagina: oklch(0.955 0.02 200);
-  --superficie-pagina: oklch(0.995 0.004 200);
-  --tonale-pagina: oklch(0.93 0.026 200);
-  --testo-pagina: oklch(0.21 0.025 215);
-  --attenuato-pagina: oklch(0.43 0.03 210);
-  --bordo-pagina: oklch(0.86 0.025 205);
-  --filetto-pagina: oklch(0.9 0.022 205);
-  --accento-pagina: oklch(0.45 0.09 210);
-}
-
-/*
- * 4 · Evidenziatore: la Grafite, più il gesto del commercialista sul bilancio
- * stampato: l'evidenziatore giallo. Solo su «la crisi» nel titolo e sulla
- * soglia. Non un colore d'interfaccia: un segno a mano.
- */
-html[data-colore="4"] mark.evidenzia {
-  position: relative;
-  isolation: isolate;
-}
-html[data-colore="4"] mark.evidenzia::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: auto -0.06em 0.06em;
-  height: 0.42em;
-  background: oklch(0.9 0.16 100 / 0.9);
-  transform-origin: left;
-}
-@media (prefers-reduced-motion: no-preference) {
-  html[data-colore="4"] mark.evidenzia::before {
-    animation: evidenzia 520ms cubic-bezier(0.23, 1, 0.32, 1) 300ms both;
-  }
-}
-@keyframes evidenzia {
-  from {
-    transform: scaleX(0);
   }
 }
 
@@ -806,89 +648,4 @@ html[data-colore="4"] mark.evidenzia::before {
   box-shadow:
     0 1px 0 color-mix(in oklch, var(--testo) 4%, transparent),
     0 30px 60px -30px color-mix(in oklch, var(--testo) 22%, transparent);
-}
-
-/*
- * I tasti in prova (solo anteprima, ?t=2..5). Senza scelta si vedono gli
- * attuali (1). Fuori anteprima non esiste nessun [data-tasti-v].
- */
-[data-tasti-v]:not([data-tasti-v="1"]),
-html[data-tasti] [data-tasti-v="1"] {
-  display: none;
-}
-[data-tasti-v="1"],
-html[data-tasti="2"] [data-tasti-v="2"],
-html[data-tasti="3"] [data-tasti-v="3"],
-html[data-tasti="4"] [data-tasti-v="4"],
-html[data-tasti="5"] [data-tasti-v="5"] {
-  display: flex;
-}
-/* Con le opzioni 2-5 anche il tasto in testata perde la cella con la freccia. */
-html[data-tasti] header .tasto-primario {
-  padding-right: 1rem;
-}
-html[data-tasti] header .tasto-primario > span[aria-hidden] {
-  display: none;
-}
-
-/*
- * Movimento dei tasti (Emil Kowalski): pressione scale(0.97) in 120 ms, la
- * freccia entra solo con un puntatore vero, mai su touch.
- */
-.tasto-pieno {
-  transition:
-    transform 120ms cubic-bezier(0.23, 1, 0.32, 1),
-    filter 160ms ease-out;
-}
-.tasto-pieno:active {
-  transform: scale(0.97);
-}
-.tasto-testo-filo {
-  transform-origin: left;
-  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-.tasto-testo-freccia {
-  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-@media (hover: hover) and (pointer: fine) {
-  .tasto-pieno:hover {
-    filter: brightness(1.08);
-  }
-  .tasto-pieno-freccia {
-    opacity: 0;
-    transform: translateX(-4px);
-    transition:
-      opacity 160ms ease-out,
-      transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
-  }
-  .tasto-pieno:hover .tasto-pieno-freccia {
-    opacity: 1;
-    transform: none;
-  }
-  .tasto-testo:hover .tasto-testo-freccia {
-    transform: translateX(4px);
-  }
-  .tasto-testo:hover .tasto-testo-filo {
-    transform: scaleX(1.04);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .tasto-pieno,
-  .tasto-testo-filo,
-  .tasto-testo-freccia,
-  .tasto-pieno-freccia {
-    transition: none;
-  }
-}
-
-/* Il testo sopra il pannello in prova (solo anteprima, ?x=2..5). */
-[data-testa-v]:not([data-testa-v="1"]),
-html[data-testa] [data-testa-v="1"] {
-  display: none;
-}
-html[data-testa="2"] [data-testa-v="2"],
-html[data-testa="3"] [data-testa-v="3"],
-html[data-testa="4"] [data-testa-v="4"],
-html[data-testa="5"] [data-testa-v="5"] {
-  display: block;
 }

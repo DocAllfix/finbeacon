@@ -7,20 +7,12 @@ import Link from "next/link";
 
 import { CollegamentoAFilo, Contenitore, Occhiello, PulsantePrimario } from "@/components/base";
 import { Logotipo } from "@/components/marchio";
-import { PannelloCliente, type ModoPannello } from "@/components/pannello-cliente";
+import { PannelloCliente } from "@/components/pannello-cliente";
 import { URL_DEMO_PUBBLICA } from "@/lib/configurazione";
 import { HERO, VOCI_MENU } from "@/lib/contenuti";
 import { guidePubblicate } from "@/lib/guide";
 import { ORDINE } from "@/lib/indicatori";
-import { ANALISI_ESEMPIO, SOGLIA_DSCR6M } from "@/lib/esempio";
-import {
-  APERTURA_PREDEFINITA,
-  APERTURE,
-  TASTI,
-  TESTE,
-  VARIANTI_IN_PROVA,
-  type Apertura,
-} from "@/lib/varianti";
+import { SOGLIA_DSCR6M } from "@/lib/esempio";
 
 /** Il report d'esempio si offre solo se il file c'è davvero: niente link rotti. */
 const REPORT_ESEMPIO = "/report-esempio.pdf";
@@ -87,405 +79,95 @@ export function Intestazione() {
 }
 
 /*
- * L'apertura (11/10). Prima: testo a sinistra e, a destra, una cornice scura con
- * un documento inclinato e schede sospese, la stessa composizione di Evalis
- * Deck. Ora tre composizioni in prova (vedi `lib/varianti.ts`), tutte con al
- * massimo quattro elementi di testo: occhiello, titolo, sottotitolo, azioni. Il
- * paragrafo lungo e la rassicurazione sono scesi nel Prospetto.
- */
-
-/** Il segno dell'evidenziatore sulle parole chiave: invisibile, salvo la palette 4. */
-function evidenziato(testo: string, parole: string) {
-  const i = testo.indexOf(parole);
-  if (i < 0) return testo;
-  return (
-    <>
-      {testo.slice(0, i)}
-      <mark className="evidenzia">{parole}</mark>
-      {testo.slice(i + parole.length)}
-    </>
-  );
-}
-
-/*
- * Due verbi, mai confusi (29/09): «demo» è SOLO quella che si apre subito. Il
- * contatto umano si chiama «Parla con noi».
- */
-function AzioniAttuali() {
-  return URL_DEMO_PUBBLICA ? (
-    <>
-      <PulsantePrimario href={URL_DEMO_PUBBLICA}>Prova la demo</PulsantePrimario>
-      <CollegamentoAFilo href="#richiesta">Parla con noi</CollegamentoAFilo>
-    </>
-  ) : (
-    <PulsantePrimario href="#richiesta">Parla con noi</PulsantePrimario>
-  );
-}
-
-/*
- * I tasti in prova (11/10, solo anteprima, ?t=). L'utente trova i tasti attuali
- * «da AI»: la cella scura con la freccia incassata è il pulsante di serie dei
- * modelli, e la coppia pieno + sottolineato a destra del sottotitolo è lo
- * schema «titolo, sottotitolo, due tasti». Se la demo non è configurata
- * l'azione principale resta il contatto, come sempre.
- */
-const DEMO = URL_DEMO_PUBBLICA ?? "#richiesta";
-const ETICHETTA_DEMO = URL_DEMO_PUBBLICA ? "Prova la demo" : "Parla con noi";
-
-/** Il tasto pieno, senza cella: la freccia arriva solo al passaggio. */
-function TastoPieno({ href, children }: { href: string; children: React.ReactNode }) {
-  return (
-    <Link
-      href={href}
-      className="tasto-pieno inline-flex h-12 items-center gap-2 rounded-[0.375rem] bg-accento pr-5 pl-6 text-[0.9375rem] font-medium whitespace-nowrap text-su-accento"
-    >
-      {children}
-      <ArrowRight className="tasto-pieno-freccia size-4" aria-hidden />
-    </Link>
-  );
-}
-
-function AzioniPiene() {
-  return (
-    <>
-      <TastoPieno href={DEMO}>{ETICHETTA_DEMO}</TastoPieno>
-      {URL_DEMO_PUBBLICA && (
-        <Link
-          href="#richiesta"
-          className="py-3 text-[0.9375rem] font-medium text-testo-attenuato hover:text-testo"
-        >
-          Parla con noi
-        </Link>
-      )}
-    </>
-  );
-}
-
-function AzioniTesto() {
-  return (
-    <>
-      <Link
-        href={DEMO}
-        className="tasto-testo group inline-flex items-center gap-2 py-2 font-[family-name:var(--font-titoli)] text-[1.375rem] font-semibold tracking-[-0.015em] whitespace-nowrap text-testo"
-      >
-        <span className="relative">
-          {ETICHETTA_DEMO}
-          <span className="tasto-testo-filo absolute inset-x-0 -bottom-0.5 h-0.5 bg-accento" />
-        </span>
-        <ArrowRight className="tasto-testo-freccia size-5 text-accento" aria-hidden />
-      </Link>
-      {URL_DEMO_PUBBLICA && (
-        <span className="text-[0.9375rem] text-testo-attenuato">
-          o{" "}
-          <Link href="#richiesta" className="font-medium text-testo hover:text-accento">
-            parla con noi
-          </Link>
-        </span>
-      )}
-    </>
-  );
-}
-
-/** Opzione 4: nella riga del titolo resta il contatto, la demo sta nel pannello. */
-function AzioniNelPannello() {
-  return (
-    <Link
-      href="#richiesta"
-      className="inline-flex items-center gap-2 py-3 text-[0.9375rem] font-medium text-testo-attenuato hover:text-testo"
-    >
-      Parla con noi
-      <ArrowRight className="size-4" aria-hidden />
-    </Link>
-  );
-}
-
-function PiedePannello() {
-  return (
-    <div
-      data-tasti-v="4"
-      className="flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-filetto px-5 py-4 sm:px-7"
-    >
-      <p className="text-[0.9375rem] text-testo-attenuato">
-        Hai mosso un cliente inventato. Nella demo c&apos;è un portafoglio intero.
-      </p>
-      <TastoPieno href={DEMO}>{URL_DEMO_PUBBLICA ? "Apri la demo" : "Parla con noi"}</TastoPieno>
-    </div>
-  );
-}
-
-function AzioniCoppia() {
-  return (
-    <span className="inline-flex items-center rounded-[0.55rem] border border-bordo bg-superficie p-1">
-      <Link
-        href={DEMO}
-        className="tasto-pieno inline-flex h-10 items-center rounded-[0.375rem] bg-accento px-5 text-[0.9375rem] font-medium whitespace-nowrap text-su-accento"
-      >
-        {ETICHETTA_DEMO}
-      </Link>
-      {URL_DEMO_PUBBLICA && (
-        <Link
-          href="#richiesta"
-          className="inline-flex h-10 items-center px-5 text-[0.9375rem] font-medium whitespace-nowrap text-testo-attenuato hover:text-testo"
-        >
-          Parla con noi
-        </Link>
-      )}
-    </span>
-  );
-}
-
-const TASTI_RESI = {
-  "1": AzioniAttuali,
-  "2": AzioniPiene,
-  "3": AzioniTesto,
-  "4": AzioniNelPannello,
-  "5": AzioniCoppia,
-} as const;
-
-/*
- * Due verbi, mai confusi (29/09): «demo» è SOLO quella che si apre subito. Il
- * contatto umano si chiama «Parla con noi».
- */
-function Azioni({ className = "" }: { className?: string }) {
-  const classi = `flex-wrap items-center gap-x-7 gap-y-3 ${className}`;
-  if (!VARIANTI_IN_PROVA) {
-    return (
-      <div className={`flex ${classi}`}>
-        <AzioniAttuali />
-      </div>
-    );
-  }
-  return (
-    <>
-      {TASTI.map(({ id }) => {
-        const Resa = TASTI_RESI[id];
-        return (
-          <div key={id} data-tasti-v={id} className={classi}>
-            <Resa />
-          </div>
-        );
-      })}
-    </>
-  );
-}
-
-type PropsApertura = { idTitolo: string; prova?: Apertura };
-
-/**
- * A · Numero, ricomposta (11/10) sui riferimenti di Linear e Ramp: un solo asse
- * a sinistra, titolo su due righe larghe, una riga con sottotitolo e azioni, e
- * sotto UN oggetto solo, largo quanto la pagina e tagliato dalla piega. Prima
- * erano due oggetti (la cifra e la scheda del grafico) in gara col titolo.
+ * L'apertura (11/10, scelta del committente fra le prove della PR #36).
  *
- * Il pannello è la scheda di un cliente come la vede lo studio: la cifra con
- * soglia e giudizio a sinistra, la serie dei sei mesi a destra. Tutto dal motore.
+ * Prima: testo a sinistra e una cornice scura con un documento inclinato e
+ * schede sospese, la stessa composizione di Evalis Deck. Ora, sui riferimenti
+ * di Linear e Ramp: titolo e una scheda di tre righe, una riga ponte che dice
+ * cosa fare, e un solo pannello largo, la scheda di un cliente con la leva
+ * della liquidità. La demo si offre dentro il pannello, dopo averlo provato.
+ *
+ * Due verbi, mai confusi (29/09): «demo» è SOLO quella che si apre subito; il
+ * contatto umano si chiama «Parla con noi». Senza demo configurata, il tasto
+ * del pannello diventa il contatto.
  */
-/*
- * Il testo sopra il pannello, in prova (11/10, ?x=). Fuori anteprima resta il
- * primo. Il ponte rende esplicito che il pannello si muove: prima lo diceva
- * solo «Spostala», in piccolo dentro il pannello.
- */
-const CLASSE_TITOLO =
-  "max-w-[17ch] text-[clamp(2.5rem,1.2rem+4.6vw,5rem)] leading-[1.02] font-semibold tracking-[-0.035em] text-balance";
-const CLASSE_SOTTO =
-  "max-w-[40rem] text-[clamp(1.0625rem,1rem+0.35vw,1.3125rem)] leading-snug text-pretty text-testo-attenuato";
-
-function Ponte({ testo }: { testo: string }) {
-  return (
-    <div className="mt-10 flex flex-col gap-y-4 border-t border-filetto pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-x-8">
-      <p className="flex items-center gap-2.5 text-[0.9375rem] font-medium">
-        <ArrowDown className="size-4 shrink-0 text-accento" aria-hidden />
-        {testo}
-      </p>
-      <Azioni className="shrink-0" />
-    </div>
-  );
-}
-
-function TestaAttuale({ id }: { id: string }) {
-  return (
-    <>
-      <Occhiello>{HERO.occhiello}</Occhiello>
-      <h1 id={id} className={`mt-4 ${CLASSE_TITOLO}`}>
-        {evidenziato(HERO.titolo, "la crisi")}
-      </h1>
-      <div className="mt-7 flex flex-col gap-y-7 lg:flex-row lg:items-center lg:justify-between lg:gap-x-12">
-        <p className={CLASSE_SOTTO}>{HERO.sottotitolo}</p>
-        <Azioni className="shrink-0" />
-      </div>
-    </>
-  );
-}
-
-function TestaConcreta({ id }: { id: string }) {
-  return (
-    <>
-      <Occhiello>Analisi di bilancio e allerta crisi, per commercialisti</Occhiello>
-      <h1 id={id} className={`mt-4 ${CLASSE_TITOLO}`}>
-        {evidenziato(HERO.titolo, "la crisi")}
-      </h1>
-      <p className={`mt-6 ${CLASSE_SOTTO}`}>
-        {ORDINE.length} indicatori con le soglie del Codice della crisi, il DSCR a sei mesi e il
-        report per il cliente e per la banca.
-      </p>
-      <Ponte testo="Prova su un cliente d'esempio: sposta la sua liquidità." />
-    </>
-  );
-}
-
-function TestaDomanda({ id }: { id: string }) {
-  return (
-    <>
-      <h1
-        id={id}
-        className="max-w-[20ch] text-[clamp(2.25rem,1.1rem+4.2vw,4.5rem)] leading-[1.04] font-semibold tracking-[-0.035em] text-balance"
-      >
-        Quale cliente andrà in crisi nei prossimi sei mesi?
-      </h1>
-      <p className={`mt-6 ${CLASSE_SOTTO}`}>
-        FinBeacon lo legge nel bilancio e nella cassa di ogni cliente dello studio, con le soglie
-        del Codice della crisi.
-      </p>
-      <Ponte testo="Eccone uno, d'esempio: sposta la sua liquidità." />
-    </>
-  );
-}
-
-function TestaBilancioCassa({ id }: { id: string }) {
-  return (
-    <>
-      <Occhiello>{HERO.occhiello}</Occhiello>
-      <h1 id={id} className={`mt-4 ${CLASSE_TITOLO}`}>
-        Il bilancio dice {ANALISI_ESEMPIO.score}. La cassa dice crisi.
-      </h1>
-      <p className={`mt-6 ${CLASSE_SOTTO}`}>
-        FinBeacon legge tutti e due, cliente per cliente, e te lo dice sei mesi prima.
-      </p>
-      <Ponte testo="Questo è il cliente: prova a cambiare la sua cassa." />
-    </>
-  );
-}
-
-function TestaScheda({ id }: { id: string }) {
+export function Hero() {
   const righe = [
     ["Indicatori di bilancio", `${ORDINE.length}, con soglia e giudizio`],
     ["DSCR a 6 mesi", `soglia ${formatNumero(SOGLIA_DSCR6M, 2)} · art. 3 CCII`],
     ["Report", "per il cliente e per la banca"],
   ] as const;
   return (
-    <>
-      <div className="grid gap-y-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-end lg:gap-x-16">
-        <div>
-          <Occhiello>{HERO.occhiello}</Occhiello>
-          <h1 id={id} className={`mt-4 ${CLASSE_TITOLO}`}>
-            {evidenziato(HERO.titolo, "la crisi")}
-          </h1>
-        </div>
-        <dl className="border-t border-testo text-[0.9375rem]">
-          {righe.map(([voce, valore]) => (
-            <div
-              key={voce}
-              className="flex items-baseline justify-between gap-4 border-b border-filetto py-3"
-            >
-              <dt className="text-testo-attenuato">{voce}</dt>
-              <dd className="text-right font-medium">{valore}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-      <Ponte testo="Prova su un cliente d'esempio: sposta la sua liquidità." />
-    </>
-  );
-}
-
-const TESTE_RESE = {
-  "1": TestaAttuale,
-  "2": TestaConcreta,
-  "3": TestaDomanda,
-  "4": TestaBilancioCassa,
-  "5": TestaScheda,
-} as const;
-
-function TestaApertura({ idTitolo }: { idTitolo: string }) {
-  if (!VARIANTI_IN_PROVA) {
-    return (
+    <section aria-labelledby="titolo-principale" className="relative overflow-x-clip">
       <Contenitore className="pt-14 md:pt-20 lg:pt-24">
-        <TestaAttuale id={idTitolo} />
-      </Contenitore>
-    );
-  }
-  return (
-    <>
-      {TESTE.map(({ id }) => {
-        const Testa = TESTE_RESE[id];
-        return (
-          <div key={id} data-testa-v={id}>
-            <Contenitore className="pt-14 md:pt-20 lg:pt-24">
-              <Testa id={id === "1" ? idTitolo : `${idTitolo}-x${id}`} />
-            </Contenitore>
+        <div className="grid gap-y-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-end lg:gap-x-16">
+          <div>
+            <Occhiello>{HERO.occhiello}</Occhiello>
+            <h1
+              id="titolo-principale"
+              className="mt-4 max-w-[17ch] text-[clamp(2.5rem,1.2rem+4.6vw,5rem)] leading-[1.02] font-semibold tracking-[-0.035em] text-balance"
+            >
+              {HERO.titolo}
+            </h1>
           </div>
-        );
-      })}
-    </>
-  );
-}
+          <dl className="border-t border-testo text-[0.9375rem]">
+            {righe.map(([voce, valore]) => (
+              <div
+                key={voce}
+                className="flex items-baseline justify-between gap-4 border-b border-filetto py-3"
+              >
+                <dt className="text-testo-attenuato">{voce}</dt>
+                <dd className="text-right font-medium">{valore}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
 
-function AperturaNumero({ idTitolo, prova, modo }: PropsApertura & { modo: ModoPannello }) {
-  return (
-    <section data-apertura={prova} aria-labelledby={idTitolo} className="relative overflow-x-clip">
-      <TestaApertura idTitolo={idTitolo} />
+        {/* Il ponte: dice che il pannello qui sotto si muove. */}
+        <div className="mt-10 flex flex-col gap-y-4 border-t border-filetto pt-5 sm:flex-row sm:items-center sm:justify-between sm:gap-x-8">
+          <p className="flex items-center gap-2.5 text-[0.9375rem] font-medium">
+            <ArrowDown className="size-4 shrink-0 text-accento" aria-hidden />
+            Prova su un cliente d&apos;esempio: sposta la sua liquidità.
+          </p>
+          {URL_DEMO_PUBBLICA && (
+            <Link
+              href="#richiesta"
+              className="inline-flex shrink-0 items-center gap-2 py-3 text-[0.9375rem] font-medium text-testo-attenuato hover:text-testo"
+            >
+              Parla con noi
+              <ArrowRight className="size-4" aria-hidden />
+            </Link>
+          )}
+        </div>
+      </Contenitore>
 
       {/* Il pannello sta su una fascia a puntini che parte a metà della sua altezza: lo «appoggia». */}
-      <div className="relative mt-14 pb-20 lg:mt-16 lg:pb-24">
+      <div className="relative mt-10 pb-20 lg:pb-24">
         <div
           className="puntinato pointer-events-none absolute inset-x-0 top-24 bottom-0"
           aria-hidden
         />
         <Contenitore className="relative">
-          <PannelloCliente modo={modo} piede={VARIANTI_IN_PROVA ? <PiedePannello /> : null} />
-          <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-xs text-testo-attenuato">
-            <span>Esempio con dati inventati, calcolato dal motore di FinBeacon.</span>
-            {URL_DEMO_PUBBLICA && (
-              <a
-                href={URL_DEMO_PUBBLICA}
-                className="inline-flex items-center gap-1.5 py-1 text-sm font-medium text-accento"
-              >
-                Provalo nella demo, su un altro cliente di esempio
-                <ArrowRight className="size-3.5" aria-hidden />
-              </a>
-            )}
-          </div>
+          <PannelloCliente
+            piede={
+              <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-filetto px-5 py-4 sm:px-7">
+                <p className="text-[0.9375rem] text-testo-attenuato">
+                  Hai mosso un cliente inventato. Nella demo c&apos;è un portafoglio intero.
+                </p>
+                {URL_DEMO_PUBBLICA ? (
+                  <PulsantePrimario href={URL_DEMO_PUBBLICA}>Apri la demo</PulsantePrimario>
+                ) : (
+                  <PulsantePrimario href="#richiesta">Parla con noi</PulsantePrimario>
+                )}
+              </div>
+            }
+          />
+          <p className="mt-4 text-xs text-testo-attenuato">
+            Esempio con dati inventati, calcolato dal motore di FinBeacon.
+          </p>
         </Contenitore>
       </div>
     </section>
-  );
-}
-
-const COMPOSIZIONI: Record<Apertura, (p: PropsApertura) => React.ReactNode> = {
-  a: (p) => <AperturaNumero {...p} modo="fermo" />,
-  h: (p) => <AperturaNumero {...p} modo="avviso" />,
-  i: (p) => <AperturaNumero {...p} modo="prova" />,
-  l: (p) => <AperturaNumero {...p} modo="portafoglio" />,
-};
-
-export function Hero() {
-  if (!VARIANTI_IN_PROVA) {
-    const Scelta = COMPOSIZIONI[APERTURA_PREDEFINITA];
-    return <Scelta idTitolo="titolo-principale" />;
-  }
-  return (
-    <>
-      {APERTURE.map(({ id }) => {
-        const Composizione = COMPOSIZIONI[id];
-        return (
-          <Composizione
-            key={id}
-            prova={id}
-            idTitolo={id === APERTURA_PREDEFINITA ? "titolo-principale" : `titolo-principale-${id}`}
-          />
-        );
-      })}
-    </>
   );
 }
 

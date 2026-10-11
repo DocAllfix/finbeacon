@@ -2,10 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono, IBM_Plex_Sans, Instrument_Sans } from "next/font/google";
 
 import { Comparse } from "@/components/comparse";
-import { SelettoreVarianti } from "@/components/selettore-varianti";
 import { HERO } from "@/lib/contenuti";
 import { IN_PRODUZIONE, NOME, SITO } from "@/lib/indirizzo";
-import { VARIANTI_IN_PROVA } from "@/lib/varianti";
 
 import "./globals.css";
 
@@ -99,15 +97,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <script
           dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }}
         />
-        {/* Solo in anteprima: l'apertura scelta con ?v= si applica prima del primo disegno. */}
-        {VARIANTI_IN_PROVA && (
-          <script
-            dangerouslySetInnerHTML={{
-              __html:
-                "try{var q=new URLSearchParams(location.search),v=q.get('v'),c=q.get('c'),t=q.get('t'),x=q.get('x'),d=document.documentElement.dataset;if(/^[ahil]$/.test(v))d.variante=v;if(/^[1-4]$/.test(c))d.colore=c;if(/^[2-5]$/.test(t))d.tasti=t;if(/^[2-5]$/.test(x))d.testa=x}catch(e){}",
-            }}
-          />
-        )}
       </head>
       <body>
         <a
@@ -118,7 +107,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </a>
         {children}
         <Comparse />
-        {VARIANTI_IN_PROVA && <SelettoreVarianti />}
       </body>
     </html>
   );

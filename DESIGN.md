@@ -193,6 +193,17 @@ Strategia Restrained: neutri freddi appena tinti verso il blu-inchiostro, un sol
 
 **La Regola della Scala Fissa.** Scala in rem con rapporto intorno a 1,2, senza tipografia fluida: il registro è product, non landing.
 
+### La landing (dall'11/10/2026)
+
+Scelte fatte per staccare finbeacon.eu da Evalis Deck (stessa apertura, stessi occhielli, stessa sezione a tre colonne). Valgono solo per la landing e le guide; il prodotto resta come sopra.
+
+- **Titoli h1 e h2 in Instrument Sans** (500/600, tracking -0.02/-0.035em); corpo, etichette e cifre restano Plex. Né Evalis (Bricolage, Geist) né la Academy (DM) usano questa famiglia.
+- **Occhiello in frase**: 0.9375rem, 500, nell'accento, maiuscole normali. Vietato il trattino con il maiuscoletto spaziato sopra un titolo.
+- **Intestazioni di sezione su un asse**: occhiello, titolo largo su due righe (max 22ch), testo sotto. Vietato il titolo a sinistra con il paragrafo che galleggia a destra.
+- **Apertura**: titolo e scheda di tre righe affiancati, poi la riga ponte («↓ Prova su un cliente d'esempio») e un solo pannello largo, la scheda del cliente, con il cursore della liquidità che ricalcola dal motore. L'azione verso la demo sta nel pannello, dove viene voglia di farla.
+- **Tasti**: rettangolo pieno con la parola e una freccia piccola che scivola di 3px solo al passaggio di un puntatore vero (niente freccia nel tasto compatto della testata); pressione scale(0.97) in 120 ms. Vietata la cella scura con la freccia incassata.
+- **Numeri di sequenza** (01, 02…) solo dove c'è una sequenza vera: i passi.
+
 ## 4. Elevation
 
 Il sistema è **piatto**. La profondità si esprime con tre livelli tonali (sidebar sotto il fondo, fondo, superficie sopra il fondo) e con il bordo in tinta piena, non con le ombre. In tutta l'applicazione le ombre compaiono in quattro punti, e sono tutti elementi che galleggiano davvero sopra la pagina: menu a tendina, popover, il riquadro della guida.
