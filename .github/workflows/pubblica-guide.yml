@@ -27,6 +27,7 @@ permissions:
   contents: write
   pull-requests: write
   checks: read
+  actions: write
 
 concurrency:
   group: pubblica-guide
@@ -92,6 +93,19 @@ jobs:
               if (ignorati.length > 0) core.info(`${tag}: rossi ma non richiesti, ignorati: ${ignorati.join(", ")}.`);
               if (nonVerdi.length > 0) {
                 core.info(`${tag}: controlli richiesti non verdi: ${nonVerdi.join(", ")}.`);
+                // Un controllo richiesto FALLITO si rilancia una volta sola (11/10):
+                // la build a volte cade perché non scarica i caratteri da Google, e
+                // senza rilancio l'articolo resterebbe fermo per sempre. Al secondo
+                // fallimento non si insiste: lo segnala la sentinella.
+                for (const nome of nonVerdi) {
+                  const c = ultimo.get(nome);
+                  const runId = c?.conclusion === "failure" && /\/actions\/runs\/(\d+)/.exec(c.details_url ?? "")?.[1];
+                  if (!runId) continue;
+                  const { data: run } = await github.rest.actions.getWorkflowRun({ owner, repo, run_id: Number(runId) });
+                  if (run.run_attempt >= 2 || run.status !== "completed") continue;
+                  await github.rest.actions.reRunWorkflowFailedJobs({ owner, repo, run_id: Number(runId) });
+                  core.info(`${tag}: «${nome}» fallito al primo tentativo, rilanciato.`);
+                }
                 continue;
               }
               // Conflitto con main: non si puo' unire, lo sistema la routine.
