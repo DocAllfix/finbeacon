@@ -30,6 +30,17 @@ export const COLORI = [
   { id: "4", nome: "Evidenziatore" },
 ] as const;
 
+/** I tasti dell'apertura in prova (11/10), indipendenti da apertura e colore. «1» sono quelli attuali. */
+export const TASTI = [
+  { id: "1", nome: "Attuali" },
+  { id: "2", nome: "Pieno" },
+  { id: "3", nome: "Testo" },
+  { id: "4", nome: "Nel pannello" },
+  { id: "5", nome: "Coppia" },
+] as const;
+
+export type Tasti = (typeof TASTI)[number]["id"];
+
 export type Colore = (typeof COLORI)[number]["id"];
 
 export const VARIANTI_IN_PROVA =

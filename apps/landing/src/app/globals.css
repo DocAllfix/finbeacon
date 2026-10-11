@@ -807,3 +807,76 @@ html[data-colore="4"] mark.evidenzia::before {
     0 1px 0 color-mix(in oklch, var(--testo) 4%, transparent),
     0 30px 60px -30px color-mix(in oklch, var(--testo) 22%, transparent);
 }
+
+/*
+ * I tasti in prova (solo anteprima, ?t=2..5). Senza scelta si vedono gli
+ * attuali (1). Fuori anteprima non esiste nessun [data-tasti-v].
+ */
+[data-tasti-v]:not([data-tasti-v="1"]),
+html[data-tasti] [data-tasti-v="1"] {
+  display: none;
+}
+[data-tasti-v="1"],
+html[data-tasti="2"] [data-tasti-v="2"],
+html[data-tasti="3"] [data-tasti-v="3"],
+html[data-tasti="4"] [data-tasti-v="4"],
+html[data-tasti="5"] [data-tasti-v="5"] {
+  display: flex;
+}
+/* Con le opzioni 2-5 anche il tasto in testata perde la cella con la freccia. */
+html[data-tasti] header .tasto-primario {
+  padding-right: 1rem;
+}
+html[data-tasti] header .tasto-primario > span[aria-hidden] {
+  display: none;
+}
+
+/*
+ * Movimento dei tasti (Emil Kowalski): pressione scale(0.97) in 120 ms, la
+ * freccia entra solo con un puntatore vero, mai su touch.
+ */
+.tasto-pieno {
+  transition:
+    transform 120ms cubic-bezier(0.23, 1, 0.32, 1),
+    filter 160ms ease-out;
+}
+.tasto-pieno:active {
+  transform: scale(0.97);
+}
+.tasto-testo-filo {
+  transform-origin: left;
+  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.tasto-testo-freccia {
+  transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .tasto-pieno:hover {
+    filter: brightness(1.08);
+  }
+  .tasto-pieno-freccia {
+    opacity: 0;
+    transform: translateX(-4px);
+    transition:
+      opacity 160ms ease-out,
+      transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .tasto-pieno:hover .tasto-pieno-freccia {
+    opacity: 1;
+    transform: none;
+  }
+  .tasto-testo:hover .tasto-testo-freccia {
+    transform: translateX(4px);
+  }
+  .tasto-testo:hover .tasto-testo-filo {
+    transform: scaleX(1.04);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tasto-pieno,
+  .tasto-testo-filo,
+  .tasto-testo-freccia,
+  .tasto-pieno-freccia {
+    transition: none;
+  }
+}

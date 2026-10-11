@@ -12,7 +12,13 @@ import { URL_DEMO_PUBBLICA } from "@/lib/configurazione";
 import { HERO, VOCI_MENU } from "@/lib/contenuti";
 import { guidePubblicate } from "@/lib/guide";
 import { ORDINE } from "@/lib/indicatori";
-import { APERTURA_PREDEFINITA, APERTURE, VARIANTI_IN_PROVA, type Apertura } from "@/lib/varianti";
+import {
+  APERTURA_PREDEFINITA,
+  APERTURE,
+  TASTI,
+  VARIANTI_IN_PROVA,
+  type Apertura,
+} from "@/lib/varianti";
 
 /** Il report d'esempio si offre solo se il file c'è davvero: niente link rotti. */
 const REPORT_ESEMPIO = "/report-esempio.pdf";
@@ -103,18 +109,161 @@ function evidenziato(testo: string, parole: string) {
  * Due verbi, mai confusi (29/09): «demo» è SOLO quella che si apre subito. Il
  * contatto umano si chiama «Parla con noi».
  */
-function Azioni({ className = "" }: { className?: string }) {
+function AzioniAttuali() {
+  return URL_DEMO_PUBBLICA ? (
+    <>
+      <PulsantePrimario href={URL_DEMO_PUBBLICA}>Prova la demo</PulsantePrimario>
+      <CollegamentoAFilo href="#richiesta">Parla con noi</CollegamentoAFilo>
+    </>
+  ) : (
+    <PulsantePrimario href="#richiesta">Parla con noi</PulsantePrimario>
+  );
+}
+
+/*
+ * I tasti in prova (11/10, solo anteprima, ?t=). L'utente trova i tasti attuali
+ * «da AI»: la cella scura con la freccia incassata è il pulsante di serie dei
+ * modelli, e la coppia pieno + sottolineato a destra del sottotitolo è lo
+ * schema «titolo, sottotitolo, due tasti». Se la demo non è configurata
+ * l'azione principale resta il contatto, come sempre.
+ */
+const DEMO = URL_DEMO_PUBBLICA ?? "#richiesta";
+const ETICHETTA_DEMO = URL_DEMO_PUBBLICA ? "Prova la demo" : "Parla con noi";
+
+/** Il tasto pieno, senza cella: la freccia arriva solo al passaggio. */
+function TastoPieno({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <div className={`flex flex-wrap items-center gap-x-7 gap-y-3 ${className}`}>
-      {URL_DEMO_PUBBLICA ? (
-        <>
-          <PulsantePrimario href={URL_DEMO_PUBBLICA}>Prova la demo</PulsantePrimario>
-          <CollegamentoAFilo href="#richiesta">Parla con noi</CollegamentoAFilo>
-        </>
-      ) : (
-        <PulsantePrimario href="#richiesta">Parla con noi</PulsantePrimario>
+    <Link
+      href={href}
+      className="tasto-pieno inline-flex h-12 items-center gap-2 rounded-[0.375rem] bg-accento pr-5 pl-6 text-[0.9375rem] font-medium whitespace-nowrap text-su-accento"
+    >
+      {children}
+      <ArrowRight className="tasto-pieno-freccia size-4" aria-hidden />
+    </Link>
+  );
+}
+
+function AzioniPiene() {
+  return (
+    <>
+      <TastoPieno href={DEMO}>{ETICHETTA_DEMO}</TastoPieno>
+      {URL_DEMO_PUBBLICA && (
+        <Link
+          href="#richiesta"
+          className="py-3 text-[0.9375rem] font-medium text-testo-attenuato hover:text-testo"
+        >
+          Parla con noi
+        </Link>
       )}
+    </>
+  );
+}
+
+function AzioniTesto() {
+  return (
+    <>
+      <Link
+        href={DEMO}
+        className="tasto-testo group inline-flex items-center gap-2 py-2 font-[family-name:var(--font-titoli)] text-[1.375rem] font-semibold tracking-[-0.015em] whitespace-nowrap text-testo"
+      >
+        <span className="relative">
+          {ETICHETTA_DEMO}
+          <span className="tasto-testo-filo absolute inset-x-0 -bottom-0.5 h-0.5 bg-accento" />
+        </span>
+        <ArrowRight className="tasto-testo-freccia size-5 text-accento" aria-hidden />
+      </Link>
+      {URL_DEMO_PUBBLICA && (
+        <span className="text-[0.9375rem] text-testo-attenuato">
+          o{" "}
+          <Link href="#richiesta" className="font-medium text-testo hover:text-accento">
+            parla con noi
+          </Link>
+        </span>
+      )}
+    </>
+  );
+}
+
+/** Opzione 4: nella riga del titolo resta il contatto, la demo sta nel pannello. */
+function AzioniNelPannello() {
+  return (
+    <Link
+      href="#richiesta"
+      className="inline-flex items-center gap-2 py-3 text-[0.9375rem] font-medium text-testo-attenuato hover:text-testo"
+    >
+      Parla con noi
+      <ArrowRight className="size-4" aria-hidden />
+    </Link>
+  );
+}
+
+function PiedePannello() {
+  return (
+    <div
+      data-tasti-v="4"
+      className="flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-filetto px-5 py-4 sm:px-7"
+    >
+      <p className="text-[0.9375rem] text-testo-attenuato">
+        Hai mosso un cliente inventato. Nella demo c&apos;è un portafoglio intero.
+      </p>
+      <TastoPieno href={DEMO}>{URL_DEMO_PUBBLICA ? "Apri la demo" : "Parla con noi"}</TastoPieno>
     </div>
+  );
+}
+
+function AzioniCoppia() {
+  return (
+    <span className="inline-flex items-center rounded-[0.55rem] border border-bordo bg-superficie p-1">
+      <Link
+        href={DEMO}
+        className="tasto-pieno inline-flex h-10 items-center rounded-[0.375rem] bg-accento px-5 text-[0.9375rem] font-medium whitespace-nowrap text-su-accento"
+      >
+        {ETICHETTA_DEMO}
+      </Link>
+      {URL_DEMO_PUBBLICA && (
+        <Link
+          href="#richiesta"
+          className="inline-flex h-10 items-center px-5 text-[0.9375rem] font-medium whitespace-nowrap text-testo-attenuato hover:text-testo"
+        >
+          Parla con noi
+        </Link>
+      )}
+    </span>
+  );
+}
+
+const TASTI_RESI = {
+  "1": AzioniAttuali,
+  "2": AzioniPiene,
+  "3": AzioniTesto,
+  "4": AzioniNelPannello,
+  "5": AzioniCoppia,
+} as const;
+
+/*
+ * Due verbi, mai confusi (29/09): «demo» è SOLO quella che si apre subito. Il
+ * contatto umano si chiama «Parla con noi».
+ */
+function Azioni({ className = "" }: { className?: string }) {
+  const classi = `flex-wrap items-center gap-x-7 gap-y-3 ${className}`;
+  if (!VARIANTI_IN_PROVA) {
+    return (
+      <div className={`flex ${classi}`}>
+        <AzioniAttuali />
+      </div>
+    );
+  }
+  return (
+    <>
+      {TASTI.map(({ id }) => {
+        const Resa = TASTI_RESI[id];
+        return (
+          <div key={id} data-tasti-v={id} className={classi}>
+            <Resa />
+          </div>
+        );
+      })}
+    </>
   );
 }
 
@@ -155,7 +304,7 @@ function AperturaNumero({ idTitolo, prova, modo }: PropsApertura & { modo: ModoP
           aria-hidden
         />
         <Contenitore className="relative">
-          <PannelloCliente modo={modo} />
+          <PannelloCliente modo={modo} piede={VARIANTI_IN_PROVA ? <PiedePannello /> : null} />
           <div className="mt-4 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 text-xs text-testo-attenuato">
             <span>Esempio con dati inventati, calcolato dal motore di FinBeacon.</span>
             {URL_DEMO_PUBBLICA && (

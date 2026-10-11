@@ -189,7 +189,13 @@ function Portafoglio() {
   );
 }
 
-export function PannelloCliente({ modo }: { modo: ModoPannello }) {
+export function PannelloCliente({
+  modo,
+  piede = null,
+}: {
+  modo: ModoPannello;
+  piede?: React.ReactNode;
+}) {
   return (
     <figure className="pannello-cliente m-0 overflow-hidden rounded-[0.9rem] border border-bordo bg-superficie">
       {modo === "portafoglio" ? (
@@ -201,6 +207,7 @@ export function PannelloCliente({ modo }: { modo: ModoPannello }) {
           {modo === "avviso" && <Avviso />}
         </>
       )}
+      {piede}
     </figure>
   );
 }
