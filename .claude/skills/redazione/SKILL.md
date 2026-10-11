@@ -14,23 +14,67 @@ procedura. Se una regola e un passo della procedura sembrano in conflitto, vince
 fermi.
 
 Le guide si pubblicano **senza rilettura garantita** (silenzio-assenso di 48 ore sulla PR). Se
-un passo non si può fare bene (una fonte non si apre, un dato non si verifica), **non aprire la
-PR**: scrivi nel resoconto finale cosa è mancato. Nessuna uscita è meglio di un'uscita sbagliata
-firmata da una persona vera.
+un passo non si può fare bene (una fonte non si apre, un dato non si verifica), **quella guida
+non esce**: un'uscita sbagliata firmata da una persona vera è peggio di nessuna uscita.
 
-## 1. Scegli cosa scrivere
+Ma **una voce bloccata non deve fermare la settimana** (11/10: la guida pilastro sul DSCR è
+rimasta ferma per settimane perché una fonte non era raggiungibile dall'ambiente). Se la voce
+scelta non si può fare bene, segnala nel piano `stato: sospesa` e `motivo: "<cosa manca e cosa
+la sblocca>"`, e passa alla voce successiva. Al massimo tre tentativi per giro; se falliscono
+tutti, apri comunque la PR con le sole modifiche al piano (voci sospese e voci nuove) e il
+motivo nel corpo: così il problema si vede, invece di sparire in un registro.
+
+## 0. Manutenzione, prima di scrivere
+
+1. **PR «articolo» aperte.** Elencale (`gh pr list --label articolo`). Per ciascuna con
+   l'etichetta `da-riallineare` o in conflitto con `main`: porta il ramo su `main`
+   (`git rebase origin/main`), risolvi i conflitti di `piano-editoriale.yml` tenendo le modifiche
+   di tutte e due le parti, rilancia le verifiche del passo 6, `git push --force-with-lease`,
+   togli l'etichetta. Il riallineamento fa ripartire le 48 ore: scrivilo in un commento.
+2. **Stati coerenti.** Ogni voce `in-pr` la cui PR è stata unita diventa `pubblicata`; se la
+   PR è stata chiusa senza unirla, torna `da-fare` con una `note` sul perché. Questa correzione
+   va nella PR di oggi.
+3. **Arretrato.** Se ci sono già **tre o più** PR «articolo» aperte da più di 48 ore, oggi
+   non scrivere: leggi il registro di «Pubblica le guide» per capire perché non si uniscono,
+   correggi ciò che è nel perimetro dei contenuti, e descrivi il resto nel resoconto finale.
+   La sentinella (`cura-redazione.yml`) apre comunque una issue «redazione-ferma».
+
+## 1. Tieni vivo il piano
+
+Conta le voci `stato: da-fare` che **non** hanno `solo-codice: true`. Se sono **meno di sei**:
+
+1. Prendi le ricerche vere: prima prova `node apps/landing/scripts/suggerimenti.mjs "<radice>"
+--alfabeto` per ciascuna voce di `radici:`. Se l'autocompletamento non risponde (l'ambiente
+   cloud lo blocca), leggi quelle raccolte la domenica da GitHub:
+   `git fetch origin dati/suggerimenti && git show origin/dati/suggerimenti:suggerimenti.md`.
+   Se mancano anche quelle, usa la ricerca web sulle radici e annota in `evidenze` che le query
+   non vengono dall'autocompletamento.
+2. Scarta il rumore: nomi propri, località, prodotti di altri, query già coperte da una guida o
+   da una voce (stessa `query` o quasi, stessa `parolaChiave`), temi fuori dal prodotto.
+3. Aggiungi da **4 a 6 voci** nuove, ciascuna con `id`, `titolo` di lavoro, `query`,
+   `evidenze` (le query vere che la sostengono), `intento`, `argomento`, `formato`, `priorita`
+   (3 di partenza; 2 se si collega a guide già pubblicate) e `stato: da-fare`. Preferisci i
+   temi che allungano un gruppo esistente (crisi, indicatori, strumenti) alle pagine isolate.
+4. Se dalle ricerche emerge una radice nuova e utile, aggiungila a `radici:`.
+5. Quando ci saranno i dati di Search Console (o un export del Keyword Planner nel repo),
+   usali per la priorità: impressioni e posizione battono l'intuito.
+
+Le voci nuove vanno nella **stessa PR** della guida di oggi: niente PR a parte.
+
+## 2. Scegli cosa scrivere
 
 1. Leggi `apps/landing/content/piano-editoriale.yml`.
 2. Conta le guide pubblicate (`apps/landing/content/guide/*.mdx` senza `bozza: true`). Se il
    numero di uscite dall'ultimo aggiornamento è 3 o più e esiste una guida con più di 90 giorni
-   dall'ultima revisione, questa volta **aggiorni** quella (vai al passo 6).
+   dall'ultima revisione, questa volta **aggiorni** quella (vai al passo 7).
 3. Altrimenti prendi la voce `stato: da-fare` con `priorita` più alta (1 = massima); a pari
    priorità, quella che ha già guide collegate pubblicate (i gruppi di guide collegate valgono
-   più delle pagine isolate).
+   più delle pagine isolate). Salta le voci `solo-codice: true` e quelle `sospesa`; riprova una
+   voce `sospesa` solo se il suo `motivo` dice che il blocco è stato tolto.
 4. Controlla che non esista già una guida con la stessa `parolaChiave` o su un tema quasi
    uguale. Se esiste, trasforma il lavoro in un aggiornamento.
 
-## 2. Ricerca
+## 3. Ricerca
 
 1. **Cosa cercano davvero**: esegui `node apps/landing/scripts/suggerimenti.mjs "<query
 principale>"` e usa le query restituite per le domande da coprire (titoli `##`).
@@ -40,7 +84,7 @@ principale>"` e usa le query restituite per le domande da coprire (titoli `##`).
    Per ogni affermazione normativa annota articolo, comma e, per i documenti CNDCEC, la pagina.
    Se una fonte non si apre, quella affermazione non entra nella guida.
 
-## 3. Scrivi
+## 4. Scrivi
 
 File: `apps/landing/content/guide/<slug>.mdx`, slug minuscolo-con-trattini, corto, con la query
 principale (es. `dscr-prospettico-6-mesi`).
@@ -78,9 +122,9 @@ Corpo, in quest'ordine:
 Stile: `REDAZIONE.md`, sezione «La voce». Rileggi ogni frase che contiene «fondamentale»,
 «cruciale», «è importante notare», «in conclusione»: quasi sempre va tolta.
 
-## 4. Rileggi come un revisore che vuole trovare l'errore
+## 5. Rileggi come un revisore che vuole trovare l'errore
 
-Rispondi per iscritto, nel corpo della PR, a ciascuna domanda:
+Rispondi per iscritto, nel corpo della PR, a ciascuna domanda (il passo 6 rimanda qui):
 
 - Ogni affermazione normativa ha articolo/comma o pagina, e la fonte l'ho **letta**?
 - Ho attribuito al CNDCEC o alla legge qualcosa che la fonte non dice? (In particolare le soglie.)
@@ -90,9 +134,10 @@ Rispondi per iscritto, nel corpo della PR, a ciascuna domanda:
 - La prima frase risponde alla query principale?
 - Un commercialista esperto imparerebbe qualcosa che le prime 5 pagine dei risultati non dicono?
 
-Se una risposta è quella sbagliata, correggi; se non si può correggere, non aprire la PR.
+Se una risposta è quella sbagliata, correggi; se non si può correggere, la guida non esce: segna la
+voce `sospesa` con il `motivo` e torna al passo 2 con la voce successiva.
 
-## 5. Verifica tecnica e PR
+## 6. Verifica tecnica e PR
 
 Dalla radice del repo:
 
@@ -105,17 +150,19 @@ node apps/landing/scripts/verifica-guide.mjs
 
 Tutto verde, poi:
 
-1. aggiorna la voce in `piano-editoriale.yml`: `stato: in-pr`, `slug`, `data`;
+1. aggiorna la voce in `piano-editoriale.yml`: `stato: in-pr`, `slug`, `data` (più le correzioni
+   del passo 0 e le voci nuove del passo 1);
 2. ramo `articolo/<slug>`, un commit con messaggio `guida: <titolo>`;
 3. PR verso `main` con **etichetta `articolo`**. Corpo: query principale e secondarie; perché
    questo tema adesso; fonti primarie con articolo/pagina; le risposte del passo 4; e la riga
-   «Si pubblica da sola il <data + 2 giorni> se nessuno aggiunge l'etichetta `fermo`.»
+   «Si pubblica da sola il <data + 2 giorni> se nessuno aggiunge l'etichetta `fermo`.» Se hai
+   aggiunto voci al piano o ne hai sospese, elencale con il perché.
 
 La PR può toccare **solo** `apps/landing/content/**` e `apps/landing/public/guide/**`: un
 controllo della CI la blocca se tocca altro. Se per scrivere la guida serve un componente o una
 modifica al codice, non farla: annotala nel corpo della PR come richiesta.
 
-## 6. Aggiornare una guida esistente
+## 7. Aggiornare una guida esistente
 
 Riapri le fonti (norme cambiate? correttivi?), aggiorna testo ed esempi, imposta
 `aggiornato: <oggi>` e aggiungi in testa al corpo una riga: «Aggiornata il <data>: <cosa è

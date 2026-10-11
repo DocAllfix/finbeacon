@@ -1,0 +1,126 @@
+name: Cura della redazione
+
+# Perché la redazione non si fermi senza motivo (11/10).
+#
+# 1. RICERCHE. La routine della redazione gira in un ambiente cloud che non
+#    raggiunge l'autocompletamento di Google. Qui invece si raggiunge: ogni
+#    domenica si raccolgono le ricerche vere per ogni radice di
+#    `apps/landing/content/piano-editoriale.yml` (campo `radici:`) e si salvano
+#    sul ramo dati `dati/suggerimenti`, che non è protetto e non va mai unito.
+#    La routine le legge da lì per rifornire il piano (skill redazione, passo 1).
+#
+# 2. SENTINELLA. Ogni giorno: se negli ultimi 8 giorni non è stata aperta
+#    nessuna PR «articolo», o se una PR «articolo» è aperta da più di 5 giorni,
+#    apre una issue con l'etichetta «redazione-ferma» (GitHub manda la email).
+#    Una sola issue aperta per volta; si chiude da sola quando torna tutto a posto.
+on:
+  schedule:
+    - cron: "23 17 * * 0" # domenica: ricerche (prima del giro del lunedì)
+    - cron: "7 6 * * *" # ogni mattina: sentinella
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: read
+
+concurrency:
+  group: cura-redazione
+  cancel-in-progress: false
+
+jobs:
+  ricerche:
+    name: Ricerche per il piano editoriale
+    if: github.event.schedule == '23 17 * * 0' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Raccogli le ricerche per ogni radice
+        run: |
+          # Le radici sono le righe «  - "…"» sotto «radici:» nel piano.
+          radici=$(awk '/^radici:/{f=1;next} f&&/^[^ #]/{f=0} f&&/^  - /{sub(/^  - /,""); gsub(/"/,""); print}' apps/landing/content/piano-editoriale.yml)
+          if [ -z "$radici" ]; then echo "::error::Nessuna radice in piano-editoriale.yml"; exit 1; fi
+          mkdir -p /tmp/dati
+          oggi=$(TZ=Europe/Rome date +%F)
+          {
+            echo "# Ricerche dall'autocompletamento di Google (hl=it, gl=it), $oggi"
+            echo "# Dicono COSA la gente scrive, non quanto. Generato da cura-redazione.yml."
+            while IFS= read -r r; do
+              echo
+              echo "## $r"
+              node apps/landing/scripts/suggerimenti.mjs "$r" --alfabeto | sed 's/^/- /'
+            done <<< "$radici"
+          } > /tmp/dati/suggerimenti.md
+          righe=$(grep -c '^- ' /tmp/dati/suggerimenti.md || true)
+          echo "Ricerche raccolte: $righe"
+          if [ "$righe" -lt 20 ]; then echo "::error::Troppo poche ricerche ($righe): autocompletamento non raggiungibile?"; exit 1; fi
+      - name: Salva sul ramo dati/suggerimenti
+        run: |
+          cd /tmp/dati
+          git init -q -b dati/suggerimenti
+          git config user.name "cura-redazione"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add suggerimenti.md
+          git commit -q -m "ricerche del $(TZ=Europe/Rome date +%F)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" dati/suggerimenti
+          echo "Salvate su dati/suggerimenti."
+
+  sentinella:
+    name: Sentinella della redazione
+    if: github.event.schedule == '7 6 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const GIORNO = 24 * 60 * 60 * 1000;
+            const ora = Date.now();
+            const tutte = await github.paginate(github.rest.pulls.list, {
+              owner, repo, state: "all", base: "main", per_page: 100, sort: "created", direction: "desc",
+            });
+            const articoli = tutte.filter((p) => p.labels.some((l) => l.name === "articolo"));
+            const problemi = [];
+
+            const ultima = articoli[0];
+            const giorniDallUltima = ultima ? (ora - new Date(ultima.created_at)) / GIORNO : Infinity;
+            if (giorniDallUltima > 8) {
+              problemi.push(
+                `Nessuna PR «articolo» aperta negli ultimi 8 giorni (l'ultima: ${ultima ? `#${ultima.number}, ${ultima.created_at.slice(0, 10)}` : "nessuna"}). ` +
+                  "La routine della redazione non sta producendo: controllare il suo registro su claude.ai/code.",
+              );
+            }
+            for (const p of articoli.filter((p) => p.state === "open")) {
+              const giorni = (ora - new Date(p.created_at)) / GIORNO;
+              if (giorni > 5 && !p.labels.some((l) => l.name === "fermo")) {
+                problemi.push(
+                  `#${p.number} «${p.title}» è aperta da ${Math.floor(giorni)} giorni senza «fermo». ` +
+                    "Il registro di «Pubblica le guide» dice perché non si unisce.",
+                );
+              }
+            }
+
+            const aperte = await github.paginate(github.rest.issues.listForRepo, {
+              owner, repo, state: "open", labels: "redazione-ferma", per_page: 100,
+            });
+            if (problemi.length === 0) {
+              core.info("Redazione in salute.");
+              for (const i of aperte) {
+                await github.rest.issues.createComment({ owner, repo, issue_number: i.number, body: "Tornato tutto a posto: chiusa dalla sentinella." });
+                await github.rest.issues.update({ owner, repo, issue_number: i.number, state: "closed" });
+              }
+              return;
+            }
+            const corpo = problemi.map((x) => `- ${x}`).join("\n");
+            core.warning(corpo);
+            if (aperte.length > 0) {
+              await github.rest.issues.createComment({ owner, repo, issue_number: aperte[0].number, body: `Ancora:\n\n${corpo}` });
+            } else {
+              await github.rest.issues.create({
+                owner, repo, title: "La redazione si è fermata", labels: ["redazione-ferma"],
+                body: `La sentinella di \`cura-redazione.yml\` ha trovato:\n\n${corpo}\n\nSi chiude da sola quando torna tutto a posto.`,
+              });
+            }

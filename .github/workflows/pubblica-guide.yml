@@ -4,8 +4,17 @@ name: Pubblica le guide
 # l'etichetta «articolo» si unisce da sola quando
 #   - sono passate 48 ore dall'ultimo commit (una modifica fa ripartire l'attesa),
 #   - nessuno ha aggiunto l'etichetta «fermo» e non e' una bozza di PR,
-#   - tutti i controlli sono verdi, compreso il perimetro (solo contenuti).
+#   - i controlli RICHIESTI da main sono verdi, compreso il perimetro (solo contenuti).
 # Vercel pubblica da se' all'unione, tramite la sua integrazione GitHub.
+#
+# Solo i controlli richiesti (11/10). Prima bastava un controllo rosso
+# qualunque per fermare tutto, anche «Avvisi sulle dipendenze (non bloccante)»
+# o l'end-to-end dell'app, che un articolo non tocca: dal 5/10 al 11/10 due
+# guide sono rimaste ferme cosi', senza che nessuno se ne accorgesse.
+#
+# Una PR in conflitto con main non si puo' unire: prende l'etichetta
+# «da-riallineare» e un commento, e la routine della redazione la riallinea al
+# giro successivo (skill redazione, passo 0).
 #
 # Per fermare un articolo: etichetta «fermo», oppure chiudere la PR.
 on:
@@ -32,6 +41,13 @@ jobs:
         with:
           script: |
             const ATTESA_MS = 48 * 60 * 60 * 1000;
+            // Gli stessi controlli richiesti dalla protezione di main: se cambiano
+            // la' vanno cambiati qui (il GITHUB_TOKEN non puo' leggere la protezione).
+            const RICHIESTI = [
+              "Lint, typecheck, test, build",
+              "Landing, statica, end-to-end e Lighthouse",
+              "Perimetro degli articoli",
+            ];
             const { owner, repo } = context.repo;
             const aperte = await github.paginate(github.rest.pulls.list, {
               owner, repo, state: "open", base: "main", per_page: 100,
@@ -59,14 +75,38 @@ jobs:
               const esiti = await github.paginate(github.rest.checks.listForRef, {
                 owner, repo, ref: p.head.sha, per_page: 100,
               });
-              const aperti = esiti.filter((c) => c.status !== "completed");
-              const rossi = esiti.filter(
-                (c) => c.status === "completed" && !["success", "skipped", "neutral"].includes(c.conclusion),
-              );
-              if (esiti.length === 0 || aperti.length > 0 || rossi.length > 0) {
-                core.info(
-                  `${tag}: controlli non verdi (in corso ${aperti.length}, falliti ${rossi.map((c) => c.name).join(", ") || 0}).`,
-                );
+              // L'ultimo esito di ciascun controllo richiesto (un controllo
+              // rilanciato compare piu' volte: conta il piu' recente).
+              const ultimo = new Map();
+              for (const c of esiti) {
+                const prima = ultimo.get(c.name);
+                if (!prima || new Date(c.started_at) > new Date(prima.started_at)) ultimo.set(c.name, c);
+              }
+              const nonVerdi = RICHIESTI.filter((nome) => {
+                const c = ultimo.get(nome);
+                return !c || c.status !== "completed" || c.conclusion !== "success";
+              });
+              const ignorati = [...ultimo.values()]
+                .filter((c) => !RICHIESTI.includes(c.name) && c.conclusion && !["success", "skipped", "neutral"].includes(c.conclusion))
+                .map((c) => c.name);
+              if (ignorati.length > 0) core.info(`${tag}: rossi ma non richiesti, ignorati: ${ignorati.join(", ")}.`);
+              if (nonVerdi.length > 0) {
+                core.info(`${tag}: controlli richiesti non verdi: ${nonVerdi.join(", ")}.`);
+                continue;
+              }
+              // Conflitto con main: non si puo' unire, lo sistema la routine.
+              const { data: dettaglio } = await github.rest.pulls.get({ owner, repo, pull_number: p.number });
+              if (dettaglio.mergeable === false) {
+                if (!p.labels.some((l) => l.name === "da-riallineare")) {
+                  await github.rest.issues.addLabels({
+                    owner, repo, issue_number: p.number, labels: ["da-riallineare"],
+                  });
+                  await github.rest.issues.createComment({
+                    owner, repo, issue_number: p.number,
+                    body: "In conflitto con `main`, quindi non si può unire. La routine della redazione la riallinea al prossimo giro (skill redazione, passo 0); chiunque può farlo prima.",
+                  });
+                }
+                core.warning(`${tag}: in conflitto con main, etichettata «da-riallineare».`);
                 continue;
               }
               try {
