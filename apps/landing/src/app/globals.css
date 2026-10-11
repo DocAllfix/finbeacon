@@ -626,3 +626,88 @@ html[data-variante="b"] [data-apertura="b"],
 html[data-variante="c"] [data-apertura="c"] {
   display: block;
 }
+
+/*
+ * Le palette in prova (solo anteprima, ?c=1|2|3, vedi src/lib/varianti.ts).
+ * Sostituiscono i RUOLI, non i token di DESIGN.md. Misurato l'11/10: fondo
+ * bianco freddo, nero freddo, grigio freddo, un solo accento verde-petrolio sui
+ * pulsanti e due bande scure erano lo stesso sistema di Evalis Deck.
+ */
+
+/* 1 · Dettaglio: pulsanti in inchiostro, ottanio solo per link e dati, niente bande scure. */
+html[data-colore="1"] .tasto-primario {
+  background-color: var(--testo);
+  color: var(--fondo);
+}
+html[data-colore="1"] .notte,
+html[data-colore="2"] .notte {
+  --fondo: var(--tonale-prova, var(--sidebar-carta));
+  --superficie: var(--superficie-carta);
+  --tonale: var(--fondo-carta);
+  --testo: var(--inchiostro-scuro);
+  --testo-attenuato: var(--inchiostro-attenuato-carta);
+  --bordo: var(--bordo-carta);
+  --filetto: var(--filetto-carta);
+  --accento: var(--accento-prova, var(--ottanio-profondo));
+  --su-accento: oklch(0.985 0.005 210);
+  --ottimo: var(--verde-ottimo-carta);
+  --ottimo-testo: oklch(0.4 0.1 155);
+  --ottimo-fondo: oklch(0.96 0.025 155);
+  --buono: var(--verde-buono-carta);
+  --buono-testo: oklch(0.48 0.06 168);
+  --buono-fondo: oklch(0.968 0.012 168);
+  --attenzione: var(--ambra-attenzione-carta);
+  --attenzione-testo: oklch(0.47 0.1 70);
+  --attenzione-fondo: oklch(0.97 0.03 85);
+  --critico: var(--rosso-critico-carta);
+  --critico-testo: oklch(0.45 0.16 25);
+  --critico-fondo: oklch(0.965 0.015 25);
+  color-scheme: light;
+}
+
+/* 2 · Faro: grigi neutri, senza blu né beige, e un solo arancio segnale. */
+html[data-colore="2"] {
+  --fondo: oklch(0.982 0.002 90);
+  --superficie: oklch(0.996 0.001 90);
+  --tonale: oklch(0.953 0.003 90);
+  --tonale-prova: oklch(0.953 0.003 90);
+  --testo: oklch(0.19 0.004 90);
+  --testo-attenuato: oklch(0.45 0.005 90);
+  --bordo: oklch(0.885 0.004 90);
+  --filetto: oklch(0.925 0.003 90);
+  --accento: oklch(0.56 0.18 42);
+  --accento-prova: oklch(0.56 0.18 42);
+}
+html[data-colore="2"] .notte {
+  --testo: oklch(0.19 0.004 90);
+  --testo-attenuato: oklch(0.45 0.005 90);
+  --bordo: oklch(0.885 0.004 90);
+  --filetto: oklch(0.925 0.003 90);
+}
+html[data-colore="2"] .tasto-primario {
+  background-color: oklch(0.72 0.17 52);
+  color: oklch(0.18 0.02 50);
+}
+
+/* 3 · Inchiostro: blu cobalto pieno nell'apertura e nell'anteprima, segnale ambra. */
+html[data-colore="3"] {
+  --accento: oklch(0.45 0.17 262);
+}
+html[data-colore="3"] section[aria-labelledby^="titolo-principale"],
+html[data-colore="3"] .notte {
+  --fondo: oklch(0.36 0.15 264);
+  --superficie: oklch(0.41 0.14 264);
+  --tonale: oklch(0.32 0.13 264);
+  --testo: oklch(0.975 0.008 264);
+  --testo-attenuato: oklch(0.84 0.04 264);
+  --bordo: oklch(0.54 0.11 264);
+  --filetto: oklch(0.47 0.12 264);
+  --accento: oklch(0.83 0.14 78);
+  --su-accento: oklch(0.2 0.04 264);
+  --critico: oklch(0.78 0.13 30);
+  --critico-testo: oklch(0.86 0.1 30);
+  --critico-fondo: oklch(0.42 0.1 20);
+  color-scheme: dark;
+  background-color: var(--fondo);
+  color: var(--testo);
+}
