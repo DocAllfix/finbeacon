@@ -15,12 +15,7 @@ import { ANALISI_ESEMPIO, CLIENTE_ESEMPIO, SERIE_DSCR6M, SOGLIA_DSCR6M } from "@
 import { sinteticoDaScore } from "@/lib/fasce";
 import { guidePubblicate } from "@/lib/guide";
 import { ORDINE } from "@/lib/indicatori";
-import {
-  APERTURA_PREDEFINITA,
-  APERTURE,
-  VARIANTI_IN_PROVA,
-  type Apertura,
-} from "@/lib/varianti";
+import { APERTURA_PREDEFINITA, APERTURE, VARIANTI_IN_PROVA, type Apertura } from "@/lib/varianti";
 
 /** Il report d'esempio si offre solo se il file c'è davvero: niente link rotti. */
 const REPORT_ESEMPIO = "/report-esempio.pdf";
@@ -160,11 +155,7 @@ function AperturaNumero({ idTitolo, prova }: PropsApertura) {
   const dscr = ANALISI_ESEMPIO.indicatori.dscrProspettico!;
   const sintesi = sinteticoDaScore(ANALISI_ESEMPIO.score);
   return (
-    <section
-      data-apertura={prova}
-      aria-labelledby={idTitolo}
-      className="relative overflow-x-clip"
-    >
+    <section data-apertura={prova} aria-labelledby={idTitolo} className="relative overflow-x-clip">
       <div className="carta-rigata pointer-events-none absolute inset-0" aria-hidden />
       <Contenitore className="relative pt-14 pb-20 md:pt-20 lg:pt-24 lg:pb-24">
         <div className="grid gap-y-7 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-end lg:gap-x-16">
@@ -185,7 +176,6 @@ function AperturaNumero({ idTitolo, prova }: PropsApertura) {
             </p>
             {/* Nel carattere dei titoli: in Plex Mono, a questa misura, la virgola apriva un buco. */}
             <p className="mt-2 font-[family-name:var(--font-titoli)] text-[clamp(5rem,3rem+7vw,9.5rem)] leading-[0.9] font-semibold tracking-[-0.04em] text-critico-testo tabular-nums">
-
               {formatNumero(dscr, 2)}
             </p>
             <p className="mt-4 max-w-[26rem] text-[0.9375rem] leading-[1.6] text-testo-attenuato">
@@ -233,11 +223,7 @@ const FINO_AL_BORDO = "-mr-5 sm:-mr-8 lg:mr-[min(-2rem,calc(34rem_-_50vw))]";
 /** B · Schermata. Titolo largo sopra, la pagina d'analisi della demo sotto, a tutta larghezza. */
 function AperturaSchermata({ idTitolo, prova }: PropsApertura) {
   return (
-    <section
-      data-apertura={prova}
-      aria-labelledby={idTitolo}
-      className="relative overflow-x-clip"
-    >
+    <section data-apertura={prova} aria-labelledby={idTitolo} className="relative overflow-x-clip">
       <Contenitore className="pt-14 md:pt-20 lg:pt-24">
         <div className="grid gap-y-7 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-end lg:gap-x-16">
           <div>
@@ -276,11 +262,7 @@ function AperturaSchermata({ idTitolo, prova }: PropsApertura) {
 /** C · Affiancata. Testo a sinistra; a destra gli indicatori della demo, tagliati dal bordo. */
 function AperturaAffiancata({ idTitolo, prova }: PropsApertura) {
   return (
-    <section
-      data-apertura={prova}
-      aria-labelledby={idTitolo}
-      className="relative overflow-x-clip"
-    >
+    <section data-apertura={prova} aria-labelledby={idTitolo} className="relative overflow-x-clip">
       <Contenitore className="grid items-center gap-x-14 gap-y-12 pt-14 pb-20 md:pt-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:pt-24 lg:pb-28">
         <div className="max-w-[34rem]">
           <Occhiello>{HERO.occhiello}</Occhiello>
@@ -302,10 +284,7 @@ function AperturaAffiancata({ idTitolo, prova }: PropsApertura) {
               className="h-auto w-full"
             />
           </div>
-          <Didascalia
-            testo="Dalla demo: dati inventati."
-            collegamento="Aprila nella demo"
-          />
+          <Didascalia testo="Dalla demo: dati inventati." collegamento="Aprila nella demo" />
         </figure>
       </Contenitore>
     </section>
