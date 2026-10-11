@@ -119,7 +119,7 @@ export function Piede() {
             </ul>
           </nav>
         </div>
-        <div className="mt-12 flex flex-col gap-2 border-t border-bordo pt-6 text-xs text-testo-attenuato sm:flex-row sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-bordo pt-6 text-xs text-testo-attenuato sm:flex-row sm:items-center sm:justify-between">
           {/*
            * Nome e partita IVA nel piede di OGNI pagina, non solo dentro le
            * note legali: la legge li vuole «reperibili», e una voce di menu che
@@ -133,21 +133,22 @@ export function Piede() {
           {/*
            * Chi ha sviluppato FinBeacon (11/10, richiesta del committente, come
            * sugli altri prodotti di Axialoop). Collegamento seguito dai motori:
-           * niente nofollow. Area cliccabile alta 24px, testo nel colore
-           * attenuato del piede (contrasto oltre 4,5:1 sul fondo tonale).
+           * niente nofollow. Stessa misura, colore e passaggio del mouse degli
+           * altri link del piede; logo di 19px nei colori originali, perché il
+           * piede è chiaro. Area cliccabile di almeno 24px.
            */}
           <a
             href="https://www.axialoop.com/it"
             target="_blank"
             rel="noopener"
             aria-label="powered by Axialoop: sito di Axialoop, che ha sviluppato FinBeacon (si apre in una nuova scheda)"
-            className="-my-1 inline-flex h-6 items-center gap-1.5 self-start text-testo-attenuato hover:text-testo sm:self-auto"
+            className="-my-1 inline-flex min-h-6 items-center gap-2 self-start text-sm text-testo-attenuato hover:text-testo sm:self-auto"
           >
             <span>powered by</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 497 494"
-              className="size-4"
+              className="size-[1.1875rem] shrink-0"
               aria-hidden
               focusable="false"
             >
@@ -165,7 +166,7 @@ export function Piede() {
                 d="M70 317 L248 422 L297 395 L290 388 L120 289 Z M382 246 L383 284 L432 311 L432 273 Z M188 193 L138 166 L17 236 L15 240 L66 267 L183 199 Z M252 76 L253 240 L300 265 L300 103 Z M144 75 L144 159 L193 187 L193 103 Z"
               />
             </svg>
-            <span className="font-medium">Axialoop</span>
+            <span className="-ml-0.5 font-semibold">Axialoop</span>
           </a>
         </div>
       </Contenitore>
