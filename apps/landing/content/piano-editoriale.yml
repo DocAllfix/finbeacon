@@ -12,6 +12,28 @@
 #   formato    pilastro (guida lunga che ne regge altre) | guida | strumento
 #   solo-codice: true  = non è un articolo, serve codice (la routine lo salta).
 #   verifica   cosa controllare sulle fonti PRIMA di scrivere.
+#   motivo     solo con `stato: sospesa`: perché la voce è ferma e cosa la sblocca.
+#
+# radici: le parole di partenza del dominio. Ogni domenica `cura-redazione.yml`
+# raccoglie le ricerche vere per ciascuna e le salva sul ramo `dati/suggerimenti`;
+# la routine le usa per rifornire il piano quando le voci `da-fare` scendono
+# sotto sei (skill redazione, passo 1). Le radici nuove che emergono si aggiungono qui.
+
+radici:
+  - "dscr prospettico"
+  - "dscr"
+  - "adeguati assetti organizzativi"
+  - "codice della crisi d'impresa"
+  - "composizione negoziata"
+  - "indici di allerta"
+  - "indici di bilancio"
+  - "analisi di bilancio"
+  - "crisi d'impresa"
+  - "continuità aziendale"
+  - "budget di tesoreria"
+  - "rendiconto finanziario"
+  - "pfn ebitda"
+  - "organo di controllo"
 
 voci:
   - id: dscr-prospettico
