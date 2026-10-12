@@ -57,7 +57,13 @@ voci:
     argomento: crisi
     formato: pilastro
     priorita: 1
-    stato: da-fare
+    stato: sospesa
+    motivo: >
+      Sospesa dalla routine il 12/10/2026: il documento CNDCEC «Crisi d'impresa – Gli indici
+      dell'allerta» non si apre dall'ambiente cloud (commercialisti.it risponde con una pagina
+      anti-robot, cndcec.it chiude la connessione). Senza leggerlo non si può citare la pagina del
+      segnale sul DSCR (REDAZIONE.md, regola 4). Si sblocca se una persona salva il PDF ufficiale
+      nel repository (per esempio apps/landing/content/fonti/) o se il sito torna raggiungibile.
     verifica: >
       Leggere il documento CNDCEC sugli indici dell'allerta (ottobre 2019) e annotare pagina e
       testo della soglia del DSCR. Scrivere le due soglie come da REDAZIONE.md, regola 4.
@@ -95,7 +101,7 @@ voci:
     argomento: crisi
     formato: pilastro
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: adeguati-assetti-organizzativi
     data: 2026-10-02
     verifica: "Art. 2086 c.c. comma 2 e art. 3 CCII nel testo vigente su Normattiva."
@@ -140,7 +146,7 @@ voci:
     argomento: indicatori
     formato: guida
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: pfn-ebitda
     data: 2026-10-03
     verifica: "Le soglie di giudizio sono quelle del motore; se si citano soglie bancarie, serve la fonte."
@@ -161,7 +167,12 @@ voci:
     argomento: crisi
     formato: guida
     priorita: 2
-    stato: da-fare
+    stato: sospesa
+    motivo: >
+      Sospesa dalla routine il 12/10/2026 per lo stesso blocco di dscr-prospettico: per dire
+      «cosa sono» gli indici serve il documento CNDCEC, che dall'ambiente cloud non si apre. La
+      parte «se valgono ancora» si può ricostruire da Normattiva (art. 3, comma 4, e art. 13 CCII
+      vigenti), ma da sola non regge la guida. Si sblocca con il PDF ufficiale nel repository.
     verifica: >
       Il sistema degli indici è cambiato fra il testo originario del CCII e le versioni successive
       (2022, correttivo 2024): ricostruire con le fonti primarie cosa vale OGGI prima di scrivere.
@@ -204,7 +215,16 @@ voci:
     argomento: crisi
     formato: guida
     priorita: 2
-    stato: da-fare
+    stato: sospesa
+    motivo: >
+      Sospesa dalla routine il 12/10/2026: le fonti non sono allineate. Il decreto dirigenziale
+      23 aprile 2026 (Bollettino ufficiale del Ministero della giustizia n. 10 del 31/05/2026,
+      Sezione I, par. 4) cambia le soglie del rapporto debito/flussi (difficoltà contenute fino a
+      3, cessione da valutare oltre 5), mentre le istruzioni del test sulla piattaforma ufficiale
+      (composizionenegoziata.camcom.it) riportano ancora «attorno a 2», «attorno a 3» e «5-6» e
+      rimandano al decreto 21 marzo 2023. Il decreto 2026 si legge solo in copie di terzi: su
+      giustizia.it non risulta pubblicato. Si sblocca quando la piattaforma aggiorna il test o
+      il decreto 2026 compare su giustizia.it.
     verifica: "Decreto dirigenziale e sezione del test sulla piattaforma della composizione negoziata."
 
   - id: composizione-negoziata
@@ -226,7 +246,7 @@ voci:
     argomento: crisi
     formato: guida
     priorita: 2
-    stato: in-pr
+    stato: pubblicata
     slug: composizione-negoziata-crisi
     data: 2026-10-10
 
@@ -240,7 +260,7 @@ voci:
     argomento: indicatori
     formato: pilastro
     priorita: 2
-    stato: in-pr
+    stato: pubblicata
     slug: ros-roi-roe
     data: 2026-10-07
 
