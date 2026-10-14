@@ -67,12 +67,34 @@ Le voci nuove vanno nella **stessa PR** della guida di oggi: niente PR a parte.
 2. Conta le guide pubblicate (`apps/landing/content/guide/*.mdx` senza `bozza: true`). Se il
    numero di uscite dall'ultimo aggiornamento è 3 o più e esiste una guida con più di 90 giorni
    dall'ultima revisione, questa volta **aggiorni** quella (vai al passo 7).
-3. Altrimenti prendi la voce `stato: da-fare` con `priorita` più alta (1 = massima); a pari
-   priorità, quella che ha già guide collegate pubblicate (i gruppi di guide collegate valgono
-   più delle pagine isolate). Salta le voci `solo-codice: true` e quelle `sospesa`; riprova una
-   voce `sospesa` solo se il suo `motivo` dice che il blocco è stato tolto.
-4. Controlla che non esista già una guida con la stessa `parolaChiave` o su un tema quasi
+3. Altrimenti, **prima il calendario**: tra le voci `stato: da-fare` che hanno `uscita`, prendi
+   quella con l'`uscita` più vicina (anche se è già passata: un'uscita saltata si recupera per
+   prima). Il calendario viene dalla keyword research del 14/10/2026 e ha già deciso ordine e
+   accorpamenti: non riordinarlo.
+4. Se nessuna voce del calendario è `da-fare`, prendi la voce `stato: da-fare` con `priorita`
+   più alta (1 = massima); a pari priorità, quella che ha già guide collegate pubblicate (i
+   gruppi di guide collegate valgono più delle pagine isolate).
+5. In entrambi i casi salta le voci `solo-codice: true` e quelle `sospesa`; riprova una voce
+   `sospesa` solo se il suo `motivo` dice che il blocco è stato tolto.
+6. Controlla che non esista già una guida con la stessa `parolaChiave` o su un tema quasi
    uguale. Se esiste, trasforma il lavoro in un aggiornamento.
+
+### Se la voce ha il brief (calendario)
+
+Le voci del calendario portano già la ricerca delle parole chiave. Usala così, senza rifarla da
+capo:
+
+- `query` diventa la `parolaChiave` del frontmatter, e la prima frase della guida le risponde;
+- `secondarie` sono le varianti da coprire nei titoli `##`/`###` e nel testo, con naturalezza:
+  non un elenco di parole infilate;
+- `domande` sono le domande vere della gente: ciascuna diventa un titolo `##` a forma di
+  domanda, oppure una voce della sezione finale «Domande frequenti»;
+- `link_interni` sono **obbligatori** quando la guida collegata esiste già (cerca lo slug in
+  `apps/landing/content/guide/`, o il campo `slug` della voce); per quelle non ancora uscite,
+  niente link: lo aggiungerà l'aggiornamento successivo;
+- `cta`: `demo` chiude con l'invito alla demo, `calcolatore` con
+  `/strumenti/calcolo-dscr-prospettico`;
+- `dati` spiega da dove viene la priorità: riportalo nel corpo della PR.
 
 ## 3. Ricerca
 
@@ -111,8 +133,17 @@ Corpo, in quest'ordine:
 2. **Sezioni `##`** (almeno tre) con titoli a forma di domanda o affermazione precisa. Ogni
    sezione apre con la risposta nella prima frase; paragrafi di 2–4 frasi.
 3. **Numeri solo dai componenti**: `<Formula chiave="ros|turnover|roi|roe|gi|dscr|dscr6m" />`,
-   `<EsempioDscr />`, `<Nota>…</Nota>` (una per guida al massimo). Mai un valore calcolato
-   digitato a mano.
+   `<EsempioDscr />`, `<Nota>…</Nota>` (una per guida al massimo). Per ciò che il motore non
+   calcola (EBITDA, cash flow, margini, liquidità, CCN, giorni di incasso) scrivi solo gli
+   importi di partenza, inventati e tondi, e lascia il conto ai componenti:
+   - `<Conto totale="EBITDA" righe={[["Valore della produzione", 4200000], ["Costi operativi", -3720000]]} />`
+     somma le righe (i costi in negativo);
+   - `<Rapporto nome="EBITDA margin" num={["EBITDA", 480000]} den={["Ricavi", 4200000]} formato="%" />`
+     con `formato` `%`, `x` (quozienti) o `giorni` (num/den × 365).
+
+   Un esempio d'uso è in `content/guide/esempio-di-formato.mdx`. Mai un valore calcolato
+   digitato a mano, neanche nel testo: se serve citarlo, rimanda al riquadro.
+
 4. **Tabelle** per i confronti (soglie, differenze fra indicatori), **elenchi numerati** per le
    procedure.
 5. **Collegamenti**: almeno uno interno (altra guida, `/#metodo`, `/#anteprima`), e ogni norma

@@ -1,7 +1,8 @@
-import { formatNumero } from "@finbeacon/engine";
+import { formatEuro, formatNumero } from "@finbeacon/engine";
 import Link from "next/link";
 
 import { Giudizio, TESTO_TONO } from "@/components/giudizio";
+import { calcolaConto, calcolaRapporto, type FormatoRapporto, type RigaConto } from "@/lib/calcolo";
 import { ANALISI_ESEMPIO, CLIENTE_ESEMPIO, SOGLIA_DSCR6M } from "@/lib/esempio";
 import { FORMULE, type ChiaveFormula } from "@/lib/formule";
 
@@ -58,6 +59,95 @@ export function EsempioDscr() {
   );
 }
 
+const DIDASCALIA_ESEMPIO =
+  "Esempio con importi inventati. Il conto lo fa FinBeacon, non chi scrive.";
+
+/**
+ * Un conto d'esempio per ciò che il motore non calcola (EBITDA, cash flow, CCN,
+ * margine di struttura…). Chi scrive dà solo gli importi, con i costi in
+ * negativo; il totale lo calcola `calcolaConto` al build.
+ *
+ *   <Conto totale="EBITDA" righe={[["Valore della produzione", 4200000], ["Costi operativi", -3720000]]} />
+ */
+export function Conto({
+  righe,
+  totale,
+  didascalia = DIDASCALIA_ESEMPIO,
+}: {
+  righe: RigaConto[];
+  totale: string;
+  didascalia?: string;
+}) {
+  const c = calcolaConto(righe);
+  return (
+    <figure className="guida-riquadro">
+      <dl className="m-0 text-[0.9375rem]">
+        {c.righe.map((r) => (
+          <div
+            key={r.voce}
+            className="flex items-baseline justify-between gap-4 border-b border-filetto py-1.5"
+          >
+            <dt className="text-testo-attenuato">{r.voce}</dt>
+            <dd className="cifre m-0 whitespace-nowrap">{r.importo}</dd>
+          </div>
+        ))}
+        <div className="flex items-baseline justify-between gap-4 pt-2">
+          <dt className="font-semibold">{totale}</dt>
+          <dd
+            className={`cifre m-0 font-semibold whitespace-nowrap ${c.totaleNegativo ? "text-critico-testo" : ""}`}
+          >
+            {c.totale}
+          </dd>
+        </div>
+      </dl>
+      <figcaption className="mt-2 text-xs text-testo-attenuato">{didascalia}</figcaption>
+    </figure>
+  );
+}
+
+/**
+ * Un rapporto d'esempio fra due importi: «%» (margini), «x» (current ratio,
+ * copertura degli interessi), «giorni» (DSO: num/den × 365).
+ *
+ *   <Rapporto nome="EBITDA margin" num={["EBITDA", 480000]} den={["Ricavi", 4200000]} formato="%" />
+ */
+export function Rapporto({
+  nome,
+  num,
+  den,
+  formato,
+  didascalia = DIDASCALIA_ESEMPIO,
+}: {
+  nome: string;
+  num: RigaConto;
+  den: RigaConto;
+  formato: FormatoRapporto;
+  didascalia?: string;
+}) {
+  const esito = calcolaRapporto(num[1], den[1], formato); // valida anche i due importi
+  const fattore = formato === "%" ? " × 100" : formato === "giorni" ? " × 365" : "";
+  return (
+    <figure className="guida-riquadro">
+      <p className="m-0 text-[0.9375rem]">
+        <span className="font-semibold">{nome}</span>
+        <span className="text-testo-attenuato">
+          {" "}
+          = {num[0]} / {den[0]}
+          {fattore}
+        </span>
+      </p>
+      <p className="cifre m-0 mt-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 text-sm text-testo-attenuato">
+        <span>
+          {formatEuro(num[1])} / {formatEuro(den[1])}
+          {fattore}
+        </span>
+        <span className="text-base font-semibold whitespace-nowrap text-testo">= {esito}</span>
+      </p>
+      <figcaption className="mt-2 text-xs text-testo-attenuato">{didascalia}</figcaption>
+    </figure>
+  );
+}
+
 /** Un'osservazione da non perdere. Fondo tonale e bordo pieno: niente strisce laterali. */
 export function Nota({ children }: { children: React.ReactNode }) {
   return (
@@ -104,6 +194,8 @@ function Tabella(props: React.ComponentProps<"table">) {
 export const COMPONENTI_GUIDA = {
   Formula,
   EsempioDscr,
+  Conto,
+  Rapporto,
   Nota,
   a: Collegamento,
   table: Tabella,

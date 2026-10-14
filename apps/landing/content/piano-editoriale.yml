@@ -13,6 +13,13 @@
 #   solo-codice: true  = non è un articolo, serve codice (la routine lo salta).
 #   verifica   cosa controllare sulle fonti PRIMA di scrivere.
 #   motivo     solo con `stato: sospesa`: perché la voce è ferma e cosa la sblocca.
+#   calendario id dell'uscita (M1-W1-01 = mese 1, settimana 1, primo articolo).
+#   uscita     giorno previsto: la routine scrive prima la voce `da-fare` con l'uscita più vicina.
+#   tipologia  pillar | bofu | mofu | tofu (posizione nel percorso del lettore).
+#   dati       da dove viene la priorità (volume e CPC dell'export, o «senza volume»).
+#   domande    le domande vere da coprire: diventano titoli `##` o la sezione finale di domande.
+#   link_interni slug di guide (pubblicate o in calendario) da collegare: obbligatori se esistono.
+#   cta        demo | calcolatore: dove porta la chiusura della guida.
 #
 # radici: le parole di partenza del dominio. Ogni domenica `cura-redazione.yml`
 # raccoglie le ricerche vere per ciascuna e le salva sul ramo `dati/suggerimenti`;
@@ -34,6 +41,14 @@ radici:
   - "rendiconto finanziario"
   - "pfn ebitda"
   - "organo di controllo"
+
+  - "ebitda"
+  - "cash flow"
+  - "free cash flow"
+  - "indice di liquidità"
+  - "margine di struttura"
+  - "capitale circolante netto"
+  - "oneri finanziari su ebitda"
 
 voci:
   - id: dscr-prospettico
@@ -178,24 +193,6 @@ voci:
       (2022, correttivo 2024): ricostruire con le fonti primarie cosa vale OGGI prima di scrivere.
       Tema ad alto rischio di errore: se non è chiaro dalle fonti, stato sospesa.
 
-  - id: budget-tesoreria
-    titolo: "Budget di tesoreria a 6 mesi: come costruirlo per il DSCR"
-    query: "budget di tesoreria"
-    secondarie:
-      ["budget di tesoreria cndcec", "budget di tesoreria esempio", "budget di tesoreria rolling"]
-    evidenze:
-      [
-        "budget di tesoreria cndcec",
-        "budget di tesoreria commercialisti",
-        "budget di tesoreria esempio",
-        "budget di tesoreria rolling",
-      ]
-    intento: operativo
-    argomento: crisi
-    formato: guida
-    priorita: 2
-    stato: da-fare
-
   - id: test-pratico
     titolo: "Test pratico della composizione negoziata: come si legge"
     query: "test pratico composizione negoziata"
@@ -275,23 +272,6 @@ voci:
     priorita: 2
     stato: da-fare
     note: "Distinta dal pilastro dscr-prospettico: storico contro prospettico, collegarle."
-
-  - id: indici-di-bilancio
-    titolo: "Indici di bilancio: le formule che servono allo studio"
-    query: "indici di bilancio formule"
-    secondarie: ["indici di bilancio formule e spiegazioni", "indici di bilancio principali"]
-    evidenze:
-      [
-        "indici di bilancio formule",
-        "indici di bilancio formule e spiegazioni",
-        "indici di bilancio principali",
-      ]
-    intento: informativo
-    argomento: indicatori
-    formato: pilastro
-    priorita: 2
-    stato: da-fare
-    note: "Query molto contesa: scriverla quando esistono già le guide sui singoli indicatori, e farne il nodo che le collega."
 
   - id: assetti-checklist
     titolo: "Adeguati assetti: la check list per lo studio"
@@ -403,16 +383,6 @@ voci:
     stato: da-fare
     verifica: "Art. 2 CCII, definizioni vigenti."
 
-  - id: ebitda
-    titolo: "EBITDA dal bilancio: come si calcola davvero"
-    query: "ebitda come si calcola"
-    intento: informativo
-    argomento: indicatori
-    formato: guida
-    priorita: 3
-    stato: da-fare
-    verifica: 'Rilanciare suggerimenti.mjs "ebitda" prima di scrivere.'
-
   - id: report-banca
     titolo: "I numeri per la banca: cosa guarda chi valuta un fido"
     query: "indici di bancabilità"
@@ -422,3 +392,589 @@ voci:
     priorita: 3
     stato: da-fare
     verifica: "Nessuna evidenza di ricerca ancora: rilanciare suggerimenti.mjs e scegliere la query prima di scrivere."
+
+  # ---------------------------------------------------------------------------
+  # CALENDARIO DA KEYWORD RESEARCH (14/10/2026). Export Google Italia del 13/10
+  # per «ebitda» e «cash flow»; i temi senza export vengono dall'autocompletamento.
+  # La routine scrive prima la voce `da-fare` con l'`uscita` più vicina (skill
+  # redazione, passo 2). Dopo il calendario riprendono le voci qui sopra.
+  # Il DSCR attende l'export con Paese Italia (quello del 13/10 era USA).
+  # ---------------------------------------------------------------------------
+
+  - id: ebitda
+    calendario: M1-W1-01
+    uscita: 2026-10-15
+    tipologia: pillar
+    titolo: "EBITDA: cos'è, come si calcola dal bilancio e come si legge"
+    query: "ebitda come si calcola"
+    dati: "export keyword Google Italia del 13/10/2026: 1.300 ricerche/mese, CPC 3,20 $; cluster 47.230"
+    secondarie:
+      [
+        "ebitda significato (5.400)",
+        "ebitda cos'è (3.600)",
+        "ebitda calcolo (1.300)",
+        "calcolare ebitda (1.000)",
+        "calcolo ebitda da bilancio (110)",
+        "ebitda esempio (110)",
+      ]
+    domande:
+      [
+        "Dove si trova l'EBITDA nel bilancio?",
+        "Cosa indica l'EBITDA?",
+        "Come si calcola dal conto economico (art. 2425 c.c.)?",
+        "Che differenza c'è tra EBITDA e utile netto?",
+      ]
+    intento: informativo
+    argomento: indicatori
+    formato: pilastro
+    link_interni: ["pfn-ebitda", "ros-roi-roe"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Art. 2425 c.c. (Normattiva) per le voci del conto economico; OIC 12. Esempio numerico solo con <Conto>."
+
+  - id: cash-flow
+    calendario: M1-W2-01
+    uscita: 2026-10-19
+    tipologia: pillar
+    titolo: "Cash flow: cos'è, come si calcola e perché l'utile non è cassa"
+    query: "cash flow cos'è"
+    dati: "export keyword Google Italia del 13/10/2026: 720 ricerche/mese, CPC 1,67 $; cluster 14.440 (cash flow 6.600)"
+    secondarie:
+      [
+        "cash flow significato (880)",
+        "formula cash flow (390)",
+        "cash flow come si calcola (260)",
+        "cash flow esempio (110)",
+        "cash flow aziendale (50)",
+      ]
+    domande:
+      [
+        "Come si calcola il cash flow dal bilancio?",
+        "Metodo diretto o indiretto?",
+        "Perché un'azienda in utile può restare senza cassa?",
+      ]
+    intento: informativo
+    argomento: indicatori
+    formato: pilastro
+    link_interni: ["ebitda", "pfn-ebitda"]
+    cta: calcolatore
+    priorita: 1
+    stato: da-fare
+    verifica: "OIC 10 (rendiconto finanziario) per le definizioni; esempi solo con <Conto>."
+
+  - id: budget-tesoreria
+    calendario: M1-W2-02
+    uscita: 2026-10-22
+    tipologia: bofu
+    titolo: "Cash flow previsionale e piano di tesoreria a 6 mesi: come costruirli"
+    query: "cash flow previsionale"
+    dati: "export keyword Google Italia del 13/10/2026: 50 ricerche/mese, CPC 4,83 $; cluster 920 con CPC fino a 33,18 $ (cash flow forecast)"
+    secondarie:
+      [
+        "cash flow forecast (110, CPC 33,18)",
+        "cash flow fatture (110, CPC 28,85)",
+        "cash flow previsionale excel (40)",
+        "budget di tesoreria commercialisti (s.v.)",
+        "piano di tesoreria a 6 mesi (s.v.)",
+        "budget di tesoreria rolling (s.v.)",
+      ]
+    domande:
+      [
+        "Come si fa una previsione di cassa a sei mesi?",
+        "Cosa mettere nel budget di tesoreria?",
+        "Ogni quanto aggiornarlo?",
+        "Che legame c'è con il DSCR prospettico?",
+      ]
+    intento: operativo
+    argomento: crisi
+    formato: guida
+    link_interni: ["cash-flow", "composizione-negoziata-crisi"]
+    cta: calcolatore
+    priorita: 1
+    stato: da-fare
+    verifica: "Art. 3 CCII (Normattiva) per il legame con i sei mesi; niente citazioni CNDCEC finché il documento non è leggibile."
+    note: "Assorbe la voce budget-tesoreria del piano precedente."
+
+  - id: cash-flow-operativo
+    calendario: M1-W3-01
+    uscita: 2026-10-26
+    tipologia: mofu
+    titolo: "Cash flow operativo: formula, metodo indiretto ed esempio"
+    query: "cash flow operativo"
+    dati: "export keyword Google Italia del 13/10/2026: 320 ricerche/mese, CPC 6,71 $; cluster 2.210"
+    secondarie:
+      [
+        "operating cash flow (170)",
+        "cash flow operativo formula (50)",
+        "flusso di cassa operativo negativo (s.v.)",
+        "flusso di cassa operativo esempio (s.v.)",
+      ]
+    domande:
+      [
+        "Come si calcola il cash flow operativo dal bilancio?",
+        "Cosa vuol dire se è negativo?",
+        "Che legame c'è con il DSCR?",
+      ]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["cash-flow", "ebitda"]
+    cta: calcolatore
+    priorita: 1
+    stato: da-fare
+    verifica: "OIC 10, metodo indiretto; esempio solo con <Conto>."
+
+  - id: ebitda-negativo
+    calendario: M1-W3-02
+    uscita: 2026-10-29
+    tipologia: mofu
+    titolo: "EBITDA negativo o basso: cosa significa per l'impresa"
+    query: "ebitda valore ottimale"
+    dati: "export keyword Google Italia del 13/10/2026: 170 ricerche/mese; cluster 410"
+    secondarie:
+      [
+        "ebitda negativo (110)",
+        "ebitda quando è buono (30)",
+        "ebitda quanto deve essere (20)",
+        "ebitda negativo significato (20)",
+      ]
+    domande:
+      [
+        "Quando l'EBITDA è buono?",
+        "Cosa fare se l'EBITDA è negativo?",
+        "Quali segnali di crisi si accompagnano a un EBITDA basso?",
+      ]
+    intento: informativo
+    argomento: crisi
+    formato: guida
+    link_interni: ["ebitda", "adeguati-assetti-organizzativi"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Art. 3 e art. 2 CCII (Normattiva). Nessun «valore ottimale» universale senza fonte: dirlo."
+
+  - id: ebitda-ebit-mol
+    calendario: M1-W4-01
+    uscita: 2026-11-02
+    tipologia: mofu
+    titolo: "EBITDA, EBIT, MOL e utile: le differenze spiegate sul bilancio"
+    query: "differenza tra ebit e ebitda"
+    dati: "export keyword Google Italia del 13/10/2026: 260 ricerche/mese; cluster 2.990"
+    secondarie:
+      [
+        "ebit e ebitda (320)",
+        "mol ebitda (170)",
+        "differenza tra mol e ebitda (140)",
+        "ebit vs ebitda (140)",
+        "ebitda e mol sono la stessa cosa (50)",
+      ]
+    domande:
+      [
+        "EBITDA e MOL sono la stessa cosa?",
+        "Che differenza c'è tra EBIT ed EBITDA?",
+        "Quale margine guarda la banca?",
+      ]
+    intento: comparativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["ebitda", "ros-roi-roe"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Art. 2425 c.c. (Normattiva); esempi solo con <Conto>."
+
+  - id: free-cash-flow
+    calendario: M1-W4-02
+    uscita: 2026-11-05
+    tipologia: mofu
+    titolo: "Free cash flow: formula, significato e differenza con il cash flow operativo"
+    query: "free cash flow formula"
+    dati: "export keyword Google Italia del 13/10/2026: 2.900 ricerche/mese, CPC 1,14 $; cluster 4.870"
+    secondarie:
+      [
+        "free cash flow (1.000)",
+        "free cash flow significato (210)",
+        "free cash flow to equity (210)",
+        "free cash flow to firm (110, CPC 9,44)",
+        "unlevered free cash flow (90)",
+      ]
+    domande:
+      [
+        "Come si calcola il free cash flow?",
+        "Che differenza c'è tra FCFE e FCFF?",
+        "Cosa significa un free cash flow negativo?",
+      ]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["cash-flow-operativo", "cash-flow"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "OIC 10 per le definizioni di flusso; esempi solo con <Conto>."
+
+  - id: rendiconto-finanziario
+    calendario: M2-W1-01
+    uscita: 2026-11-09
+    tipologia: mofu
+    titolo: "Rendiconto finanziario (OIC 10): schema, metodo indiretto ed esempio"
+    query: "rendiconto finanziario"
+    dati: "export keyword Google Italia del 13/10/2026: cash flow statement 590 ricerche/mese, CPC 6,79 $; cluster 1.030"
+    secondarie:
+      [
+        "cash flow statement (590)",
+        "cash flow statement in italiano (70)",
+        "metodo indiretto (30)",
+        "metodo diretto (30)",
+      ]
+    domande:
+      [
+        "Chi è obbligato a redigere il rendiconto finanziario?",
+        "Com'è fatto lo schema?",
+        "Da dove si parte con il metodo indiretto?",
+      ]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["cash-flow", "cash-flow-operativo"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Art. 2425-ter c.c. e OIC 10; esonero art. 2435-bis c.c. (Normattiva)."
+    note: "Distinta dalla voce rendiconto-prospettico (il rendiconto previsionale), che resta più avanti."
+
+  - id: ebitda-margin
+    calendario: M2-W1-02
+    uscita: 2026-11-12
+    tipologia: mofu
+    titolo: "EBITDA margin: formula e come si legge"
+    query: "ebitda margin"
+    dati: "export keyword Google Italia del 13/10/2026: 590 ricerche/mese; cluster 1.630"
+    secondarie:
+      [
+        "ebitda margin formula (170)",
+        "indice ebitda (140)",
+        "ebitda su fatturato (110)",
+        "margine ebitda (110)",
+      ]
+    domande: ["Come si calcola l'EBITDA margin in percentuale?", "Cosa significa un margine basso?"]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["ebitda", "ebitda-negativo"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: 'Esempio solo con <Rapporto formato="%">. Niente medie di settore senza fonte.'
+
+  - id: cash-flow-excel
+    calendario: M2-W2-01
+    uscita: 2026-11-16
+    tipologia: bofu
+    titolo: "Cash flow in Excel: lo schema da usare in studio"
+    query: "cash flow excel"
+    dati: "export keyword Google Italia del 13/10/2026: 110 ricerche/mese, CPC 6,66 $; cluster 1.040"
+    secondarie:
+      [
+        "cash flow schema (110)",
+        "cash flow excel gratis (110)",
+        "cash flow schema excel (50)",
+        "cash flow esempio excel (30)",
+      ]
+    domande:
+      [
+        "Come si imposta lo schema in Excel?",
+        "Quali errori si fanno più spesso?",
+        "Quando Excel non basta più?",
+      ]
+    intento: operativo
+    argomento: strumenti
+    formato: guida
+    link_interni: ["budget-tesoreria", "cash-flow"]
+    cta: calcolatore
+    priorita: 1
+    stato: da-fare
+    verifica: "Lo schema si descrive in tabella; nessun file scaricabile senza una richiesta di codice nella PR."
+
+  - id: software-cash-flow
+    calendario: M2-W2-02
+    uscita: 2026-11-19
+    tipologia: bofu
+    titolo: "Software per cash flow e tesoreria: cosa deve fare per uno studio"
+    query: "software cash flow"
+    dati: "export keyword Google Italia del 13/10/2026: 90 ricerche/mese, CPC 12,43 $; cluster 290 (cash flow software CPC 19,15 $)"
+    secondarie:
+      [
+        "cash flow software (70)",
+        "software cash flow gratis italiano (90)",
+        "prompt Gemini: software per gestione flusso di cassa piccole imprese",
+      ]
+    domande:
+      [
+        "Cosa deve fare un software di tesoreria per lo studio?",
+        "Quando basta Excel?",
+        "Cosa chiedere prima di sceglierlo?",
+      ]
+    intento: commerciale
+    argomento: strumenti
+    formato: guida
+    link_interni: ["budget-tesoreria", "cash-flow-excel"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Non nominare né confrontare prodotti concorrenti; nessuna promessa (parole vietate di REDAZIONE.md)."
+
+  - id: indici-di-bilancio
+    calendario: M2-W3-01
+    uscita: 2026-11-23
+    tipologia: pillar
+    titolo: "Indici di bilancio: le formule che servono allo studio"
+    query: "indici di bilancio formule"
+    dati: "voce del piano precedente (autocompletamento del 29/09/2026)"
+    secondarie:
+      ["indici di bilancio formule e spiegazioni (s.v.)", "indici di bilancio principali (s.v.)"]
+    domande: ["Quali indici guardare per primi?", "Come si leggono insieme?"]
+    intento: informativo
+    argomento: indicatori
+    formato: pilastro
+    link_interni: ["ros-roi-roe", "pfn-ebitda", "ebitda", "cash-flow"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Ogni formula con <Formula> (motore) o <Rapporto>."
+    note: "Nodo che collega le guide sui singoli indici (le voci M2-W3-02 e seguenti)."
+
+  - id: indice-liquidita
+    calendario: M2-W3-02
+    uscita: 2026-11-26
+    tipologia: tofu
+    titolo: "Indice di liquidità: current ratio e quick ratio"
+    query: "indice di liquidità"
+    dati: "autocompletamento Google del 14/10/2026 (senza volume)"
+    secondarie:
+      [
+        "indice di liquidità come si calcola",
+        "current ratio valore ottimale",
+        "quick ratio formula italiano",
+        "indice di liquidità primaria e secondaria",
+      ]
+    domande:
+      [
+        "Come si calcolano current ratio e quick ratio?",
+        "Qual è il valore di riferimento?",
+        "Che differenza c'è tra i due?",
+      ]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["indici-di-bilancio"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: 'Esempio solo con <Rapporto formato="x">.'
+
+  - id: margine-di-struttura
+    calendario: M2-W4-01
+    uscita: 2026-11-30
+    tipologia: tofu
+    titolo: "Margine di struttura primario e secondario"
+    query: "margine di struttura"
+    dati: "autocompletamento Google del 14/10/2026 (senza volume)"
+    secondarie:
+      [
+        "margine di struttura primario e secondario",
+        "margine di struttura calcolo",
+        "margine di struttura globale",
+      ]
+    domande: ["Come si calcola il margine di struttura?", "Cosa significa se è negativo?"]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["indici-di-bilancio"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Esempio solo con <Conto>."
+
+  - id: capitale-circolante-netto
+    calendario: M2-W4-02
+    uscita: 2026-12-03
+    tipologia: tofu
+    titolo: "Capitale circolante netto: formula ed esempio"
+    query: "capitale circolante netto"
+    dati: "autocompletamento Google del 14/10/2026 (senza volume)"
+    secondarie:
+      [
+        "capitale circolante netto formula",
+        "capitale circolante netto operativo",
+        "capitale circolante netto negativo",
+        "capitale circolante netto commerciale",
+      ]
+    domande:
+      [
+        "Come si calcola il CCN?",
+        "CCN operativo e commerciale: che differenza c'è?",
+        "Cosa significa un CCN negativo?",
+      ]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["indici-di-bilancio", "cash-flow-operativo"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Esempio solo con <Conto>."
+
+  - id: oneri-finanziari-ebitda
+    calendario: M3-W1-01
+    uscita: 2026-12-07
+    tipologia: tofu
+    titolo: "Oneri finanziari su EBITDA e copertura degli interessi"
+    query: "oneri finanziari su ebitda"
+    dati: "autocompletamento Google del 14/10/2026 (senza volume)"
+    secondarie:
+      [
+        "indice di copertura degli interessi",
+        "indice di copertura degli interessi icr",
+        "oneri finanziari cosa sono",
+      ]
+    domande: ["Come si calcola la copertura degli interessi?", "Quale rapporto guarda la banca?"]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["ebitda", "pfn-ebitda"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Esempi solo con <Rapporto>. Nessuna soglia bancaria senza fonte."
+
+  - id: indice-indebitamento
+    calendario: M3-W1-02
+    uscita: 2026-12-10
+    tipologia: tofu
+    titolo: "Indice di indebitamento e leverage finanziario"
+    query: "indice di indebitamento"
+    dati: "autocompletamento Google del 14/10/2026 (senza volume)"
+    secondarie:
+      [
+        "indice di indebitamento formula",
+        "leverage finanziario formula",
+        "indice di indebitamento valore ottimale",
+      ]
+    domande: ["Come si calcola il leverage?", "Quando è troppo alto?"]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["indici-di-bilancio", "pfn-ebitda"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: 'Esempio solo con <Rapporto formato="x">.'
+
+  - id: ebitda-adjusted
+    calendario: M3-W2-01
+    uscita: 2026-12-14
+    tipologia: tofu
+    titolo: "EBITDA adjusted e normalizzato: quando e come si rettifica"
+    query: "ebitda adjusted"
+    dati: "export keyword Google Italia del 13/10/2026: 390 ricerche/mese; cluster 1.330"
+    secondarie:
+      ["adjusted ebitda (390)", "ebitda adjustments (390, CPC 1,32)", "ebitda normalizzato (50)"]
+    domande: ["Cosa si rettifica nell'EBITDA adjusted?", "Quando è legittimo usarlo?"]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["ebitda"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Esempio solo con <Conto>."
+
+  - id: discounted-cash-flow
+    calendario: M3-W2-02
+    uscita: 2026-12-17
+    tipologia: tofu
+    titolo: "Discounted cash flow: il metodo spiegato"
+    query: "discounted cash flow"
+    dati: "export keyword Google Italia del 13/10/2026: 1.600 ricerche/mese, CPC 1,14 $; cluster 2.180"
+    secondarie:
+      [
+        "discounted cash flow analysis formula (320)",
+        "discounted cash flow model (170)",
+        "metodo discounted cash flow (90)",
+      ]
+    domande: ["Come funziona il metodo DCF?", "Quali flussi si scontano?"]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["free-cash-flow"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Nessun tasso o multiplo senza fonte dichiarata."
+
+  - id: multipli-ebitda
+    calendario: M3-W3-01
+    uscita: 2026-12-21
+    tipologia: tofu
+    titolo: "Multipli EBITDA ed EV/EBITDA per la valutazione d'azienda"
+    query: "multipli ebitda per settore"
+    dati: "export keyword Google Italia del 13/10/2026: 110 ricerche/mese; cluster 1.430 (ev ebitda 320)"
+    secondarie:
+      [
+        "ev ebitda (320)",
+        "moltiplicatore ebitda per settore (110, CPC 1,32)",
+        "multipli ebitda per settore 2025 (50)",
+      ]
+    domande: ["Come si usano i multipli EBITDA?", "Dove si trovano i multipli per settore?"]
+    intento: commerciale
+    argomento: indicatori
+    formato: guida
+    link_interni: ["ebitda", "ebitda-adjusted"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: "Multipli di settore solo da fonte dichiarata e datata (es. Damodaran), con link."
+
+  - id: dso-giorni-incasso
+    calendario: M3-W3-02
+    uscita: 2026-12-24
+    tipologia: tofu
+    titolo: "DSO e giorni medi di incasso: formula e lettura"
+    query: "dso giorni medi incasso"
+    dati: "autocompletamento Google del 14/10/2026 (senza volume)"
+    secondarie: ["dso giorni", "dso giorni medi incasso"]
+    domande: ["Come si calcola il DSO?", "Che legame c'è con la cassa?"]
+    intento: informativo
+    argomento: indicatori
+    formato: guida
+    link_interni: ["budget-tesoreria", "capitale-circolante-netto"]
+    cta: demo
+    priorita: 1
+    stato: da-fare
+    verifica: 'Esempio solo con <Rapporto formato="giorni">.'
+
+  - id: dscr-pillar-kw
+    calendario: M3-W4-01
+    uscita: 2026-12-28
+    tipologia: pillar
+    titolo: "DSCR: cos'è, formula e soglie (da export Italia)"
+    query: "dscr"
+    argomento: indicatori
+    formato: guida
+    priorita: 1
+    stato: sospesa
+    motivo: "Posto riservato: l'export keyword del DSCR del 13/10 è del mercato USA (dscr loan). Si sblocca con l'export Paese Italia: allora si riempiono query, dati, secondarie e domande, e lo stato torna da-fare."
+
+  - id: dscr-excel-kw
+    calendario: M3-W4-02
+    uscita: 2026-12-31
+    tipologia: pillar
+    titolo: "DSCR in Excel: esempio di calcolo (da export Italia)"
+    query: "dscr"
+    argomento: indicatori
+    formato: guida
+    priorita: 1
+    stato: sospesa
+    motivo: "Posto riservato: l'export keyword del DSCR del 13/10 è del mercato USA (dscr loan). Si sblocca con l'export Paese Italia: allora si riempiono query, dati, secondarie e domande, e lo stato torna da-fare."

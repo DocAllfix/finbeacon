@@ -28,8 +28,10 @@ fondamentale», «in conclusione possiamo dire». Si apre con la risposta, non c
 2. **Nessuna fonte, nessuna frase.** Se una cosa non si trova in una fonte leggibile, non si
    scrive. Meglio una guida più corta.
 3. **Nessun numero calcolato scritto a mano.** Formule ed esempi passano dai componenti
-   (`<Formula chiave="..." />`, `<EsempioDscr />`), che leggono il motore. Le soglie di legge si
-   citano con la fonte; le soglie di FinBeacon si prendono dal motore.
+   (`<Formula chiave="..." />`, `<EsempioDscr />`), che leggono il motore. Per ciò che il motore
+   non calcola (EBITDA, cash flow, margini, liquidità, giorni di incasso) si scrivono solo gli
+   importi di partenza, inventati, e il conto lo fanno `<Conto>` e `<Rapporto>` al build. Le soglie
+   di legge si citano con la fonte; le soglie di FinBeacon si prendono dal motore.
 4. **La soglia del DSCR prospettico a sei mesi si scrive in due parti, sempre**: il segnale che
    indica il CNDCEC (con citazione del documento e della pagina, dopo averlo letto) e il fatto che
    FinBeacon avvisa già dal valore del motore, come margine prudenziale. Mai attribuire al CNDCEC
