@@ -29,6 +29,25 @@ Il DSCR prospettico a sei mesi del cliente di esempio:
 
 <EsempioDscr />
 
+Per ciò che il motore non calcola (EBITDA, cash flow, margini, liquidità, giorni di incasso) si
+danno solo gli importi di partenza, con i costi in negativo, e il conto lo fa un componente:
+
+<Conto
+  totale="EBITDA"
+  righe={[
+    ["Valore della produzione", 4200000],
+    ["Costi per materie, servizi e godimento beni", -2950000],
+    ["Costi del personale", -770000],
+  ]}
+/>
+
+<Rapporto
+  nome="EBITDA margin"
+  num={["EBITDA", 480000]}
+  den={["Valore della produzione", 4200000]}
+  formato="%"
+/>
+
 ## Elenchi e note
 
 Un elenco puntato:
