@@ -79,6 +79,8 @@ voci:
       anti-robot, cndcec.it chiude la connessione). Senza leggerlo non si può citare la pagina del
       segnale sul DSCR (REDAZIONE.md, regola 4). Si sblocca se una persona salva il PDF ufficiale
       nel repository (per esempio apps/landing/content/fonti/) o se il sito torna raggiungibile.
+      Il 15/10/2026 commercialisti.it ha risposto dall'ambiente cloud (scaricato il documento CNDCEC
+      di marzo 2024 su EBITDA e PFN): il blocco potrebbe essere tolto, riprovare a leggere il documento.
     verifica: >
       Leggere il documento CNDCEC sugli indici dell'allerta (ottobre 2019) e annotare pagina e
       testo della soglia del DSCR. Scrivere le due soglie come da REDAZIONE.md, regola 4.
@@ -188,6 +190,8 @@ voci:
       «cosa sono» gli indici serve il documento CNDCEC, che dall'ambiente cloud non si apre. La
       parte «se valgono ancora» si può ricostruire da Normattiva (art. 3, comma 4, e art. 13 CCII
       vigenti), ma da sola non regge la guida. Si sblocca con il PDF ufficiale nel repository.
+      Il 15/10/2026 commercialisti.it ha risposto dall'ambiente cloud (scaricato il documento CNDCEC
+      di marzo 2024 su EBITDA e PFN): il blocco potrebbe essere tolto, riprovare a leggere il documento.
     verifica: >
       Il sistema degli indici è cambiato fra il testo originario del CCII e le versioni successive
       (2022, correttivo 2024): ricostruire con le fonti primarie cosa vale OGGI prima di scrivere.
@@ -430,7 +434,9 @@ voci:
     link_interni: ["pfn-ebitda", "ros-roi-roe"]
     cta: demo
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: ebitda
+    data: 2026-10-17
     verifica: "Art. 2425 c.c. (Normattiva) per le voci del conto economico; OIC 12. Esempio numerico solo con <Conto>."
 
   - id: cash-flow
