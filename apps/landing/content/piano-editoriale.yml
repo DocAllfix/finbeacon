@@ -434,7 +434,7 @@ voci:
     link_interni: ["pfn-ebitda", "ros-roi-roe"]
     cta: demo
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: ebitda
     data: 2026-10-17
     verifica: "Art. 2425 c.c. (Normattiva) per le voci del conto economico; OIC 12. Esempio numerico solo con <Conto>."
@@ -466,8 +466,11 @@ voci:
     link_interni: ["ebitda", "pfn-ebitda"]
     cta: calcolatore
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: cash-flow
+    data: 2026-10-21
     verifica: "OIC 10 (rendiconto finanziario) per le definizioni; esempi solo con <Conto>."
+    note: "OIC 10 in revisione (bozza in consultazione fino al 31/07/2026, testo definitivo non ancora pubblicato al 19/10/2026): quando esce, aggiornare la guida cash-flow e le voci cash-flow-operativo e rendiconto-finanziario."
 
   - id: budget-tesoreria
     calendario: M1-W2-02
