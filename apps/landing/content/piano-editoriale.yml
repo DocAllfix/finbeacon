@@ -466,7 +466,7 @@ voci:
     link_interni: ["ebitda", "pfn-ebitda"]
     cta: calcolatore
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: cash-flow
     data: 2026-10-21
     verifica: "OIC 10 (rendiconto finanziario) per le definizioni; esempi solo con <Conto>."
@@ -501,9 +501,18 @@ voci:
     link_interni: ["cash-flow", "composizione-negoziata-crisi"]
     cta: calcolatore
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: cash-flow-previsionale
+    data: 2026-10-24
     verifica: "Art. 3 CCII (Normattiva) per il legame con i sei mesi; niente citazioni CNDCEC finché il documento non è leggibile."
-    note: "Assorbe la voce budget-tesoreria del piano precedente."
+    note: >
+      Assorbe la voce budget-tesoreria del piano precedente. Fonte CNDCEC usata: «Il budget di
+      tesoreria: principali funzioni e aspetti operativi» (19/05/2026), letto per intero; il
+      documento sugli indici dell'allerta resta non letto e la guida non cita soglie del DSCR.
+      Il punto 1.5 della lista di controllo particolareggiata (piano di tesoreria a 6 mesi o 13
+      settimane), riportato dal CNDCEC a pag. 10, è rimasto fuori: la lista è stata rivista dal
+      decreto dirigenziale 23/04/2026, non leggibile su giustizia.it. Aggiungerlo quando il testo
+      vigente si legge da fonte primaria.
 
   - id: cash-flow-operativo
     calendario: M1-W3-01
