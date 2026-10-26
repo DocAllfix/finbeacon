@@ -501,7 +501,7 @@ voci:
     link_interni: ["cash-flow", "composizione-negoziata-crisi"]
     cta: calcolatore
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: cash-flow-previsionale
     data: 2026-10-24
     verifica: "Art. 3 CCII (Normattiva) per il legame con i sei mesi; niente citazioni CNDCEC finché il documento non è leggibile."
@@ -540,8 +540,15 @@ voci:
     link_interni: ["cash-flow", "ebitda"]
     cta: calcolatore
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: cash-flow-operativo
+    data: 2026-10-28
     verifica: "OIC 10, metodo indiretto; esempio solo con <Conto>."
+    note: >
+      Fonti lette: OIC 10 (dicembre 2016) e bozza in consultazione (maggio 2026), artt. 2424,
+      2425-ter e 2435-bis c.c., artt. 2 e 3 CCII. Il documento CNDCEC su EBITDA e PFN (marzo 2024)
+      il 26/10/2026 rispondeva con una pagina anti-robot e non è citato. Quando esce l'OIC 10
+      definitivo, aggiornare le sezioni su interessi e DSCR (oggi descrivono la bozza).
 
   - id: ebitda-negativo
     calendario: M1-W3-02
