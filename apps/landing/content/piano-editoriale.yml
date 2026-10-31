@@ -540,7 +540,7 @@ voci:
     link_interni: ["cash-flow", "ebitda"]
     cta: calcolatore
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: cash-flow-operativo
     data: 2026-10-28
     verifica: "OIC 10, metodo indiretto; esempio solo con <Conto>."
@@ -576,8 +576,15 @@ voci:
     link_interni: ["ebitda", "adeguati-assetti-organizzativi"]
     cta: demo
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: ebitda-negativo
+    data: 2026-10-31
     verifica: "Art. 3 e art. 2 CCII (Normattiva). Nessun «valore ottimale» universale senza fonte: dirlo."
+    note: >
+      Fonti lette il 29/10/2026: artt. 2, 3, 12, 20 e 25-novies CCII; artt. 2086, 2425, 2427, 2446,
+      2447, 2482-bis e 2482-ter c.c. (Normattiva); documento CNDCEC su EBITDA e PFN (marzo 2024),
+      pagg. 3-5. Nessuna soglia di EBITDA margin: le percentuali che circolano in rete non hanno
+      fonte primaria. Nessuna soglia del DSCR citata (documento CNDCEC sugli indici non letto).
 
   - id: ebitda-ebit-mol
     calendario: M1-W4-01
