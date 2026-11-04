@@ -576,7 +576,7 @@ voci:
     link_interni: ["ebitda", "adeguati-assetti-organizzativi"]
     cta: demo
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: ebitda-negativo
     data: 2026-10-31
     verifica: "Art. 3 e art. 2 CCII (Normattiva). Nessun «valore ottimale» universale senza fonte: dirlo."
@@ -613,8 +613,18 @@ voci:
     link_interni: ["ebitda", "ros-roi-roe"]
     cta: demo
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: ebitda-ebit-mol
+    data: 2026-11-04
     verifica: "Art. 2425 c.c. (Normattiva); esempi solo con <Conto>."
+    note: >
+      Fonti lette il 02/11/2026: art. 2425 c.c. (Normattiva, testo in vigore dal 01/01/2016);
+      documento CNDCEC su EBITDA e PFN (marzo 2024), pagg. 3, 5-8; glossario Istat «Conti economici
+      delle imprese. Anno 2007» (voci Valore aggiunto e Margine operativo lordo); orientamenti EBA
+      EBA/GL/2020/06 in italiano, par. 182 (pag. 40), par. 267 (pag. 57), Allegato 3 (pagg. 68-69).
+      Il MOL non ha definizione nel codice civile né nel documento CNDCEC: si usa la definizione
+      statistica Istat, dichiarata come tale. L'art. 96 TUIR (ROL) non è citato: su Normattiva
+      risulta abrogato dal D.Lgs. 19 giugno 2026, n. 117, e la norma che lo sostituisce non è stata letta.
 
   - id: free-cash-flow
     calendario: M1-W4-02
