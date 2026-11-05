@@ -1,0 +1,217 @@
+---
+titolo: "Free cash flow: formula, FCFF, FCFE e lettura sul bilancio"
+descrizione: "Come si calcola il free cash flow dal rendiconto OIC 10, che differenza c'è tra FCFF e FCFE, perché contano gli interessi e cosa dice un valore negativo."
+data: 2026-11-07
+autore: alessandro-di-lonardo
+argomento: indicatori
+parolaChiave: "free cash flow formula"
+fonti:
+  - titolo: "OIC 10 – Rendiconto finanziario (edizione dicembre 2016, in vigore)"
+    url: "https://www.fondazioneoic.eu/wp-content/uploads/2026/01/2016-12-OIC-10-Rendiconto-finanziario.pdf"
+  - titolo: "OIC 10 – Rendiconto finanziario, bozza per la consultazione (maggio 2026)"
+    url: "https://www.fondazioneoic.eu/wp-content/uploads/2026/05/OIC-10-Rendiconto-finanziario_bozza-in-consultazione.pdf"
+  - titolo: "Codice civile, art. 2425-ter – Rendiconto finanziario (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2425ter"
+  - titolo: "Codice civile, art. 2435-bis – Bilancio in forma abbreviata (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2435bis"
+  - titolo: "Codice della crisi d'impresa e dell'insolvenza, art. 2 – Definizioni (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art2"
+  - titolo: "OIV, Principi Italiani di Valutazione 2026 – Exposure draft (dicembre 2025)"
+    url: "https://www.fondazioneoiv.it/wp-content/uploads/2025/12/ED-PRINCIPI-ITALIANI-DI-VALUTAZIONE-2026-1-1.pdf"
+  - titolo: "Borsa Italiana, Glossario finanziario – Free cash flow"
+    url: "https://www.borsaitaliana.it/borsa/glossario/free-cash-flow.html"
+correlati: [cash-flow-operativo, cash-flow, ebitda]
+---
+
+Il free cash flow è la cassa che resta dopo aver pagato la gestione operativa e gli investimenti
+in immobilizzazioni: flusso operativo meno investimenti. Sul rendiconto OIC 10 si legge come
+totale A più le righe della sezione B relative a immobilizzazioni materiali e immateriali. Il
+risultato cambia secondo dove stanno gli interessi pagati, e la formula va dichiarata.
+
+## Come si calcola il free cash flow: la formula
+
+La formula di base è flusso di cassa operativo meno investimenti in capitale fisso. È la
+definizione del [glossario di Borsa Italiana](https://www.borsaitaliana.it/borsa/glossario/free-cash-flow.html),
+che lo descrive come la parte dei flussi operativi che «residua» dopo il reinvestimento in nuovo
+capitale fisso. Né l'art. 2425-ter c.c. né l'[OIC 10](https://www.fondazioneoic.eu/wp-content/uploads/2026/01/2016-12-OIC-10-Rendiconto-finanziario.pdf)
+usano l'espressione: è una grandezza di analisi, che si costruisce sulle sezioni del rendiconto.
+
+| Componente                     | Dove si prende nel rendiconto OIC 10                                                                |
+| ------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Flusso di cassa operativo      | totale A, «Flusso finanziario dell'attività operativa»                                              |
+| Investimenti in capitale fisso | sezione B, righe delle immobilizzazioni materiali e immateriali (investimenti e disinvestimenti)    |
+| Restano fuori                  | partecipazioni, titoli e attività finanziarie non immobilizzate della sezione B; tutta la sezione C |
+
+La scelta delle righe di B non è automatica. L'attività di investimento dell'OIC 10 comprende
+anche le immobilizzazioni finanziarie e le attività finanziarie non immobilizzate (par. 32, pag.
+7), ma il principio chiede di presentarle separate per classe (par. 37, pag. 8): per il free cash
+flow si prendono le righe dei beni materiali e immateriali, che sono il «capitale fisso» della
+definizione. Gli acquisti di cespiti entrano per l'uscita effettiva dell'anno, cioè il prezzo
+rettificato dalla variazione dei debiti verso i fornitori di immobilizzazioni (par. 34, pag. 7).
+
+Le formule che partono dall'EBIT non sono tutte uguali. Il glossario di Borsa Italiana ricava il
+flusso operativo da EBIT, ammortamenti e variazione del circolante, senza nominare le imposte; i
+[Principi Italiani di Valutazione](https://www.fondazioneoiv.it/wp-content/uploads/2025/12/ED-PRINCIPI-ITALIANI-DI-VALUTAZIONE-2026-1-1.pdf),
+nelle valutazioni reddituali in prospettiva asset side, parlano di risultato operativo al netto delle imposte che l'azienda
+pagherebbe se non fosse indebitata (par. III.1.31, pag. 63). Due numeri chiamati «free cash flow»
+possono quindi differire per le sole imposte.
+
+### Un esempio sul rendiconto
+
+Importi inventati. Il totale A è quello del rendiconto chiuso, redatto con l'OIC 10 in vigore;
+gli investimenti sono le righe di B.
+
+<Conto
+  totale="Free cash flow (dopo gli interessi pagati)"
+  righe={[
+    ["A · Flusso finanziario dell'attività operativa", 260000],
+    ["B · Investimenti in immobilizzazioni materiali", -180000],
+    ["B · Disinvestimenti di immobilizzazioni materiali", 15000],
+    ["B · Investimenti in immobilizzazioni immateriali", -25000],
+  ]}
+/>
+
+Il titolo del riquadro dice già il limite: con l'edizione in vigore dell'OIC 10 il totale A è al
+netto degli interessi pagati, e questo free cash flow non è né un FCFF né un FCFE.
+
+## Perché gli interessi pagati cambiano il free cash flow
+
+Perché l'OIC 10 in vigore mette gli interessi pagati e incassati nell'attività operativa, salvo
+quelli riferiti direttamente a investimenti o finanziamenti (par. 41, pag. 8); i dividendi
+incassati stanno nell'operativa, quelli pagati nei finanziamenti (par. 42, pag. 8). Le imposte sul
+reddito pagate, acconti compresi, stanno nell'operativa (par. 44, pag. 9). Il totale A è quindi un
+flusso dopo interessi e dopo imposte.
+
+La [bozza del nuovo OIC 10](https://www.fondazioneoic.eu/wp-content/uploads/2026/05/OIC-10-Rendiconto-finanziario_bozza-in-consultazione.pdf),
+in consultazione fino al 31 luglio 2026, cambia proprio questo punto (proposta 2, pag. 2):
+
+- gli interessi pagati e gli altri oneri finanziari passano fra i flussi di finanziamento (par. 37,
+  pag. 8, e par. 40, pag. 9);
+- interessi attivi e dividendi incassati da investimenti finanziari passano fra gli investimenti
+  (par. 33, pag. 7, e par. 35, pag. 8);
+- le imposte pagate restano nell'attività operativa (par. 41, pag. 9).
+
+| Edizione dell'OIC 10              | Totale A                                      | A meno investimenti fissi                                           |
+| --------------------------------- | --------------------------------------------- | ------------------------------------------------------------------- |
+| Dicembre 2016 (in vigore)         | dopo interessi pagati e imposte               | flusso dopo il costo del debito, prima di rimborsi e nuovi prestiti |
+| Bozza maggio 2026 (non in vigore) | prima degli interessi pagati, dopo le imposte | vicino al flusso per tutti i finanziatori (FCFF)                    |
+
+Anche con le regole della bozza, la riga A − investimenti non coincide del tutto con il FCFF dei
+valutatori: le imposte del rendiconto sono quelle pagate davvero, che già scontano la deducibilità
+degli interessi, non quelle di un'azienda senza debiti. Nelle pagine della Fondazione OIC
+consultate il 5 novembre 2026 il testo definitivo non compare, e vale l'edizione del dicembre 2016. Quando si mettono a confronto due esercizi redatti con edizioni diverse, gli interessi vanno
+spostati a mano.
+
+## Che differenza c'è tra FCFF e FCFE
+
+Il FCFF (free cash flow to firm, detto anche unlevered) è il flusso a disposizione di tutti i
+finanziatori, soci e banche; il FCFE (free cash flow to equity, o levered) è quello che resta ai
+soci dopo il servizio del debito. I Principi Italiani di Valutazione li legano alle due varianti
+del metodo DCF, asset side per il FCFF ed equity side per il FCFE (par. III.1.35, pag. 64): i
+flussi equity side dipendono dalla struttura finanziaria effettiva, quelli unlevered ne
+prescindono (par. III.1.51, pag. 67).
+
+| Grandezza | A chi è disponibile | Struttura finanziaria (par. III.1.51) | Variante del DCF (par. III.1.35) |
+| --------- | ------------------- | ------------------------------------- | -------------------------------- |
+| FCFF      | soci e finanziatori | ne prescinde (flussi unlevered)       | asset side                       |
+| FCFE      | soli soci           | quella effettiva dell'impresa         | equity side                      |
+
+I PIV citati sono l'exposure draft dell'edizione 2026. Il testo definitivo, che si applica dal 1°
+gennaio 2027, sul sito dell'OIV è consultabile ma non scaricabile: prima di citarlo in una perizia
+va riscontrata la numerazione dei paragrafi.
+
+### Dal rendiconto al flusso per i soci
+
+Con l'OIC 10 in vigore, il free cash flow dell'esempio è già dopo gli interessi. Per arrivare a un
+flusso disponibile per i soci si aggiungono i movimenti del capitale di debito della sezione C
+(par. 39 e 40, pag. 8), e si lasciano fuori i flussi del capitale di rischio: dividendi pagati,
+aumenti e rimborsi di capitale sono l'uso di quel flusso, non una sua componente.
+
+<Conto
+  totale="Flusso disponibile per i soci (FCFE, ricostruito)"
+  righe={[
+    ["A · Flusso finanziario dell'attività operativa", 260000],
+    ["B · Investimenti in immobilizzazioni materiali", -180000],
+    ["B · Disinvestimenti di immobilizzazioni materiali", 15000],
+    ["B · Investimenti in immobilizzazioni immateriali", -25000],
+    ["C · Accensione di finanziamenti", 120000],
+    ["C · Rimborso di finanziamenti", -95000],
+  ]}
+/>
+
+È una ricostruzione d'analisi, non una riga del rendiconto: il principio non la prevede. Nel
+caso dell'esempio, la differenza fra i due riquadri sono i soli movimenti dei finanziamenti; i
+dividendi effettivamente distribuiti si confrontano poi con questo totale per capire se sono stati
+pagati con la cassa della gestione o con nuovo debito.
+
+## Cosa significa un free cash flow negativo
+
+Vuol dire che nell'esercizio gestione e investimenti insieme hanno consumato cassa, e che la
+differenza è stata coperta con debito, apporti dei soci o liquidità accumulata. Il segno da solo
+non distingue un'impresa che investe da un'impresa in difficoltà: conta da quale delle due
+componenti viene.
+
+| Totale A | Investimenti fissi                  | Lettura                                                                             |
+| -------- | ----------------------------------- | ----------------------------------------------------------------------------------- |
+| negativo | qualsiasi                           | la gestione consuma cassa prima ancora di investire: il problema è operativo        |
+| positivo | superiori al flusso operativo       | fase di investimento: va visto come è finanziata e quando i beni produrranno flussi |
+| positivo | ricorrenti e superiori per più anni | la gestione non regge il proprio fabbisogno di rinnovo: il debito cresce            |
+
+Per il secondo caso servono due documenti accanto al rendiconto: il piano degli investimenti e il
+piano di rimborso dei finanziamenti che li coprono. Per il primo, l'analisi riga per riga del totale
+A è nella [guida sul cash flow operativo](/guide/cash-flow-operativo).
+
+### Free cash flow negativo e crisi
+
+Un free cash flow negativo dell'esercizio chiuso non è, da solo, uno stato di crisi. Il Codice
+definisce la crisi come lo stato che rende probabile l'insolvenza e che si manifesta con
+l'inadeguatezza dei flussi di cassa **prospettici** a far fronte alle obbligazioni nei successivi
+dodici mesi ([art. 2, comma 1, lett. a), CCII](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art2),
+testo in vigore dal 28 settembre 2024). Il dato storico è il punto di partenza; la verifica si fa
+sui flussi dei mesi che vengono, con il [cash flow previsionale](/guide/cash-flow-previsionale).
+
+## Free cash flow e DSCR: non sono lo stesso numeratore
+
+Il DSCR storico di FinBeacon mette a rapporto il flusso di cassa con il servizio del debito
+dell'anno:
+
+<Formula chiave="dscr" />
+
+Se al numeratore si usa il free cash flow invece del flusso operativo, il rapporto misura un'altra
+cosa: quanto debito si serve dopo aver pagato anche gli investimenti dell'anno. In un esercizio di
+forti investimenti i due valori possono essere molto distanti. Nessuna delle due scelte è sbagliata,
+ma va scritta accanto al numero, insieme alla classificazione degli interessi: con l'OIC 10 in
+vigore, un free cash flow preso dal totale A è già al netto degli interessi pagati, che il servizio
+del debito comprende quando è inteso come quota capitale più interessi.
+
+## Il free cash flow con il bilancio abbreviato
+
+Le società che redigono il bilancio in forma abbreviata sono esonerate dal rendiconto finanziario
+([art. 2435-bis, secondo comma, c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2435bis));
+per le altre lo prevede l'[art. 2425-ter c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2425ter),
+con i flussi dell'attività operativa, di investimento e di finanziamento. Per un cliente in forma
+abbreviata il free cash flow si ricostruisce: il flusso operativo con lo schema indiretto dell'OIC
+10, gli investimenti dalla movimentazione delle immobilizzazioni, al netto delle variazioni dei
+debiti verso fornitori di cespiti. Come si ricostruisce il totale A senza rendiconto è nella guida
+sul cash flow operativo.
+
+## Cosa verificare, in quest'ordine
+
+1. **La fonte del flusso operativo**: totale A del rendiconto OIC 10, oppure ricostruzione se il
+   bilancio è abbreviato.
+2. **L'edizione dell'OIC 10**: dove sono classificati interessi pagati, interessi attivi e
+   dividendi incassati.
+3. **Le righe di B**: solo immobilizzazioni materiali e immateriali, al netto dei disinvestimenti;
+   fuori partecipazioni e titoli.
+4. **Quale free cash flow serve**: per tutti i finanziatori (FCFF) o per i soci (FCFE), e quindi
+   cosa fare di interessi, rimborsi e nuovi prestiti.
+5. **Le imposte**: quelle pagate del rendiconto o quelle teoriche sul risultato operativo, se il
+   dato serve a una valutazione.
+6. **Il segno**: se negativo, se il problema è nel totale A o negli investimenti.
+7. **Il passaggio al futuro**: dal dato dell'esercizio chiuso ai flussi dei dodici mesi successivi.
+
+Come si arriva dal flusso operativo al totale del rendiconto è nella [guida sul cash flow](/guide/cash-flow);
+la differenza con l'EBITDA, che dei flussi è solo un'approssimazione, nella
+[guida sull'EBITDA](/guide/ebitda). Per vedere come FinBeacon mette insieme redditività, debito e
+cassa prospettica in un giudizio unico si può guardare il [metodo](/#metodo), oppure
+[chiedere una demo](/#richiesta).
