@@ -613,7 +613,7 @@ voci:
     link_interni: ["ebitda", "ros-roi-roe"]
     cta: demo
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: ebitda-ebit-mol
     data: 2026-11-04
     verifica: "Art. 2425 c.c. (Normattiva); esempi solo con <Conto>."
@@ -653,8 +653,18 @@ voci:
     link_interni: ["cash-flow-operativo", "cash-flow"]
     cta: demo
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: free-cash-flow
+    data: 2026-11-07
     verifica: "OIC 10 per le definizioni di flusso; esempi solo con <Conto>."
+    note: >
+      Fonti lette il 05/11/2026: OIC 10 (dicembre 2016), parr. 32-44, pagg. 7-9; bozza OIC 10
+      (maggio 2026), proposta 2 (pag. 2) e parr. 33-41 (pagg. 7-9); artt. 2425-ter e 2435-bis c.c.
+      e art. 2 CCII (Normattiva); PIV 2026 exposure draft OIV, parr. III.1.31, III.1.35, III.1.51
+      (pagg. 63, 64, 67); glossario Borsa Italiana «Free cash flow». Né OIC 10 né c.c. definiscono
+      il free cash flow: la formula viene dal glossario e la distinzione FCFF/FCFE dai PIV (bozza:
+      il testo definitivo, in vigore dal 01/01/2027, non è scaricabile). Nessuna soglia del DSCR.
+      Quando esce l'OIC 10 definitivo, aggiornare la sezione sugli interessi.
 
   - id: rendiconto-finanziario
     calendario: M2-W1-01
