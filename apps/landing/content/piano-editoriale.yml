@@ -653,7 +653,7 @@ voci:
     link_interni: ["cash-flow-operativo", "cash-flow"]
     cta: demo
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: free-cash-flow
     data: 2026-11-07
     verifica: "OIC 10 per le definizioni di flusso; esempi solo con <Conto>."
@@ -692,9 +692,19 @@ voci:
     link_interni: ["cash-flow", "cash-flow-operativo"]
     cta: demo
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: rendiconto-finanziario
+    data: 2026-11-11
     verifica: "Art. 2425-ter c.c. e OIC 10; esonero art. 2435-bis c.c. (Normattiva)."
-    note: "Distinta dalla voce rendiconto-prospettico (il rendiconto previsionale), che resta più avanti."
+    note: >
+      Distinta dalla voce rendiconto-prospettico (il rendiconto previsionale), che resta più avanti.
+      Fonti lette il 09/11/2026: artt. 2423, 2424, 2425-ter, 2435-bis e 2435-ter c.c. (Normattiva);
+      OIC 10 (dicembre 2016), parr. 1-56 e Appendice A (pagg. 3-15), esempio (pagg. 16-20); bozza
+      OIC 10 (maggio 2026), pag. 2, parr. 16, 51, 55-60 (pagg. 4, 10-11), esempio 2 (pagg. 22-26);
+      comunicato OIC del 20/05/2026. Al 09/11/2026 il testo definitivo dell'OIC 10 non risulta
+      pubblicato (ultimo comunicato OIC: 20/10/2026). I limiti dell'art. 2435-bis sono citati dal
+      testo vigente, senza decorrenza: le note di Normattiva rimandano all'art. 17 del D.Lgs.
+      125/2024, che non la chiarisce per questi limiti. Nessuna soglia del DSCR citata.
 
   - id: ebitda-margin
     calendario: M2-W1-02
