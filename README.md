@@ -10,6 +10,7 @@ Nome di lavoro; il brand commerciale non è ancora deciso.
 - **Esercizi di bilancio** per cliente: 10 grandezze storiche più 4 previsionali a 6 mesi, inseribili a mano, da CSV o dal **bilancio depositato XBRL** (anche firmato .p7m)
 - **Analisi**: 7 indicatori (ROS, Turnover, ROI, ROI-I, ROE, GI, DSCR) con giudizio, soglia e azione consigliata; punteggio di sintesi 0-100; **DSCR prospettico 6M** ex art. 3 CCII secondo le linee guida CNDCEC
 - **Avvisi automatici** quando un indicatore passa in zona critica, il punteggio cambia fascia, la previsione di cassa invecchia o manca il bilancio dell'anno: campanella, pagina Avvisi, email immediata per i critici e riepilogo del lunedì (email senza nomi né importi; ogni utente le spegne in Impostazioni). Sono avvisi per lo studio, non le segnalazioni dell'art. 25-octies CCII
+- **Confronto di settore** nell'analisi: margine EBITDA del cliente contro il MOL su fatturato delle imprese italiane dello stesso codice ATECO e classe di addetti (ISTAT, Risultati economici delle imprese, dichiarato indicativo), e posizione fra i clienti dello studio della stessa divisione ATECO da 5 in su. Il dataset si rigenera con `packages/engine/scripts/settori-istat.mjs`
 - **Simulatore what-if** che ricalcola in tempo reale senza toccare i dati salvati
 - **Andamento tra esercizi** e **report PDF** su tre pagine, con il classico tasto Stampa / Salva come PDF
 - Multi-studio: ogni studio vede solo i propri clienti, con inviti ai collaboratori

@@ -6,9 +6,11 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { datiDa, previsionaleDa } from "@/lib/analisi/da-esercizio";
+import { confrontoSettoreCliente } from "@/lib/analisi/settore";
 import { getCliente } from "@/lib/clienti/queries";
 import { listEsercizi } from "@/lib/esercizi/queries";
 
+import { ConfrontoSettoreBlocco } from "./confronto-settore";
 import { ContenitoreAnalisi } from "./contenitore-analisi";
 import { VistaAnalisi } from "./vista-analisi";
 
@@ -56,6 +58,7 @@ export default async function AnalisiPage({
   const dati = datiDa(selezionato);
   const previsionale = previsionaleDa(selezionato);
   const analisi = analizza(dati, previsionale ?? undefined);
+  const settore = await confrontoSettoreCliente(cliente, dati);
 
   // Serie storica per il trend, dal più vecchio al più recente
   const serie = [...esercizi]
@@ -109,6 +112,7 @@ export default async function AnalisiPage({
         serie={serie}
         trend={serieFinoAdOra.map((s) => ({ anno: s.anno, media: s.score }))}
         delta={delta}
+        settore={<ConfrontoSettoreBlocco esito={settore} />}
       />
     </ContenitoreAnalisi>
   );

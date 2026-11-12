@@ -11,3 +11,6 @@ apps/web/migra.js
 apps/web/crea-titolare.js
 apps/web/test-results
 apps/web/playwright-report
+
+# dataset generato da packages/engine/scripts/settori-istat.mjs
+packages/engine/src/settori/dati-istat.ts

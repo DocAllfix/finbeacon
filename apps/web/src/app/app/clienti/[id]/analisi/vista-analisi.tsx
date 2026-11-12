@@ -50,6 +50,7 @@ export function VistaAnalisi({
   salvati,
   avviso,
   simulatore,
+  settore,
 }: {
   clienteId: string;
   esercizioSelezionatoId: string;
@@ -66,6 +67,8 @@ export function VistaAnalisi({
   avviso?: ReactNode;
   /** Pannello dei cursori, iniettato dal contenitore client. */
   simulatore?: ReactNode;
+  /** Confronto di settore, calcolato dal server sui valori salvati. */
+  settore?: ReactNode;
 }) {
   const letture = [
     { etichetta: "Marginalità", testo: analisi.giudizi.ros.testo },
@@ -150,6 +153,9 @@ export function VistaAnalisi({
           <TrendEsercizi serie={serie} />
         </div>
       )}
+
+      {/* Sui valori salvati: in simulazione il confronto non si ricalcola */}
+      {!inSimulazione && settore}
 
       <div className="grid grid-cols-1 gap-x-10 gap-y-8 md:grid-cols-2">
         <section>
