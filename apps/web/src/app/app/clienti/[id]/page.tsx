@@ -3,6 +3,7 @@ import { BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ElencoAvvisi } from "@/components/avvisi/elenco-avvisi";
 import { Button } from "@/components/ui/button";
 import { Cifra } from "@/components/ui/cifra";
 import { JudgmentBadge } from "@/components/ui/judgment-badge";
@@ -11,6 +12,7 @@ import { datiDa, previsionaleDa } from "@/lib/analisi/da-esercizio";
 import { sinteticoDaScore } from "@/lib/analisi/sintesi-breve";
 import { toniTesto } from "@/lib/analisi/toni";
 import { requireStudio } from "@/lib/auth-helpers";
+import { avvisiApertiCliente } from "@/lib/avvisi/queries";
 import { getCliente } from "@/lib/clienti/queries";
 import { etichettaDimensione } from "@/lib/clienti/schema";
 import { listEsercizi } from "@/lib/esercizi/queries";
@@ -23,7 +25,10 @@ export default async function SchedaClientePage({ params }: { params: Promise<{ 
   const cliente = await getCliente(id);
   if (!cliente) notFound();
 
-  const esercizi = await listEsercizi(id); // già ordinati per anno desc
+  const [esercizi, avvisi] = await Promise.all([
+    listEsercizi(id), // già ordinati per anno desc
+    avvisiApertiCliente(id),
+  ]);
   const righe = esercizi.map((e) => ({
     id: e.id,
     anno: e.anno,
@@ -60,6 +65,15 @@ export default async function SchedaClientePage({ params }: { params: Promise<{ 
           <p className="mt-1.5 text-sm text-muted-foreground">{identita.join(" · ")}</p>
         )}
       </header>
+
+      {avvisi.length > 0 && (
+        <section aria-labelledby="avvisi-cliente" className="mt-6">
+          <MicroEtichetta come="h2" id="avvisi-cliente">
+            {avvisi.length === 1 ? "Un avviso aperto" : `${avvisi.length} avvisi aperti`}
+          </MicroEtichetta>
+          <ElencoAvvisi avvisi={avvisi} conCliente={false} className="mt-1" />
+        </section>
+      )}
 
       {analisi && sintetico && recente ? (
         <div

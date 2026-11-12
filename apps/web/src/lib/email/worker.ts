@@ -1,5 +1,6 @@
 import { and, asc, isNull, lt, sql } from "drizzle-orm";
 
+import { eseguiLavoriPeriodici } from "@/lib/avvisi/periodici";
 import { db } from "@/lib/db";
 import { mailOutbox } from "@/lib/schema-dominio";
 
@@ -77,6 +78,13 @@ export async function avvia(): Promise<never> {
       : "[posta] worker avviato SENZA SMTP: le mail restano in coda",
   );
   for (;;) {
+    // Prima i lavori periodici (avvisi di tempo, riepilogo del lunedì): le mail
+    // che accodano partono già in questo giro. Un loro errore non ferma la posta.
+    try {
+      for (const fatto of await eseguiLavoriPeriodici()) console.log(`[avvisi] ${fatto}`);
+    } catch (errore) {
+      console.error("[avvisi] lavori periodici falliti:", errore);
+    }
     try {
       const n = await drena();
       if (n > 0) console.log(`[posta] ${n} messaggi spediti`);

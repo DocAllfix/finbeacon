@@ -38,6 +38,15 @@ export {
   type BilancioDaCsv,
 } from "./csv";
 export {
+  avvisiDaAnalisi,
+  avvisiDiTempo,
+  GIORNI_VALIDITA_PREVISIONALE,
+  type AvvisoCalcolato,
+  type EsitoAvvisi,
+  type GravitaAvviso,
+  type TipoAvviso,
+} from "./avvisi";
+export {
   ErroreXbrl,
   estraiAteco,
   leggiBilancioXbrl,

@@ -92,3 +92,35 @@ export function verificaEmail(url: string): Messaggio {
     html: guscio(titolo, paragrafi, { testo: "Conferma l'indirizzo", url }),
   };
 }
+
+/**
+ * Avvisi: CONTENT-FREE come il resto. Né il nome del cliente né un importo: la
+ * casella non è un canale protetto. Si dice quanti, quanto gravi, e dove andare.
+ */
+export function avvisoCritico(quanti: number, url: string): Messaggio {
+  const titolo = quanti === 1 ? "Un cliente è in zona critica" : `${quanti} avvisi critici`;
+  const paragrafi = [
+    quanti === 1
+      ? "Un indicatore di uno dei tuoi clienti è appena passato in zona critica."
+      : `${quanti} indicatori dei tuoi clienti sono appena passati in zona critica.`,
+    "Apri FinBeacon per vedere quale cliente e cosa è cambiato.",
+  ];
+  return {
+    oggetto: `${titolo} — FinBeacon`,
+    testo: [titolo, "", paragrafi.join("\n\n"), "", url].join("\n"),
+    html: guscio(titolo, paragrafi, { testo: "Vedi gli avvisi", url }),
+  };
+}
+
+export function riepilogoAvvisi(aperti: number, critici: number, url: string): Messaggio {
+  const titolo = "Il riepilogo degli avvisi della settimana";
+  const paragrafi = [
+    `Hai ${aperti === 1 ? "un avviso aperto" : `${aperti} avvisi aperti`}${critici > 0 ? `, di cui ${critici === 1 ? "uno critico" : `${critici} critici`}` : ""}.`,
+    "Apri FinBeacon per vederli cliente per cliente.",
+  ];
+  return {
+    oggetto: `Riepilogo avvisi: ${aperti} aperti — FinBeacon`,
+    testo: [titolo, "", paragrafi.join("\n\n"), "", url].join("\n"),
+    html: guscio(titolo, paragrafi, { testo: "Vedi gli avvisi", url }),
+  };
+}

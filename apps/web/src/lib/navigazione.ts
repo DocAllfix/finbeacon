@@ -1,4 +1,11 @@
-import { CalendarClock, LayoutDashboard, Settings, Users, type LucideIcon } from "lucide-react";
+import {
+  Bell,
+  CalendarClock,
+  LayoutDashboard,
+  Settings,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 
 export type VoceNav = {
   label: string;
@@ -12,6 +19,7 @@ export const navPrincipale: VoceNav[] = [
   { label: "Panoramica", href: "/app", icon: LayoutDashboard },
   { label: "Clienti", href: "/app/clienti", icon: Users },
   { label: "Scadenze", href: "/app/scadenze", icon: CalendarClock },
+  { label: "Avvisi", href: "/app/avvisi", icon: Bell },
   { label: "Impostazioni", href: "/app/impostazioni", icon: Settings },
 ];
 
@@ -20,6 +28,7 @@ export const etichetteSegmento: Record<string, string> = {
   app: "Panoramica",
   clienti: "Clienti",
   scadenze: "Scadenze",
+  avvisi: "Avvisi",
   impostazioni: "Impostazioni",
   esercizi: "Esercizi",
   nuovo: "Nuovo",
