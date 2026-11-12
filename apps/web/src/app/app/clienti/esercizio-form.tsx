@@ -14,11 +14,15 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { creaEsercizio, modificaEsercizio } from "@/lib/esercizi/actions";
+
+import { ImportXbrl } from "./import-xbrl";
 import { esercizioSchema, type EsercizioInput } from "@/lib/esercizi/schema";
 
 type Props = {
   clienteId: string;
   ragioneSociale: string;
+  /** Per proporre l'ATECO letto dal bilancio XBRL quando il cliente non ce l'ha */
+  atecoCliente?: string | null;
   esercizioId?: string;
   valoriIniziali?: Partial<EsercizioInput>;
 };
@@ -27,7 +31,13 @@ const campiPrev = ["liquiditaIniziale", "entrate6m", "uscite6m", "debito6m"] as 
 
 type CampoNumerico = Exclude<keyof EsercizioInput, "anno">;
 
-export function EsercizioForm({ clienteId, ragioneSociale, esercizioId, valoriIniziali }: Props) {
+export function EsercizioForm({
+  clienteId,
+  ragioneSociale,
+  atecoCliente = null,
+  esercizioId,
+  valoriIniziali,
+}: Props) {
   const router = useRouter();
   const modifica = Boolean(esercizioId);
   const inputFile = useRef<HTMLInputElement>(null);
@@ -40,6 +50,7 @@ export function EsercizioForm({ clienteId, ragioneSociale, esercizioId, valoriIn
     handleSubmit,
     setValue,
     setError,
+    setFocus,
     formState: { errors, isSubmitting },
   } = useForm<EsercizioInput>({
     resolver: standardSchemaResolver(esercizioSchema),
@@ -91,41 +102,64 @@ export function EsercizioForm({ clienteId, ragioneSociale, esercizioId, valoriIn
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="max-w-2xl">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <label htmlFor="anno" className="text-sm font-medium">
-            Anno di esercizio
-          </label>
-          <Input
-            id="anno"
-            type="number"
-            inputMode="numeric"
-            className="mt-1.5 w-32"
-            aria-invalid={Boolean(errors.anno)}
-            {...register("anno", { valueAsNumber: true })}
-          />
-          {errors.anno && (
-            <p className="mt-1 text-xs text-danger-foreground">{errors.anno.message}</p>
-          )}
-        </div>
-        <div>
-          <input
-            ref={inputFile}
-            type="file"
-            accept=".csv,text/csv"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f) importaCsv(f);
-              e.target.value = "";
-            }}
-          />
-          <Button type="button" variant="outline" onClick={() => inputFile.current?.click()}>
-            <Upload className="size-4" />
-            Importa da CSV
-          </Button>
-        </div>
+      <div>
+        <label htmlFor="anno" className="text-sm font-medium">
+          Anno di esercizio
+        </label>
+        <Input
+          id="anno"
+          type="number"
+          inputMode="numeric"
+          className="mt-1.5 w-32"
+          aria-invalid={Boolean(errors.anno)}
+          {...register("anno", { valueAsNumber: true })}
+        />
+        {errors.anno && (
+          <p className="mt-1 text-xs text-danger-foreground">{errors.anno.message}</p>
+        )}
       </div>
+
+      <ImportXbrl
+        clienteId={clienteId}
+        atecoCliente={atecoCliente}
+        onApplica={(anno) => {
+          setValue("anno", anno.anno, { shouldDirty: true });
+          for (const [k, v] of Object.entries(anno.dati)) {
+            setValue(k as FieldPath<EsercizioInput>, v as number, { shouldDirty: true });
+          }
+          // Le voci che il bilancio non contiene si svuotano: un valore rimasto da
+          // un import precedente apparterrebbe a un altro anno.
+          for (const { campo } of anno.mancanti) {
+            setValue(campo, "" as unknown as number, { shouldDirty: true });
+          }
+          const primoMancante = anno.mancanti[0]?.campo;
+          toast.success(
+            anno.mancanti.length
+              ? `Bilancio ${anno.anno} importato: ${anno.mancanti.length} ${anno.mancanti.length === 1 ? "voce" : "voci"} da completare`
+              : `Bilancio ${anno.anno} importato`,
+          );
+          if (primoMancante) setTimeout(() => setFocus(primoMancante), 0);
+        }}
+        altriPulsanti={
+          <>
+            <input
+              ref={inputFile}
+              type="file"
+              accept=".csv,text/csv"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) importaCsv(f);
+                e.target.value = "";
+              }}
+            />
+            <Button type="button" variant="outline" onClick={() => inputFile.current?.click()}>
+              <Upload className="size-4" />
+              Importa da CSV
+            </Button>
+          </>
+        }
+      />
 
       <Sezione titolo="Conto economico">
         <Campo id="valProd" label="Valore della produzione" reg={register} errors={errors} />

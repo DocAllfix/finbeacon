@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNull } from "drizzle-orm";
 
 import { requireStudio, vietatoInDemo } from "@/lib/auth-helpers";
 import { eUuid } from "@/lib/id";
@@ -78,6 +78,47 @@ export async function modificaCliente(id: string, input: ClienteInput): Promise<
   });
 
   revalidatePath("/app/clienti");
+  revalidatePath(`/app/clienti/${id}`);
+  return { ok: true, id };
+}
+
+/**
+ * Imposta il codice ATECO letto dal bilancio XBRL, SOLO se il cliente non ne ha
+ * già uno: un codice scelto a mano dallo studio non si sovrascrive da un file.
+ */
+export async function impostaAtecoCliente(id: string, ateco: string): Promise<RisultatoAction> {
+  if (!eUuid(id)) return { ok: false, errore: "Cliente non trovato." };
+  const pulito = ateco.trim();
+  if (!/^\d{2}(\.\d{1,2}){0,2}$/.test(pulito))
+    return { ok: false, errore: "Codice ATECO non valido." };
+  const studio = await requireStudio();
+  const bloccato = vietatoInDemo(studio);
+  if (bloccato) return bloccato;
+  const { userId, organizationId } = studio;
+
+  const modificati = await db
+    .update(clienti)
+    .set({ codiceAteco: pulito })
+    .where(
+      and(
+        eq(clienti.id, id),
+        eq(clienti.organizationId, organizationId),
+        isNull(clienti.codiceAteco),
+      ),
+    )
+    .returning({ id: clienti.id });
+  if (modificati.length === 0) {
+    return { ok: false, errore: "Cliente non trovato, o con un codice ATECO già impostato." };
+  }
+
+  await db.insert(auditLog).values({
+    organizationId,
+    userId,
+    azione: "cliente.ateco-da-xbrl",
+    entita: "cliente",
+    entitaId: id,
+    dettagli: { ateco: pulito },
+  });
   revalidatePath(`/app/clienti/${id}`);
   return { ok: true, id };
 }

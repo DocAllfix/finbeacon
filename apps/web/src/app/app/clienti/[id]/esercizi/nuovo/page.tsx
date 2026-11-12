@@ -19,7 +19,8 @@ export default async function NuovoEsercizioPage({ params }: { params: Promise<{
         </p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight">Nuovo esercizio</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Inserisci i dati di bilancio, oppure importa un CSV. Il DSCR prospettico è opzionale.
+          Inserisci i dati di bilancio, oppure importa il bilancio depositato (XBRL) o un CSV. Il
+          DSCR prospettico è opzionale.
         </p>
       </header>
       <div className="mt-8">
@@ -29,7 +30,11 @@ export default async function NuovoEsercizioPage({ params }: { params: Promise<{
             testo="Nella demo i due clienti di esempio non si possono modificare. Puoi comunque esplorarne l'analisi e usare il simulatore."
           />
         ) : (
-          <EsercizioForm clienteId={cliente.id} ragioneSociale={cliente.ragioneSociale} />
+          <EsercizioForm
+            clienteId={cliente.id}
+            ragioneSociale={cliente.ragioneSociale}
+            atecoCliente={cliente.codiceAteco}
+          />
         )}
       </div>
     </div>
