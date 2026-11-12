@@ -32,7 +32,12 @@ export async function listEsercizi(clienteId: string) {
 export async function getEsercizio(esercizioId: string) {
   const { organizationId } = await requireStudio();
   const [row] = await db
-    .select({ esercizio: esercizi, clienteId: clienti.id, ragioneSociale: clienti.ragioneSociale })
+    .select({
+      esercizio: esercizi,
+      clienteId: clienti.id,
+      ragioneSociale: clienti.ragioneSociale,
+      codiceAteco: clienti.codiceAteco,
+    })
     .from(esercizi)
     .innerJoin(clienti, eq(clienti.id, esercizi.clienteId))
     .where(and(eq(esercizi.id, esercizioId), eq(clienti.organizationId, organizationId)))

@@ -1,0 +1,83 @@
+{
+  "fonte": "itcc-ci-2018-11-04.xsd, pacchetto PCI-2018-11-04.zip di XBRL Italia (https://it.xbrl.org/wp-content/uploads/sites/5/2018/11/PCI-2018-11-04.zip), estratto il 12/11/2026",
+  "namespace": "http://www.infocamere.it/itnn/fr/itcc/ci/2018-11-04",
+  "elementiNelloSchema": 2319,
+  "elementi": {
+    "CostiProduzioneAmmortamentiSvalutazioniTotaleAmmortamentiSvalutazioni": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "duration"
+    },
+    "DatiAnagraficiCodiceFiscale": {
+      "tipo": "xbrli:stringItemType",
+      "periodo": "instant"
+    },
+    "DatiAnagraficiDenominazione": {
+      "tipo": "xbrli:stringItemType",
+      "periodo": "instant"
+    },
+    "DatiAnagraficiSettoreAttivitaPrevalenteAteco": {
+      "tipo": "xbrli:stringItemType",
+      "periodo": "instant"
+    },
+    "DebitiDebitiVersoAltriFinanziatoriTotaleDebitiVersoAltriFinanziatori": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "instant"
+    },
+    "DebitiDebitiVersoBancheTotaleDebitiVersoBanche": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "instant"
+    },
+    "DebitiDebitiVersoSociFinanziamentiTotaleDebitiVersoSociFinanziamenti": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "instant"
+    },
+    "DebitiObbligazioniConvertibiliTotaleObbligazioniConvertibili": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "instant"
+    },
+    "DebitiObbligazioniTotaleObbligazioni": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "instant"
+    },
+    "DifferenzaValoreCostiProduzione": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "duration"
+    },
+    "FlussoFinanziarioAttivitaOperativa": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "duration"
+    },
+    "ProventiOneriFinanziariInteressiAltriOneriFinanziariTotaleInteressiAltriOneriFinanziari": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "duration"
+    },
+    "TotaleAttivo": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "instant"
+    },
+    "TotaleDebiti": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "instant"
+    },
+    "TotaleDisponibilitaLiquide": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "instant"
+    },
+    "TotalePatrimonioNetto": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "instant"
+    },
+    "TotaleValoreProduzione": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "duration"
+    },
+    "UtilePerditaEsercizio": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "duration"
+    },
+    "ValoreProduzioneRicaviVenditePrestazioni": {
+      "tipo": "xbrli:monetaryItemType",
+      "periodo": "duration"
+    }
+  }
+}

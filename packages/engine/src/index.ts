@@ -37,6 +37,20 @@ export {
   serializzaCsv,
   type BilancioDaCsv,
 } from "./csv";
+export {
+  ErroreXbrl,
+  estraiAteco,
+  leggiBilancioXbrl,
+  leggiIstanzaXbrl,
+  mappaBilancioDaXbrl,
+  ORIGINE_XBRL,
+  TASSONOMIE_XBRL,
+  testoIstanzaDaFile,
+  type AnnoXbrl,
+  type BilancioDaXbrl,
+  type IstanzaXbrl,
+  type MotivoMancante,
+} from "./xbrl";
 export type {
   Analisi,
   DatiBilancio,

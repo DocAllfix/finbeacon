@@ -53,6 +53,7 @@ export default async function ModificaEsercizioPage({
           <EsercizioForm
             clienteId={row.clienteId}
             ragioneSociale={row.ragioneSociale}
+            atecoCliente={row.codiceAteco}
             esercizioId={e.id}
             valoriIniziali={valori}
           />
