@@ -1,4 +1,4 @@
-import { fileURLToPath } from "node:url";
+import path from "node:path";
 
 import { expect, test } from "@playwright/test";
 
@@ -13,9 +13,7 @@ import { conDatabase, idStudio } from "./dati";
  * un abbreviato vero pubblicato (Roemar 2023): la fixture è condivisa con i test
  * del motore (packages/engine/test/xbrl).
  */
-const P7M = fileURLToPath(
-  new URL("../../../packages/engine/test/xbrl/roemar-ber.xbrl.p7m", import.meta.url),
-);
+const P7M = path.resolve(__dirname, "../../../packages/engine/test/xbrl/roemar-ber.xbrl.p7m");
 
 test("dal .p7m depositato all'esercizio salvato, con ATECO e voci da completare", async ({
   page,
