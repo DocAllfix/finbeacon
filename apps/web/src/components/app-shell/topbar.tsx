@@ -1,14 +1,49 @@
 "use client";
 
-import { Menu, Search } from "lucide-react";
+import { Bell, Menu, Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Fragment } from "react";
 
 import { Button } from "@/components/ui/button";
 import { etichettaIdentificativo, etichetteSegmento, isIdentificativo } from "@/lib/navigazione";
+import { cn } from "@/lib/utils";
 
 import { Guida } from "./guida";
+
+export type ContoAvvisi = { nonLetti: number; critici: number };
+
+/**
+ * Avvisi da leggere: il numero, e rosso solo se fra questi c'è un critico.
+ * Il conteggio è anche nel nome accessibile, non solo nel pallino.
+ */
+function Campanella({ nonLetti, critici }: ContoAvvisi) {
+  const etichetta =
+    nonLetti === 0
+      ? "Avvisi, nessuno da leggere"
+      : `Avvisi, ${nonLetti} da leggere${critici > 0 ? `, ${critici} critic${critici === 1 ? "o" : "i"}` : ""}`;
+  return (
+    <Link
+      href="/app/avvisi"
+      aria-label={etichetta}
+      title={etichetta}
+      className="relative grid size-11 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:size-9"
+    >
+      <Bell className="size-[18px]" aria-hidden />
+      {nonLetti > 0 && (
+        <span
+          aria-hidden
+          className={cn(
+            "nums absolute top-1 right-1 grid h-4 min-w-4 place-items-center rounded-full px-1 text-[10px] leading-none font-semibold sm:-top-0.5 sm:-right-0.5",
+            critici > 0 ? "bg-danger text-background" : "bg-foreground text-background",
+          )}
+        >
+          {nonLetti > 99 ? "99+" : nonLetti}
+        </span>
+      )}
+    </Link>
+  );
+}
 
 type Briciola = { label: string; href: string; navigabile: boolean };
 
@@ -40,10 +75,12 @@ export function Topbar({
   onApriDrawer,
   onApriCerca,
   demo,
+  avvisi,
 }: {
   onApriDrawer: () => void;
   onApriCerca: () => void;
   demo: boolean;
+  avvisi: ContoAvvisi;
 }) {
   const pathname = usePathname();
   const percorso = briciole(pathname);
@@ -66,10 +103,19 @@ export function Topbar({
             const ultimo = i === percorso.length - 1;
             return (
               <Fragment key={b.href}>
-                {i > 0 && <li className="text-muted-foreground/50">/</li>}
-                <li className="min-w-0">
+                {/* Sul telefono, accanto a menu, guida, campanella e ricerca,
+                    il percorso intero non ci sta: resta solo la pagina corrente. */}
+                {i > 0 && (
+                  <li aria-hidden className="hidden text-muted-foreground/50 sm:block">
+                    /
+                  </li>
+                )}
+                <li className={ultimo ? "min-w-0 overflow-hidden" : "hidden min-w-0 sm:block"}>
                   {ultimo ? (
-                    <span className="truncate font-medium text-foreground" aria-current="page">
+                    <span
+                      className="block truncate font-medium text-foreground"
+                      aria-current="page"
+                    >
                       {b.label}
                     </span>
                   ) : b.navigabile ? (
@@ -90,6 +136,8 @@ export function Topbar({
       </nav>
 
       <Guida demo={demo} />
+
+      <Campanella {...avvisi} />
 
       <button
         type="button"

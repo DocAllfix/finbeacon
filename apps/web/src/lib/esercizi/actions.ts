@@ -12,6 +12,7 @@ import { revalidatePath } from "next/cache";
 import { and, desc, eq, sql } from "drizzle-orm";
 
 import { requireStudio, vietatoInDemo } from "@/lib/auth-helpers";
+import { aggiornaAvvisiDopoSalvataggio, analisiPiuRecente } from "@/lib/avvisi/servizio";
 import { eUuid } from "@/lib/id";
 import { db, type Esecutore } from "@/lib/db";
 import { analisi, auditLog, clienti, esercizi } from "@/lib/schema-dominio";
@@ -100,6 +101,7 @@ export async function creaEsercizio(
   let esercizioId: string;
   try {
     esercizioId = await db.transaction(async (tx) => {
+      const prima = await analisiPiuRecente(tx, clienteId);
       const [creato] = await tx
         .insert(esercizi)
         .values({ clienteId, anno: parsed.data.anno, ...dati, ...(previsionale ?? {}) })
@@ -114,6 +116,7 @@ export async function creaEsercizio(
         entitaId: id,
         dettagli: { clienteId, anno: parsed.data.anno },
       });
+      await aggiornaAvvisiDopoSalvataggio(tx, organizationId, clienteId, prima);
       return id;
     });
   } catch (e) {
@@ -155,6 +158,7 @@ export async function modificaEsercizio(
 
   try {
     await db.transaction(async (tx) => {
+      const prima = await analisiPiuRecente(tx, esistente.clienteId);
       await tx
         .update(esercizi)
         .set({
@@ -174,6 +178,7 @@ export async function modificaEsercizio(
         entita: "esercizio",
         entitaId: esercizioId,
       });
+      await aggiornaAvvisiDopoSalvataggio(tx, organizationId, esistente.clienteId, prima);
     });
   } catch (e) {
     if (isAnnoDuplicato(e)) {
@@ -207,6 +212,7 @@ export async function eliminaEsercizio(esercizioId: string): Promise<RisultatoEs
   // Le analisi di un esercizio rimosso non hanno più significato: senza questa
   // pulizia resterebbero orfane e il cliente mostrerebbe ancora un punteggio.
   await db.transaction(async (tx) => {
+    const prima = await analisiPiuRecente(tx, esistente.clienteId);
     await tx.delete(analisi).where(eq(analisi.esercizioId, esercizioId));
     await tx.delete(esercizi).where(eq(esercizi.id, esercizioId));
     await tx.insert(auditLog).values({
@@ -216,6 +222,7 @@ export async function eliminaEsercizio(esercizioId: string): Promise<RisultatoEs
       entita: "esercizio",
       entitaId: esercizioId,
     });
+    await aggiornaAvvisiDopoSalvataggio(tx, organizationId, esistente.clienteId, prima);
   });
 
   revalidatePath(`/app/clienti/${esistente.clienteId}`);

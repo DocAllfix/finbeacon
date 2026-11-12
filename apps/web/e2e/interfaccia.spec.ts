@@ -96,6 +96,7 @@ test("ogni superficie autenticata si idrata sotto la CSP, larga e stretta", asyn
     ["scheda cliente", `/app/clienti/${cliente}`, /Superfici Spa/],
     ["analisi", `/app/clienti/${cliente}/analisi`, /ROS|DSCR/],
     ["scadenze", "/app/scadenze", /Scadenz/i],
+    ["avvisi", "/app/avvisi", /Nessun avviso aperto|Avvisi/],
     ["impostazioni", "/app/impostazioni", /Impostazioni|Studio/i],
   ];
 

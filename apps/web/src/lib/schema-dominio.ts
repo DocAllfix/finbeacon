@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  boolean,
   check,
   date,
   index,
@@ -7,6 +8,7 @@ import {
   jsonb,
   numeric,
   pgTable,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -246,4 +248,71 @@ export const mailOutbox = pgTable(
       .where(sql`${t.inviataAt} is null`),
     check("mail_outbox_tentativi_non_negativi", sql`${t.tentativi} >= 0`),
   ],
+);
+
+/**
+ * Avvisi per lo studio: un indicatore che passa in zona critica, il punteggio
+ * che scende di fascia, una previsione di cassa scaduta, un bilancio che manca.
+ * Le regole (quando aprirli, quando chiuderli, con quali parole) stanno nel
+ * motore: `avvisiDaAnalisi` e `avvisiDiTempo` di @finbeacon/engine.
+ *
+ * Al più UN avviso aperto per cliente e tipo, e lo garantisce il database
+ * (indice unico parziale), non il codice: due salvataggi simultanei non possono
+ * aprirne due uguali. Chiuso = la condizione non c'è più.
+ */
+export const avvisi = pgTable(
+  "avvisi",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    clienteId: uuid("cliente_id")
+      .notNull()
+      .references(() => clienti.id, { onDelete: "cascade" }),
+    tipo: text("tipo").notNull(),
+    gravita: text("gravita").notNull(),
+    titolo: text("titolo").notNull(),
+    testo: text("testo").notNull(),
+    lettoAt: timestamp("letto_at"),
+    chiusoAt: timestamp("chiuso_at"),
+    // L'email immediata (solo per i critici) parte una volta sola.
+    emailInviataAt: timestamp("email_inviata_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("avvisi_aperto_uidx")
+      .on(t.clienteId, t.tipo)
+      .where(sql`${t.chiusoAt} is null`),
+    index("avvisi_org_creato_idx").on(t.organizationId, t.createdAt),
+    check("avvisi_gravita_valida", sql`${t.gravita} in ('critico','attenzione')`),
+  ],
+);
+
+/** Preferenze di ciascun utente sulle email degli avvisi. Senza riga: entrambe attive. */
+export const preferenzeAvvisi = pgTable("preferenze_avvisi", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  emailCritici: boolean("email_critici").notNull().default(true),
+  riepilogoSettimanale: boolean("riepilogo_settimanale").notNull().default(true),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .$onUpdate(() => new Date())
+    .notNull(),
+});
+
+/**
+ * Lavori periodici già fatti (controllo giornaliero, riepilogo del lunedì).
+ * La chiave (nome, giorno) fa sì che un lavoro giri UNA volta per giorno anche
+ * se il servizio della posta si riavvia, o se un giorno ne girassero due.
+ */
+export const lavoriPeriodici = pgTable(
+  "lavori_periodici",
+  {
+    nome: text("nome").notNull(),
+    giorno: date("giorno", { mode: "string" }).notNull(),
+    eseguitoAt: timestamp("eseguito_at").defaultNow().notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.nome, t.giorno] })],
 );

@@ -8,7 +8,7 @@ import { useSidebarRidotta } from "@/lib/preferenza-sidebar";
 
 import { CommandMenu } from "./command-menu";
 import { Sidebar } from "./sidebar";
-import { Topbar } from "./topbar";
+import { Topbar, type ContoAvvisi } from "./topbar";
 
 export type DatiStudio = { nome: string };
 export type DatiUtente = { nome: string; email: string };
@@ -20,6 +20,7 @@ export function AppShell({
   clienti,
   demo,
   urlLanding,
+  avvisi,
   children,
 }: {
   studio: DatiStudio;
@@ -28,6 +29,7 @@ export function AppShell({
   demo: boolean;
   /** Dove mandare chi, dalla demo, vuole un appuntamento. Assente = nessuna fascia. */
   urlLanding?: string;
+  avvisi: ContoAvvisi;
   children: React.ReactNode;
 }) {
   const [drawerAperto, setDrawerAperto] = useState(false);
@@ -55,6 +57,7 @@ export function AppShell({
           onApriDrawer={() => setDrawerAperto(true)}
           onApriCerca={() => setCercaAperto(true)}
           demo={demo}
+          avvisi={avvisi}
         />
         <main className="mx-auto w-full max-w-5xl flex-1 px-5 py-8 sm:px-8 sm:py-10">
           {children}
