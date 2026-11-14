@@ -692,7 +692,7 @@ voci:
     link_interni: ["cash-flow", "cash-flow-operativo"]
     cta: demo
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: rendiconto-finanziario
     data: 2026-11-11
     verifica: "Art. 2425-ter c.c. e OIC 10; esonero art. 2435-bis c.c. (Normattiva)."
@@ -727,8 +727,17 @@ voci:
     link_interni: ["ebitda", "ebitda-negativo"]
     cta: demo
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: ebitda-margin
+    data: 2026-11-14
     verifica: 'Esempio solo con <Rapporto formato="%">. Niente medie di settore senza fonte.'
+    note: >
+      Fonti lette il 12/11/2026: documento CNDCEC su EBITDA e PFN (marzo 2024), pagg. 3, 5, 7
+      (numerazione stampata); artt. 2425, 2427 (primo comma, n. 10), 2428 (secondo comma) e
+      2435-bis c.c. e art. 3, comma 3, CCII (Normattiva, testo vigente al 12/11/2026). Nessuna
+      media o soglia di settore: nessuna fonte primaria la contiene. Gli esempi usano gli importi
+      d'ingresso del cliente di esempio (EBITDA, fatturato, valore della produzione di
+      src/lib/esempio.ts): se il motore li cambia, aggiornare i due <Rapporto>. Nessuna soglia del DSCR.
 
   - id: cash-flow-excel
     calendario: M2-W2-01

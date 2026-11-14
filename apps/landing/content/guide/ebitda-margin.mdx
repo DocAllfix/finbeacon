@@ -1,0 +1,183 @@
+---
+titolo: "EBITDA margin: formula, denominatore e come si legge"
+descrizione: "Come si calcola l'EBITDA margin dal conto economico, se dividere per i ricavi o per il valore della produzione e perché una soglia valida per tutti non esiste."
+data: 2026-11-14
+autore: alessandro-di-lonardo
+argomento: indicatori
+parolaChiave: "ebitda margin"
+fonti:
+  - titolo: "CNDCEC, documento di ricerca «Nozione di Ebitda e Posizione Finanziaria Netta (PFN) per fini valutativi e negoziali», marzo 2024"
+    url: "https://commercialisti.it/wp-content/uploads/2024/04/20240313-Nozione-Ebitda-e-PFN_format-CNDCEC_def.pdf"
+  - titolo: "Codice civile, art. 2425 – Contenuto del conto economico (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2425"
+  - titolo: "Codice civile, art. 2427 – Contenuto della nota integrativa (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2427"
+  - titolo: "Codice civile, art. 2428 – Relazione sulla gestione (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2428"
+  - titolo: "Codice civile, art. 2435-bis – Bilancio in forma abbreviata (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2435bis"
+  - titolo: "Codice della crisi d'impresa e dell'insolvenza, art. 3 – Adeguatezza delle misure e degli assetti (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art3"
+correlati: [ebitda, ebitda-negativo, ebitda-ebit-mol, ros-roi-roe]
+---
+
+L'EBITDA margin è l'EBITDA diviso per i ricavi o per il valore della produzione, espresso in
+percentuale: dice quanta parte di ogni euro prodotto resta come EBITDA. Il CNDCEC ammette
+entrambi i denominatori, quindi va sempre detto quale si usa. Una soglia «buona» valida per ogni
+impresa non esiste: né la legge né il CNDCEC la fissano.
+
+Le norme citate sono nel testo vigente su Normattiva al 12 novembre 2026.
+
+## Come si calcola l'EBITDA margin in percentuale?
+
+Si divide l'EBITDA per il denominatore scelto e si moltiplica per cento. Il documento di ricerca
+del CNDCEC del marzo 2024 lo descrive così: «il rapporto tra Ebitda e ricavi o valore della
+produzione di periodo individua il cosiddetto Ebitda margin»
+([CNDCEC, pag. 3](https://commercialisti.it/wp-content/uploads/2024/04/20240313-Nozione-Ebitda-e-PFN_format-CNDCEC_def.pdf)).
+
+Il numeratore è l'EBITDA. Nella definizione proposta dallo stesso documento è la differenza fra
+valore e costi della produzione dell'[art. 2425 c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2425)
+(A − B), escluse le voci B.10.a, B.10.b e B.10.c, cioè ammortamenti e svalutazioni delle
+immobilizzazioni (pag. 5). Svalutazione dei crediti (B.10.d) e accantonamenti (B.12 e B.13)
+restano fra i costi; altre impostazioni li tolgono, con un EBITDA più alto (pag. 5). Come si
+costruisce l'EBITDA voce per voce è nella [guida sull'EBITDA](/guide/ebitda).
+
+Sul cliente di esempio di FinBeacon, con i ricavi delle vendite al denominatore:
+
+<Rapporto
+  nome="EBITDA margin sui ricavi"
+  num={["EBITDA", 480000]}
+  den={["Ricavi delle vendite e delle prestazioni (A.1)", 4100000]}
+  formato="%"
+  didascalia="Meccanica Ardesia S.r.l., cliente di esempio con dati inventati. Il conto lo fa FinBeacon, non chi scrive."
+/>
+
+È il rapporto che in rete si trova anche come «EBITDA su fatturato», «indice EBITDA» o «margine
+EBITDA»: il nome cambia, il conto no, purché il denominatore sia dichiarato.
+
+## Ricavi o valore della produzione: quale denominatore?
+
+Tutti e due sono corretti, ma non sono la stessa misura. I ricavi sono la sola voce A.1 dell'art.
+2425 c.c.; il valore della produzione è il totale della sezione A, che comprende anche altre
+quattro voci:
+
+| Voce | Cosa contiene (art. 2425 c.c.)                                                        | Effetto sul margine se si divide per A                   |
+| ---- | ------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| A.2  | Variazioni delle rimanenze di prodotti in corso di lavorazione, semilavorati e finiti | Magazzino in crescita: denominatore più alto             |
+| A.3  | Variazioni dei lavori in corso su ordinazione                                         | Lavori su commessa: la variazione entra nel denominatore |
+| A.4  | Incrementi di immobilizzazioni per lavori interni                                     | Costruzioni in economia: entrano anche nel denominatore  |
+| A.5  | Altri ricavi e proventi, con separata indicazione dei contributi in conto esercizio   | Contributi e proventi accessori: denominatore più alto   |
+
+Le stesse voci stanno anche nel numeratore, perché l'EBITDA parte dal totale A. Il CNDCEC
+ricorda che gli incrementi per lavori interni (A.4) sterilizzano costi sostenuti per costruire
+un cespite e che, di norma, non si rettificano; e che negli altri ricavi (A.5) convivono proventi
+con e senza riflesso finanziario nell'esercizio, come la quota di un risconto passivo su
+contributi pubblici (pag. 7).
+
+Lo stesso EBITDA, diviso per il valore della produzione del cliente di esempio:
+
+<Rapporto
+  nome="EBITDA margin sul valore della produzione"
+  num={["EBITDA", 480000]}
+  den={["Valore della produzione (totale A)", 4200000]}
+  formato="%"
+  didascalia="Meccanica Ardesia S.r.l., cliente di esempio con dati inventati. Il conto lo fa FinBeacon, non chi scrive."
+/>
+
+La differenza fra i due riquadri viene tutta dalle voci A.2–A.5. Per un'impresa commerciale che
+vende ciò che compra di solito è piccola; per chi lavora su commessa o accumula magazzino può
+spostare il margine da un anno all'altro senza che la gestione sia cambiata.
+
+### Una scelta sola, dichiarata
+
+Il criterio pratico è uno: lo stesso denominatore in tutti gli esercizi e per tutti i clienti
+che si mettono a confronto, scritto accanto al numero. Se il margine serve per un confronto con
+il ROS, conviene il valore della produzione, per il motivo spiegato qui sotto.
+
+## EBITDA margin e ROS: cosa cambia?
+
+Cambia il numeratore. Il ROS di FinBeacon divide il reddito operativo per il valore della produzione;
+nello schema civilistico il reddito operativo (EBIT) è la differenza A − B (CNDCEC, pag. 5):
+
+<Formula chiave="ros" />
+
+L'EBITDA margin calcolato sul valore della produzione ha lo stesso denominatore. Con la
+definizione base del CNDCEC, la distanza fra i due indicatori misura quindi quanto pesano sul valore della produzione gli ammortamenti e le
+svalutazioni delle immobilizzazioni (B.10.a, B.10.b e B.10.c): un'impresa con molti impianti ha
+un EBITDA margin alto e un ROS più basso, un'impresa di servizi con pochi cespiti ha i due valori
+vicini.
+
+Per questo, presentati insieme, i due rapporti raccontano più di uno solo: l'EBITDA margin mostra
+la redditività prima del costo degli investimenti, il ROS dopo. Come si legge il ROS dentro il ROI
+è spiegato nella [guida su ROS, ROI e ROE](/guide/ros-roi-roe); la differenza fra EBITDA, EBIT e
+MOL nella [guida dedicata](/guide/ebitda-ebit-mol).
+
+## Cosa significa un margine basso?
+
+Significa che resta poco, su ogni euro prodotto, per pagare ammortamenti, interessi, imposte e
+rate dei finanziamenti. Il CNDCEC attribuisce all'EBITDA margin «preziose indicazioni, insieme
+all'ordine di grandezza dei ricavi, circa la profittabilità economica, la capacità di ripagamento
+delle obbligazioni sociali nonché la capacità di creare (o distruggere) valore» (pag. 3).
+
+Due cose discendono da quella frase.
+
+1. **La percentuale da sola non basta.** Lo stesso margine su ricavi di dimensioni molto diverse
+   produce un EBITDA in euro molto diverso, ed è l'importo in euro che ripaga il debito. Il
+   CNDCEC chiede di leggerla «insieme all'ordine di grandezza dei ricavi».
+2. **Il confronto utile è relativo.** Con la stessa impresa negli anni precedenti, a parità di
+   definizione, e con il debito: a parità di ricavi e di posizione finanziaria netta, un margine più basso
+   vuol dire un EBITDA più basso e quindi un rapporto PFN/EBITDA più alto. Le fasce con cui il
+   motore giudica quel rapporto sono nella [guida su PFN/EBITDA](/guide/pfn-ebitda).
+
+### Esiste un valore di riferimento?
+
+Non in una fonte primaria. Le percentuali che in rete vengono indicate come «buone» o le tabelle
+di EBITDA margin per settore non vengono né dal codice civile né dal CNDCEC, e davanti al cliente
+o alla banca non hanno una base da citare. Anche il Codice della crisi chiede agli assetti di
+rilevare gli squilibri economico-finanziari «rapportati alle specifiche caratteristiche
+dell'impresa e dell'attività imprenditoriale svolta dal debitore»
+([art. 3, comma 3, lettera a), CCII](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art3)):
+un criterio, non un numero.
+
+Un margine negativo è un caso a parte: il valore della produzione non copre i costi operativi.
+Cosa comporta, anche sul piano degli obblighi degli amministratori, è nella
+[guida sull'EBITDA negativo](/guide/ebitda-negativo).
+
+## Dove si trovano i dati nel bilancio?
+
+Numeratore e denominatore si ricavano dallo schema dell'art. 2425 c.c. Nel bilancio in forma
+abbreviata l'[art. 2435-bis c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2435bis)
+consente di raggruppare le voci A.2 e A.3 e le voci B.10.a, B.10.b e B.10.c: il calcolo resta
+possibile, ma la variazione delle rimanenze di prodotti e quella dei lavori in corso su
+ordinazione non si leggono più separate.
+
+### Il margine per linea di attività
+
+Il bilancio non lo dà. L'[art. 2427 c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2427),
+primo comma, n. 10, chiede in nota integrativa la ripartizione dei ricavi delle vendite e delle
+prestazioni «secondo categorie di attività e secondo aree geografiche»: sono solo i ricavi, non i
+costi, quindi un EBITDA margin per linea richiede la contabilità interna dell'impresa. Nel
+bilancio abbreviato quel numero 10 non è fra le indicazioni richieste dall'art. 2435-bis.
+
+### Nella relazione sulla gestione
+
+L'[art. 2428 c.c.](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:regio.decreto:1942-03-16;262:2~art2428),
+secondo comma, chiede che l'analisi degli amministratori contenga, «nella misura necessaria alla
+comprensione», gli indicatori di risultato finanziari. Il CNDCEC osserva che l'EBITDA può essere
+uno di questi indicatori (pag. 3). Le società che redigono il bilancio abbreviato sono esonerate
+dalla relazione sulla gestione se forniscono in nota integrativa le informazioni dei numeri 3) e 4) dell'art. 2428 (art. 2435-bis c.c.).
+
+## Cosa verificare, in quest'ordine
+
+1. **La definizione di EBITDA**: A − B più B.10.a, B.10.b e B.10.c, con la scelta su B.10.d, B.12
+   e B.13 dichiarata.
+2. **Il denominatore**: ricavi (A.1) o valore della produzione (totale A), scritto accanto alla
+   percentuale.
+3. **Le voci A.2–A.5**: se pesano, mostrare il margine su entrambi i denominatori.
+4. **L'ordine di grandezza dei ricavi**: la percentuale si commenta insieme all'EBITDA in euro.
+5. **La serie storica**: stessa definizione e stesso denominatore in tutti gli esercizi.
+6. **Il confronto con il ROS e con il debito**: la distanza dal ROS dice quanto pesano gli
+   investimenti; il rapporto PFN/EBITDA dice se il margine regge il debito.
+
+Per vedere come FinBeacon mette insieme redditività, debito e cassa prospettica in un giudizio
+unico si può guardare il [metodo](/#metodo), oppure [chiedere una demo](/#richiesta).
