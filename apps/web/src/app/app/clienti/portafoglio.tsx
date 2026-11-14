@@ -15,7 +15,7 @@ import { ArrowUpDown, MoreHorizontal, Plus, RotateCcw, Search } from "lucide-rea
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -376,7 +376,10 @@ export function Portafoglio({
     },
   ];
 
-  const inAllerta = clienti.filter((c) => allerta(c.score));
+  // Memorizzato: un array nuovo a ogni render come `data` di useReactTable
+  // fa ridisegnare la tabella all'infinito e blocca la pagina sulla vista
+  // «In allerta» (trovato nel collaudo dell'istanza, 14/11).
+  const inAllerta = useMemo(() => clienti.filter((c) => allerta(c.score)), [clienti]);
   const datiVista = vista === "allerta" ? inAllerta : clienti;
 
   const table = useReactTable({

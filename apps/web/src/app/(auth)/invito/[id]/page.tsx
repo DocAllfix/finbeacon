@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { authClient, useSession } from "@/lib/auth-client";
+import { messaggioErrore } from "@/lib/errori-auth";
 
 export default function InvitoPage() {
   const { id } = useParams<{ id: string }>();
@@ -23,8 +24,10 @@ export default function InvitoPage() {
     if (error) {
       setInCorso(false);
       setErrore(
-        error.message ??
+        messaggioErrore(
+          error,
           "Invito non valido o scaduto. Verifica di aver effettuato l'accesso con l'email invitata.",
+        ),
       );
       return;
     }

@@ -16,6 +16,7 @@ import { JudgmentBadge } from "@/components/ui/judgment-badge";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { authClient, useSession } from "@/lib/auth-client";
+import { messaggioErrore } from "@/lib/errori-auth";
 import { MESSAGGIO_DEMO } from "@/lib/demo";
 
 const etichettaRuolo: Record<string, string> = {
@@ -57,7 +58,7 @@ export function PannelloStudio({ demo }: { demo: boolean }) {
     });
     setInCorso(false);
     if (error) {
-      toast.error(error.message ?? "Invito non riuscito.");
+      toast.error(messaggioErrore(error, "Invito non riuscito."));
       return;
     }
     setEmailInvito("");
@@ -76,7 +77,7 @@ export function PannelloStudio({ demo }: { demo: boolean }) {
     });
     setSalvandoNome(false);
     if (error) {
-      toast.error(error.message ?? "Rinomina non riuscita.");
+      toast.error(messaggioErrore(error, "Rinomina non riuscita."));
       return;
     }
     setNomeModificato(null);
@@ -88,7 +89,7 @@ export function PannelloStudio({ demo }: { demo: boolean }) {
     if (demo) return toast.error(MESSAGGIO_DEMO);
     const { error } = await authClient.organization.cancelInvitation({ invitationId });
     if (error) {
-      toast.error(error.message ?? "Revoca non riuscita.");
+      toast.error(messaggioErrore(error, "Revoca non riuscita."));
       return;
     }
     refetch();
@@ -102,7 +103,7 @@ export function PannelloStudio({ demo }: { demo: boolean }) {
       organizationId: studio!.id,
     });
     if (error) {
-      toast.error(error.message ?? "Rimozione non riuscita.");
+      toast.error(messaggioErrore(error, "Rimozione non riuscita."));
       return;
     }
     refetch();

@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, LayoutDashboard, Settings, Users } from "lucide-react";
+import { Building2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -13,6 +13,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { navPrincipale } from "@/lib/navigazione";
 
 import type { ClienteRicerca } from "./app-shell";
 
@@ -57,19 +58,16 @@ export function CommandMenu({
         <CommandInput placeholder="Cerca un cliente o una sezione…" />
         <CommandList>
           <CommandEmpty>Nessun risultato.</CommandEmpty>
+          {/* Le stesse voci della barra laterale: mancavano Scadenze e Avvisi. */}
           <CommandGroup heading="Vai a">
-            <CommandItem onSelect={() => vai("/app")}>
-              <LayoutDashboard className="size-4" />
-              Panoramica
-            </CommandItem>
-            <CommandItem onSelect={() => vai("/app/clienti")}>
-              <Users className="size-4" />
-              Clienti
-            </CommandItem>
-            <CommandItem onSelect={() => vai("/app/impostazioni")}>
-              <Settings className="size-4" />
-              Impostazioni studio
-            </CommandItem>
+            {navPrincipale
+              .filter((v) => !v.presto)
+              .map((v) => (
+                <CommandItem key={v.href} value={`sezione ${v.label}`} onSelect={() => vai(v.href)}>
+                  <v.icon className="size-4" />
+                  {v.label}
+                </CommandItem>
+              ))}
           </CommandGroup>
           {clienti.length > 0 && (
             <CommandGroup heading="Clienti">

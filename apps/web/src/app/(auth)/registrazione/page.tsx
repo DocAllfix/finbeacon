@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
+import { messaggioErrore } from "@/lib/errori-auth";
 
 function slugDaNome(nome: string): string {
   return (
@@ -58,11 +59,7 @@ function RegistrazioneForm() {
     });
     if (errUtente) {
       setInCorso(false);
-      setErrore(
-        errUtente.code === "USER_ALREADY_EXISTS"
-          ? "Esiste già un account con questa email. Accedi."
-          : (errUtente.message ?? "Registrazione non riuscita, riprova."),
-      );
+      setErrore(messaggioErrore(errUtente, "Registrazione non riuscita, riprova."));
       return;
     }
     if (invitoId) {
@@ -77,7 +74,7 @@ function RegistrazioneForm() {
     });
     if (errStudio) {
       setInCorso(false);
-      setErrore(errStudio.message ?? "Creazione dello studio non riuscita.");
+      setErrore(messaggioErrore(errStudio, "Creazione dello studio non riuscita."));
       return;
     }
     // La sessione è nata prima dello studio: va agganciata esplicitamente

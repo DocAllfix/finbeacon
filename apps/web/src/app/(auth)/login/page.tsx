@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
+import { messaggioErrore } from "@/lib/errori-auth";
 
 /** Coerente con la pagina di registrazione: se è chiusa, non si invita ad andarci. */
 const registrazioneAperta =
@@ -29,9 +30,9 @@ function LoginForm() {
     setInCorso(false);
     if (error) {
       setErrore(
-        error.status === 401 || error.code === "INVALID_EMAIL_OR_PASSWORD"
+        error.status === 401
           ? "Email o password non corretti."
-          : (error.message ?? "Accesso non riuscito, riprova."),
+          : messaggioErrore(error, "Accesso non riuscito, riprova."),
       );
       return;
     }

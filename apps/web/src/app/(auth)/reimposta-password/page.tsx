@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
+import { messaggioErrore } from "@/lib/errori-auth";
 
 const LUNGHEZZA_MINIMA = 10;
 
@@ -39,8 +40,12 @@ function ReimpostaForm() {
     const { error } = await authClient.resetPassword({ newPassword: password, token: token! });
     setInCorso(false);
     if (error) {
+      // Mai il messaggio di Better Auth così com'è: è in inglese («Invalid token»).
       setErrore(
-        error.message ?? "Non è stato possibile reimpostare la password. Richiedi un nuovo link.",
+        messaggioErrore(
+          error,
+          "Non è stato possibile reimpostare la password. Richiedi un nuovo link.",
+        ),
       );
       return;
     }
