@@ -727,7 +727,7 @@ voci:
     link_interni: ["ebitda", "ebitda-negativo"]
     cta: demo
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: ebitda-margin
     data: 2026-11-14
     verifica: 'Esempio solo con <Rapporto formato="%">. Niente medie di settore senza fonte.'
@@ -765,8 +765,17 @@ voci:
     link_interni: ["budget-tesoreria", "cash-flow"]
     cta: calcolatore
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: cash-flow-excel
+    data: 2026-11-18
     verifica: "Lo schema si descrive in tabella; nessun file scaricabile senza una richiesta di codice nella PR."
+    note: >
+      Fonti lette il 16/11/2026: documento CNDCEC e FNC «Il budget di tesoreria» (19/05/2026), per
+      intero, citato ai parr. 2.5 lett. a)-k) (pagg. 25-28, numerazione stampata); artt. 3 e 17 CCII
+      (Normattiva, testo vigente al 16/11/2026). Il link interno «budget-tesoreria» del brief punta
+      allo slug cash-flow-previsionale. Nessun file Excel scaricabile: lo schema è descritto in
+      tabella. Nessuna soglia del DSCR citata (documento CNDCEC sugli indici non letto). Il punto 1.5
+      della lista di controllo particolareggiata resta fuori, come nella guida cash-flow-previsionale.
 
   - id: software-cash-flow
     calendario: M2-W2-02

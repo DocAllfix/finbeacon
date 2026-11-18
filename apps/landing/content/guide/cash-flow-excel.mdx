@@ -1,0 +1,208 @@
+---
+titolo: "Cash flow in Excel: lo schema mensile da usare in studio"
+descrizione: "Come impostare in Excel il cash flow mensile a sei o dodici mesi: righe, colonne, formule, gli errori più frequenti e il punto in cui il foglio non basta più."
+data: 2026-11-18
+autore: alessandro-di-lonardo
+argomento: strumenti
+parolaChiave: "cash flow excel"
+fonti:
+  - titolo: "CNDCEC e FNC, documento «Il budget di tesoreria: principali funzioni e aspetti operativi», 19 maggio 2026"
+    url: "https://commercialisti.it/wp-content/uploads/2026/05/2026_05_19_Budget-di-tesoreria.pdf"
+  - titolo: "Codice della crisi d'impresa e dell'insolvenza, art. 3 – Adeguatezza delle misure e degli assetti (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art3"
+  - titolo: "Codice della crisi d'impresa e dell'insolvenza, art. 17 – Accesso alla composizione negoziata (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art17"
+correlati: [cash-flow-previsionale, cash-flow]
+---
+
+Un cash flow in Excel che regge davanti alla banca ha una colonna per mese e righe in quattro
+blocchi: liquidità iniziale, incassi, pagamenti operativi, rate dei finanziamenti. Il saldo finale
+di ogni mese diventa la liquidità iniziale del mese dopo. Le rate stanno in un blocco proprio,
+perché sono il denominatore del DSCR.
+
+## Come si imposta lo schema del cash flow in Excel?
+
+Con due fogli: uno che elenca i singoli flussi, uno che li somma per mese. Il primo è il registro
+di lavoro, il secondo è il prospetto da far leggere. Tenerli separati evita di digitare importi
+direttamente nella griglia dei mesi, senza traccia di dove vengono.
+
+Il foglio dei mesi, in un'impostazione minima a sei mesi:
+
+| Riga  | Colonna A                        | Colonne B–G (un mese ciascuna)                            |
+| ----- | -------------------------------- | --------------------------------------------------------- |
+| 3     | Mese                             | gen, feb, mar, apr, mag, giu                              |
+| 4     | Liquidità iniziale               | B4 dagli estratti conto; da C4 `=B20`                     |
+| 6–9   | Incassi (clienti, altri incassi) | dal foglio dei flussi                                     |
+| 10    | Totale incassi                   | `=SOMMA(B6:B9)`                                           |
+| 12–17 | Pagamenti operativi              | fornitori, personale, IVA e imposte, canoni, investimenti |
+| 18    | Totale pagamenti operativi       | `=SOMMA(B12:B17)`                                         |
+| 19    | Rate dei finanziamenti           | capitale e interessi, dal piano di ammortamento           |
+| 20    | Saldo finale                     | `=B4+B10-B18-B19`                                         |
+| 22    | Saldo minimo del periodo         | `=MIN(B20:G20)`                                           |
+
+Per un orizzonte di dodici mesi si allarga la griglia alle colonne B–M e si estendono gli
+intervalli. Le formule usano le funzioni nella versione italiana di Excel, con il punto e virgola
+come separatore.
+
+### Il foglio dei flussi: le colonne indicate dal CNDCEC
+
+Il documento del CNDCEC del 19 maggio 2026 sul [budget di tesoreria](https://commercialisti.it/wp-content/uploads/2026/05/2026_05_19_Budget-di-tesoreria.pdf)
+propone un template del cash flow mensile con sei colonne essenziali (par. 2.5, lett. d), pag. 26):
+
+| Colonna                      | Cosa contiene, secondo il documento                                |
+| ---------------------------- | ------------------------------------------------------------------ |
+| Voce                         | per esempio «Incassi clienti Italia», «Pagamento fornitori estero» |
+| Mese budget                  | l'importo atteso                                                   |
+| Probabilità di realizzazione | 100% per i dati certi, 60-90% per le variabili                     |
+| Data presunta                | il giorno specifico, per i flussi rilevanti                        |
+| Scenario ottimistico         | ipotesi base +10/15%                                               |
+| Scenario pessimistico        | ipotesi base -15/20%                                               |
+
+Il CNDCEC precisa che i valori di scenari, stress test e indicatori del documento sono
+esemplificativi e vanno definiti sul settore e sull'azienda (nota 12, pag. 25).
+
+In Excel conviene separare il mese dall'importo e aggiungere la **categoria** (incasso,
+pagamento operativo, rata), che decide in quale blocco del prospetto finisce la riga. Il foglio
+«Flussi» diventa: A voce, B categoria, C mese (scritto come nella riga 3 del prospetto), D data
+presunta, E importo atteso, F probabilità, G scenario ottimistico, H scenario pessimistico. Il
+foglio dei mesi lo richiama con una somma condizionata, per esempio
+`=SOMMA.PIÙ.SE(Flussi!$E:$E;Flussi!$A:$A;$A6;Flussi!$C:$C;B$3)`: somma gli importi della voce
+scritta in A6 che cadono nel mese della colonna B. Ogni cifra del prospetto ha così la sua riga di
+origine.
+
+## Cosa entra nelle righe, e da dove si prende
+
+Entra tutto ciò che muove la cassa, alla data presunta; non entra ciò che è solo competenza
+(ammortamenti, accantonamenti). Il documento CNDCEC distingue i dati certi dalle variabili da
+stimare e indica le fonti da cui partire (par. 2.5, lett. a) e b), pag. 25):
+
+- **fonti da integrare**: estratti conto bancari (di tutte le società, se c'è un gruppo), scadenziari clienti e fornitori
+  (data fattura, importo, scadenza, giorni di dilazione), piani di ammortamento con capitale e
+  interessi mese per mese, contratti di leasing, previsioni di cassa degli ultimi 12-24 mesi per
+  la stagionalità;
+- **dati certi**: stipendi (giorno fisso del mese), scadenze fiscali e previdenziali, rate di
+  mutui e finanziamenti, canoni di affitto e leasing, utenze ricorrenti (media degli ultimi sei
+  mesi se non variabili);
+- **variabili da stimare**: incassi da fatture con il DSO storico corretto per stagionalità,
+  acquisti di materie prime legati alla produzione prevista e alle scorte di sicurezza,
+  provvigioni, manutenzioni.
+
+Per gli incassi il documento dà la formula del DSO operativo: crediti commerciali medi diviso
+fatturato giornaliero medio (lett. c), pag. 26). Per gli investimenti chiede di scadenzare i
+pagamenti, per esempio 30% all'ordine, 40% alla consegna e 30% al collaudo (lett. f), pag. 26):
+in Excel sono tre righe in tre mesi diversi, non una.
+
+### Un esempio su un mese
+
+Con importi inventati, la colonna di gennaio di una piccola impresa di servizi si chiude così:
+
+<Conto
+  totale="Saldo finale di gennaio"
+  righe={[
+    ["Liquidità iniziale (estratti conto al 31/12)", 80000],
+    ["Incassi da clienti", 310000],
+    ["Pagamenti a fornitori", -175000],
+    ["Stipendi e contributi", -82000],
+    ["Versamento IVA", -28000],
+    ["Affitto e canoni di leasing", -16000],
+    ["Rate dei finanziamenti (capitale e interessi)", -35000],
+  ]}
+/>
+
+Quel totale è la cella C4, la liquidità iniziale di febbraio. Il prospetto si legge sulla riga 22:
+il mese con il saldo più basso dice quando serve una copertura, il saldo di giugno dice solo come
+finisce il semestre.
+
+## Sei o dodici mesi: quante colonne servono?
+
+Dipende dall'uso che se ne fa. Il Codice della crisi chiede orizzonti diversi in norme diverse,
+e il foglio va dimensionato su quella che interessa:
+
+| Norma (testo vigente)                                                                                                            | Orizzonte          | Cosa dice                                                                                                   |
+| -------------------------------------------------------------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------- |
+| [Art. 3, comma 3, lett. b), CCII](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art3)   | almeno dodici mesi | misure e assetti devono consentire di verificare la sostenibilità dei debiti e le prospettive di continuità |
+| [Art. 17, comma 3, lett. b), CCII](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art17) | sei mesi           | con l'istanza di composizione negoziata, una relazione con un piano finanziario per i successivi sei mesi   |
+
+Nessuna delle due norme indica uno schema o un formato di file. Un foglio a sei colonne basta per
+il piano finanziario della composizione negoziata; per la verifica dell'art. 3 servono dodici mesi.
+Il quadro completo dei due orizzonti è nella guida sul [cash flow previsionale](/guide/cash-flow-previsionale).
+
+## Quali errori si fanno più spesso?
+
+Il documento CNDCEC ne elenca cinque (pag. 28): usare medie annuali per costi stagionali
+(riscaldamento, manutenzioni nel fermo estivo, premi di fine anno); mettere a budget un DSO
+migliore di quello storico, per esempio 45 giorni invece di 60, perché «miglioreremo il recupero
+crediti»; non separare i versamenti IVA dai flussi imponibili; ignorare la concentrazione dei rischi
+(se il 40% del fatturato dipende da un cliente, il documento chiede uno scenario con e senza quel
+cliente); lasciare il budget fermo, senza l'aggiornamento mensile.
+
+In Excel se ne aggiungono altri, che nascono dal foglio e non dalle ipotesi:
+
+1. **Liquidità iniziale digitata in ogni mese** invece che collegata al saldo del mese prima: il
+   prospetto non si aggiorna quando cambia un mese precedente.
+2. **Rate dentro i pagamenti operativi**: il saldo resta giusto, ma non si vede più quanta cassa
+   resta per servire il debito.
+3. **Totali con intervalli fissi**: una riga aggiunta sotto l'ultima voce resta fuori dalla
+   `SOMMA`. Conviene inserire le righe nuove dentro il blocco, mai in coda.
+4. **Importi IVA inclusa da un lato e IVA esclusa dall'altro**: gli incassi da scadenziario sono
+   lordi, i costi presi dal conto economico sono netti.
+5. **Liquidità iniziale presa dalla contabilità** invece che dagli estratti conto: partite non
+   ancora registrate spostano tutto il semestre.
+
+## Dal foglio al DSCR prospettico
+
+Se lo schema tiene separate le rate, il DSCR a sei mesi si legge dagli stessi totali: liquidità
+iniziale più incassi meno pagamenti operativi, diviso le rate del periodo. In FinBeacon le uscite
+della formula escludono il servizio del debito, che sta al denominatore. Sul cliente di esempio
+del motore, con importi propri e diversi da quelli qui sopra, il conto è questo:
+
+<Formula chiave="dscr6m" />
+
+Nel foglio è una cella sola, sotto la riga 22: la somma di liquidità iniziale di gennaio e
+incassi del semestre, meno i pagamenti operativi, divisa per la somma della riga 19.
+
+<Nota>
+  Il foglio è una stima: vale quanto le ipotesi sugli incassi e sui pagamenti. Metodo, scenari e
+  percentuali sono scelte del professionista e vanno scritte accanto ai numeri, in un foglio di note
+  dello stesso file.
+</Nota>
+
+## Quando Excel non basta più?
+
+Quando il foglio va aggiornato più spesso di quanto si riesca a farlo bene. Il documento CNDCEC
+indica tre cadenze di controllo (lett. h), pag. 27): settimanale per la cassa reale contro quella
+prevista, mensile per gli scostamenti fra budget e consuntivo sulle voci con varianza oltre il
+10%, trimestrale per rivedere le ipotesi. Nella lista di controllo mensile aggiunge
+l'aggiornamento degli scadenziari, il confronto fra DSO effettivo e DSO di budget e la
+simulazione dello scenario di stress con i dati nuovi (lett. j), pagg. 27-28).
+
+Per un'impresa sola, un file ben impostato può reggere queste cadenze. I segnali che il foglio è al
+limite, in studio, sono pratici:
+
+- più clienti seguiti con lo stesso modello, ciascuno in una copia che diverge dalle altre;
+- versioni del file che circolano per mail, senza sapere quale è l'ultima;
+- scenari e stress test (il documento propone incassi ridotti del 20%, energia +30% per tre mesi,
+  credito bloccato per 60 giorni, lett. g), pag. 26) rifatti a mano copiando il foglio;
+- il consuntivo che non si confronta più con il budget perché ricostruirlo richiede ore.
+
+In quel caso lo schema resta lo stesso; cambia lo strumento che lo tiene aggiornato. Il DSCR
+prospettico di FinBeacon (vedi il [metodo](/#metodo)) legge gli stessi quattro blocchi del foglio:
+liquidità iniziale, entrate, uscite operative, rate.
+
+## Cosa verificare, in quest'ordine
+
+1. **L'orizzonte**: sei colonne per il piano della composizione negoziata (art. 17, comma 3,
+   lett. b), CCII), dodici per la verifica dell'art. 3, comma 3, lett. b).
+2. **La riga 4 del primo mese**: riconciliata con gli estratti conto, e collegata, non digitata,
+   nei mesi successivi.
+3. **Il foglio dei flussi**: ogni cifra del prospetto ha una riga di origine con voce, data
+   presunta e probabilità.
+4. **Le rate**: in un blocco proprio, dal piano di ammortamento, con capitale e interessi.
+5. **L'IVA**: versamenti su righe separate, con il calendario reale.
+6. **Il saldo minimo**: la riga 22, non solo l'ultimo mese.
+7. **Lo scenario pessimistico**: incassi in ritardo e credito fermo, con le coperture disponibili.
+8. **L'aggiornamento**: consuntivo contro budget ogni mese.
+
+Con i totali del foglio si può provare subito il rapporto fra cassa e rate nello
+[strumento di calcolo del DSCR prospettico](/strumenti/calcolo-dscr-prospettico), gratuito e senza
+registrazione.
