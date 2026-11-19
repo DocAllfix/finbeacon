@@ -1,0 +1,169 @@
+---
+titolo: "Software per cash flow e tesoreria: cosa deve fare in studio"
+descrizione: "Cosa deve fare un software per il cash flow secondo il documento CNDCEC sul budget di tesoreria e il Codice della crisi, e cosa chiedere prima di sceglierlo."
+data: 2026-11-21
+autore: alessandro-di-lonardo
+argomento: strumenti
+parolaChiave: "software cash flow"
+fonti:
+  - titolo: "CNDCEC e FNC, documento «Il budget di tesoreria: principali funzioni e aspetti operativi», 19 maggio 2026"
+    url: "https://commercialisti.it/wp-content/uploads/2026/05/2026_05_19_Budget-di-tesoreria.pdf"
+  - titolo: "Codice della crisi d'impresa e dell'insolvenza, art. 3 – Adeguatezza delle misure e degli assetti (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art3"
+  - titolo: "Codice della crisi d'impresa e dell'insolvenza, art. 17 – Accesso alla composizione negoziata (Normattiva)"
+    url: "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art17"
+  - titolo: "Regolamento (UE) 2016/679 (GDPR), art. 28 – Responsabile del trattamento (EUR-Lex)"
+    url: "https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679"
+correlati: [cash-flow-excel, cash-flow-previsionale]
+---
+
+Un software per il cash flow serve allo studio se fa tre cose che un foglio di calcolo fatica a
+fare su molti clienti: tiene la previsione mese per mese allineata al consuntivo, simula scenari
+avversi sugli stessi dati e segnala quando la cassa prevista scende sotto un livello deciso
+prima. La norma non impone uno strumento; il CNDCEC ne descrive le funzioni.
+
+## Cosa chiede la norma, e cosa no
+
+La norma chiede di poter fare certe verifiche, non di usare un certo programma. L'[art. 3, comma 3,
+CCII](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art3)
+(testo in vigore dal 28/09/2024) vuole misure e assetti che consentano di rilevare gli squilibri
+(lett. a), di verificare la sostenibilità dei debiti e le prospettive di continuità «almeno per i
+dodici mesi successivi» (lett. b) e di ricavare le informazioni per la lista di controllo e il
+test pratico dell'art. 13 (lett. c). Il comma 4 fissa i segnali in cifre: debiti per retribuzioni
+scaduti da almeno trenta giorni per oltre la metà del monte mensile; debiti verso fornitori scaduti
+da almeno novanta giorni superiori a quelli non scaduti; esposizioni verso banche e intermediari
+scadute da più di sessanta giorni, o oltre il fido da almeno sessanta, per almeno il cinque per
+cento del totale; le esposizioni dell'art. 25-novies, comma 1.
+
+Il piano a sei mesi viene invece dall'[art. 17, comma 3, lett. b), CCII](https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2019-01-12;14~art17):
+chi chiede la composizione negoziata allega una relazione «recante un piano finanziario per i
+successivi sei mesi». Nessuno dei due articoli indica uno schema, un formato di file o un
+software. Il quadro dei due orizzonti è nella guida sul [cash flow previsionale](/guide/cash-flow-previsionale).
+
+Il documento del CNDCEC del 19 maggio 2026 sul [budget di tesoreria](https://commercialisti.it/wp-content/uploads/2026/05/2026_05_19_Budget-di-tesoreria.pdf)
+collega il budget di tesoreria alle lettere a) e b) dell'art. 3 e ai segnali del comma 4 (par.
+1.1, pag. 10). È da lì che si ricavano i requisiti di uno strumento.
+
+## Cosa deve fare un software di tesoreria per lo studio?
+
+Deve coprire, senza lavoro manuale ripetuto, le funzioni che il documento CNDCEC descrive nello
+schema operativo e nei paragrafi sulla gestione degli imprevisti e sulla pianificazione dinamica.
+
+| Funzione                 | Cosa indica il documento CNDCEC                                                                                                                                                               | Riferimento                 |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| Righe di previsione      | per ogni voce: importo del mese, probabilità di realizzazione (100% dati certi, 60-90% variabili), data presunta, scenario ottimistico e pessimistico                                         | par. 2.5, lett. d), pag. 26 |
+| Stress test              | incassi ridotti del 20%, energia +30% per tre mesi, credito bancario bloccato per 60 giorni; verificare che liquidità e linee non utilizzate coprano il fabbisogno                            | lett. g), pagg. 26-27       |
+| Scenari concatenati      | shock simultanei e correlati, non isolati                                                                                                                                                     | par. 2.4, pagg. 23-24       |
+| Budget contro consuntivo | settimanale cassa reale contro prevista; mensile scostamenti sulle voci con varianza oltre il 10%; trimestrale revisione delle ipotesi                                                        | lett. h), pag. 27           |
+| Cruscotto minimo         | cassa disponibile oggi, saldo previsto a 30, 60 e 90 giorni, scadenze rilevanti della settimana, semaforo: verde sopra il buffer minimo, giallo fra buffer e zero, rosso se previsto negativo | lett. h), pag. 27           |
+| Soglie di allerta        | automatiche, su più livelli di gravità crescente, ciascuno legato ad azioni precise                                                                                                           | par. 2.4, pag. 25           |
+| Previsione scorrevole    | rolling forecast aggiornabili in qualsiasi momento e per orizzonti di 6, 12, 18 o 24 mesi                                                                                                     | par. 3.2, pag. 31           |
+| Qualità del dato         | riconciliazione con contabilità e banche, anagrafiche clienti e fornitori coerenti, gestione strutturata delle assunzioni                                                                     | par. 1.5, pag. 15           |
+
+Il documento avverte che scenari, stress test e soglie sono indicati «a titolo esemplificativo» e
+vanno definiti su settore e azienda (nota 12, pag. 25). Un software utile quindi lascia
+impostare percentuali e soglie per cliente, invece di fissarle una volta per tutti.
+
+Per il rapporto con la banca il documento indica tre contenuti: capacità di servizio del debito e
+sostenibilità degli impegni nei dodici mesi, scenari base e avverso, monitoraggio scorrevole e
+degli scostamenti (par. 1.4, pag. 14). È la prova pratica di un software: se quelle tre cose non
+escono in un documento leggibile da terzi, il lavoro di presentazione resta a mano.
+
+## Per uno studio, non per un'impresa sola
+
+La differenza è il portafoglio. Il software di tesoreria di un'impresa guarda una cassa; lo studio
+deve tenere lo stesso metodo su molti clienti e vedere per primi quelli che peggiorano. Ne
+seguono requisiti che le schede prodotto raramente mettono in evidenza:
+
+- **un modello comune** di righe e categorie, così che i piani dei clienti siano confrontabili e non
+  copie che divergono;
+- **una vista d'insieme** che ordina i clienti per tensione di cassa prevista, non per nome;
+- **le ipotesi accanto ai numeri**: il CNDCEC assegna al professionista la qualità del dato
+  prospettico e l'integrazione delle variabili qualitative, normative e contrattuali «che sfuggono
+  all'algoritmo» (par. 4.2 e 4.3, pagg. 34-35); il software deve far vedere chi ha scritto
+  un'ipotesi, quando e perché;
+- **la storia delle versioni**: quale previsione era in vigore quando è stata presentata alla banca
+  o all'organo di controllo.
+
+## Quando basta Excel?
+
+Basta quando i clienti seguiti sono pochi e il file si riesce ad aggiornare con le cadenze del
+documento CNDCEC: cassa ogni settimana, scostamenti ogni mese, ipotesi ogni trimestre (lett. h),
+pag. 27). Lo schema da usare, con righe, formule ed errori ricorrenti, è nella guida sul
+[cash flow in Excel](/guide/cash-flow-excel).
+
+I segnali che il foglio non regge più sono pratici: copie dello stesso modello che divergono da un
+cliente all'altro, versioni del file che girano per mail, stress test rifatti copiando fogli, un
+consuntivo che non si confronta più con il budget perché ricostruirlo richiede ore. In quel caso
+il metodo resta lo stesso e cambia lo strumento che lo tiene aggiornato.
+
+## Cosa chiedere prima di sceglierlo
+
+Conviene chiedere una prova su un cliente vero dello studio e verificare, nell'ordine:
+
+1. **Da dove entrano i dati**: estratti conto di tutti i rapporti, scadenziari clienti e fornitori
+   con data fattura, importo e scadenza, piani di ammortamento con capitale e interessi, contratti
+   di leasing, previsioni degli ultimi 12-24 mesi (le fonti elencate dal CNDCEC, lett. a), pag.
+   25). Quali entrano da soli, quali a mano, quali con un file.
+2. **L'orizzonte**: almeno dodici mesi per la verifica dell'art. 3, sei con dettaglio mensile per il
+   piano dell'art. 17, e la possibilità di farlo scorrere.
+3. **Gli scaduti**: debiti per retribuzioni, fornitori e banche per anzianità, perché sono i
+   segnali dell'art. 3, comma 4.
+4. **Scenari e stress test**: impostabili per cliente, con il saldo stressato mese per mese.
+5. **Il consuntivo**: confronto con la previsione per voce, con evidenza degli scostamenti.
+6. **Il documento finale**: cosa si consegna al cliente e alla banca, e se riporta le ipotesi.
+7. **I dati personali**: quando il fornitore tratta dati personali per conto dello studio, l'[art.
+   28 del GDPR](https://eur-lex.europa.eu/legal-content/IT/TXT/HTML/?uri=CELEX:32016R0679) chiede
+   un contratto che lo vincoli, fra l'altro, a trattarli solo su istruzione documentata (par. 3,
+   lett. a), a non ricorrere ad altri responsabili senza autorizzazione scritta (par. 2), a
+   cancellarli o restituirli a fine servizio (par. 3, lett. g) e a consentire verifiche (par. 3,
+   lett. h). Va chiesto anche dove si trovano server e copie.
+
+## Dove si colloca FinBeacon
+
+FinBeacon non è un software di tesoreria: non tiene gli scadenziari e non si collega ai conti
+correnti. Legge i totali del piano a sei mesi di ciascun cliente (liquidità iniziale, entrate,
+uscite operative, debito da servire) e ne ricava il DSCR prospettico, accanto agli indicatori di
+bilancio e al giudizio sintetico, per tutto il portafoglio dello studio. Il piano si costruisce in
+Excel o nel software di tesoreria dell'impresa; FinBeacon ne legge il risultato. Sul cliente di
+esempio del motore, con importi inventati:
+
+<Formula chiave="dscr6m" />
+
+Il numeratore è la cassa che resta dopo le uscite operative; il denominatore sono le rate del
+periodo, capitale e interessi. Per questo, in qualunque strumento si tenga il piano, le rate
+vanno in un blocco proprio e non dentro i pagamenti. Come FinBeacon dichiara formule e soglie è
+spiegato nel [metodo](/#metodo).
+
+<Nota>
+  Nessuno strumento sostituisce le ipotesi: incassi, ritardi e scenari sono scelte del
+  professionista, e un software le rende visibili e ripetibili, non giuste.
+</Nota>
+
+## Domande frequenti
+
+### Esiste un software per il cash flow gratis in italiano?
+
+Un foglio di calcolo impostato bene non costa nulla e regge un'impresa sola, con le cadenze del
+documento CNDCEC. Per il solo rapporto fra cassa prevista e rate c'è lo
+[strumento di calcolo del DSCR prospettico](/strumenti/calcolo-dscr-prospettico), gratuito e
+senza registrazione.
+
+### La legge obbliga a usare un software di tesoreria?
+
+No. L'art. 3 CCII chiede misure e assetti che consentano le verifiche delle lettere a), b) e c)
+del comma 3; l'art. 17 chiede un piano finanziario a sei mesi. Nessuno dei due indica lo
+strumento con cui ottenerli.
+
+## Cosa verificare, in quest'ordine
+
+1. **Lo scopo**: verifica dell'art. 3 su dodici mesi, piano dell'art. 17 su sei, o entrambi.
+2. **Le fonti dei dati** del cliente: estratti conto, scadenziari, piani di ammortamento.
+3. **Le funzioni** della tabella sopra: righe con probabilità e data, stress test, consuntivo,
+   cruscotto, soglie impostabili.
+4. **Il portafoglio**: modello comune, vista d'insieme, ipotesi e versioni tracciate.
+5. **Il contratto sui dati**: art. 28 GDPR, sede dei server, restituzione a fine servizio.
+6. **La prova**: un cliente vero, un mese di consuntivo, un documento consegnabile alla banca.
+
+Per vedere come FinBeacon mette insieme bilancio e DSCR prospettico sul portafoglio di uno studio
+si può [chiedere una demo](/#richiesta).
