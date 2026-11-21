@@ -765,7 +765,7 @@ voci:
     link_interni: ["budget-tesoreria", "cash-flow"]
     cta: calcolatore
     priorita: 1
-    stato: in-pr
+    stato: pubblicata
     slug: cash-flow-excel
     data: 2026-11-18
     verifica: "Lo schema si descrive in tabella; nessun file scaricabile senza una richiesta di codice nella PR."
@@ -802,8 +802,18 @@ voci:
     link_interni: ["budget-tesoreria", "cash-flow-excel"]
     cta: demo
     priorita: 1
-    stato: da-fare
+    stato: in-pr
+    slug: software-cash-flow
+    data: 2026-11-21
     verifica: "Non nominare né confrontare prodotti concorrenti; nessuna promessa (parole vietate di REDAZIONE.md)."
+    note: >
+      Fonti lette il 19/11/2026: documento CNDCEC e FNC «Il budget di tesoreria» (19/05/2026), parr.
+      1.1 (pag. 10), 1.4 (pag. 14), 1.5 (pag. 15), 2.4 (pagg. 23-25), 2.5 lett. a), d), g), h)
+      (pagg. 25-27), 3.2 (pag. 31), 4.2-4.3 (pagg. 34-35), numerazione stampata; artt. 3 e 17 CCII
+      (Normattiva, testo in vigore dal 28/09/2024); art. 28 Reg. (UE) 2016/679 (EUR-Lex). Nessun
+      prodotto concorrente nominato. FinBeacon descritto per quello che fa (legge i quattro totali
+      del piano a sei mesi, non tiene scadenziari). Nessuna soglia del DSCR citata (documento CNDCEC
+      sugli indici non letto). Il link interno «budget-tesoreria» del brief punta a cash-flow-previsionale.
 
   - id: indici-di-bilancio
     calendario: M2-W3-01
